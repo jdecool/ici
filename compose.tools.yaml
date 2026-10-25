@@ -1,0 +1,27 @@
+services:
+  rust:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      target: tools
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      - cargo-registry:/usr/local/cargo/registry
+      - cargo-git:/usr/local/cargo/git
+      - cargo-target:/workspace/target
+  node:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      target: tools
+    working_dir: /workspace/frontend
+    entrypoint: [sh, -c, 'npm ci && exec "$@"', --]
+    volumes:
+      - ./frontend:/workspace/frontend
+      - node-modules:/workspace/frontend/node_modules
+volumes:
+  cargo-registry:
+  cargo-git:
+  cargo-target:
+  node-modules:

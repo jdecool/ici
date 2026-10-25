@@ -1,0 +1,22 @@
+services:
+  rust:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      target: base
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      - cargo-registry:/usr/local/cargo/registry
+      - cargo-git:/usr/local/cargo/git
+  node:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      target: base
+    working_dir: /workspace/frontend
+    volumes:
+      - ./frontend:/workspace/frontend
+volumes:
+  cargo-registry:
+  cargo-git:

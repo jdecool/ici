@@ -1,0 +1,5 @@
+# Only process startup/signal handling is excluded; HTTP adapters remain in scope.
+exclude_globs = ["backend/crates/server/src/main.rs"]
+minimum_test_timeout = 20
+additional_cargo_args = ["--locked"]
+test_workspace = true

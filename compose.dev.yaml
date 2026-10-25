@@ -1,0 +1,43 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      target: tools
+    command: cargo watch --why -w backend -w Cargo.toml -w Cargo.lock -x 'run --locked -p ici-server'
+    environment:
+      RUST_LOG: ${RUST_LOG:-info,tower_http=debug}
+    init: true
+    volumes:
+      - .:/workspace
+      - cargo-registry:/usr/local/cargo/registry
+      - cargo-git:/usr/local/cargo/git
+      - cargo-target:/workspace/target
+    healthcheck:
+      test: [CMD, curl, --fail, --silent, 'http://localhost:3000/health']
+      interval: 3s
+      timeout: 2s
+      start_period: 120s
+      retries: 40
+  web:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      target: tools
+    command: sh -c 'npm ci && npm run dev'
+    environment:
+      API_PROXY_TARGET: http://backend:3000
+    init: true
+    ports:
+      - "127.0.0.1:${DEV_PORT:-5173}:5173"
+    volumes:
+      - ./frontend:/workspace/frontend
+      - node-modules:/workspace/frontend/node_modules
+    depends_on:
+      backend:
+        condition: service_started
+volumes:
+  cargo-registry:
+  cargo-git:
+  cargo-target:
+  node-modules:

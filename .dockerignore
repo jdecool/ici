@@ -1,0 +1,12 @@
+.git
+.env
+.env.*
+**/node_modules
+**/dist
+**/coverage
+**/reports
+**/.stryker-tmp
+**/playwright-report
+**/test-results
+target
+mutants.out*

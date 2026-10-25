@@ -1,0 +1,36 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      target: production
+    environment:
+      RUST_LOG: ${RUST_LOG:-info,tower_http=debug}
+    init: true
+  web:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      target: production
+    ports:
+      - "127.0.0.1:${HTTP_PORT:-8080}:8080"
+    depends_on:
+      backend:
+        condition: service_healthy
+  e2e:
+    profiles: [test]
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      target: e2e
+    environment:
+      BASE_URL: http://web:8080
+      CI: "true"
+    init: true
+    ipc: host
+    depends_on:
+      web:
+        condition: service_healthy
+    volumes:
+      - ./frontend/playwright-report:/workspace/frontend/playwright-report
+      - ./frontend/test-results:/workspace/frontend/test-results
