@@ -4,6 +4,54 @@
 
 ici is a containerized Rust/Axum and React/TypeScript monorepo. It provides a public landing page, tenant registration, email activation and isolated tenant authentication. Read this file, the nearest nested AGENTS.md, README.md, and docs/architecture.md before changing code. All source identifiers, comments, documentation, and commit messages are English.
 
+## AI / Agent rules
+
+* Think Before Coding: No silent assumptions. Push back if a simpler approach exists.
+* Simplicity First: Minimum code required. No speculative features.
+* Surgical Changes: Touch only what you must. Do not “improve” adjacent formatting.
+* Goal-Driven Execution: Define success criteria and loop until verified, rather than blindly following rigid steps.
+
+### Rule 1 — Think Before Coding
+
+State assumptions explicitly. If uncertain, ask rather than guess.
+Push back when a simpler approach exists. Stop when confused.
+
+### Rule 2 — Simplicity First
+
+Minimum code that solves the problem. Nothing speculative.
+No features beyond what was asked. No abstractions for single-use code.
+
+### Rule 3 — Surgical Changes
+
+Touch only what you must. Clean up only your own mess.
+Don't "improve" adjacent code, comments, or formatting. Match existing style.
+
+### Rule 4 — Goal-Driven Execution
+
+Define success criteria. Loop until verified.
+Don't follow steps. Define success and iterate independently.
+
+### Rule 5 — Token budgets are not advisory
+
+Per-task: 4,000 tokens. Per-session: 30,000 tokens.
+If approaching budget, summarize and start fresh. Surface the breach.
+
+### Rule 6 — Read before you write
+
+Before adding code, read exports, immediate callers, shared utilities.
+If unsure why code is structured a certain way, ask.
+
+### Rule 7 — Checkpoint after every significant step
+
+Summarize what was done, what's verified, what's left.
+Don't continue from a state you can't describe back. Stop and restate.
+
+### Rule 8 — Fail loud
+
+"Completed" is wrong if anything was skipped silently.
+"Tests pass" is wrong if any were skipped.
+Default to surfacing uncertainty, not hiding it.
+
 ## Architecture
 
 Organize work by capability, not by global technical layers. Rust capability crates own their domain and use cases; the server owns HTTP adapters grouped by capability and the composition root. Dependencies point inward. Frontend features own their API clients, types, UI and tests; other features and app composition consume their index.ts entry point. Do not invent ports, repositories, databases or abstractions without a real use case.
