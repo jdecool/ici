@@ -2,7 +2,7 @@
 
 ## Project and scope
 
-ici is a containerized Rust/Axum and React/TypeScript monorepo. Its only product behavior is a greeting fetched over HTTP. Read this file, the nearest nested AGENTS.md, README.md, and docs/architecture.md before changing code. All source identifiers, comments, documentation, and commit messages are English.
+ici is a containerized Rust/Axum and React/TypeScript monorepo. It provides a public landing page, tenant registration, email activation and isolated tenant authentication. Read this file, the nearest nested AGENTS.md, README.md, and docs/architecture.md before changing code. All source identifiers, comments, documentation, and commit messages are English.
 
 ## Architecture
 
@@ -12,18 +12,20 @@ Organize work by capability, not by global technical layers. Rust capability cra
 
 Prerequisites: Docker with Compose v2 and Make. No host Rust or Node installation is required. If dependency locks have not yet been generated, run `make bootstrap`, review Cargo.lock and frontend/package-lock.json, and include them in the first commit. CI never generates missing locks.
 
-- `make dev`: backend reload and frontend HMR; http://localhost:5173.
+- `make dev`: backend reload and frontend HMR; http://ici.localhost:5173.
 - `make check`: formatting, lint, type/static analysis and architecture checks.
 - `make test`: Rust unit/integration/doc tests and frontend unit/integration tests.
 - `make coverage`: enforce 90% coverage in each language.
 - `make mutation`: full Rust and frontend mutation suites; 100% required.
 - `make audit`: dependency vulnerability/license/source policy checks.
 - `make e2e`: build and test production containers in an isolated Compose project.
-- `make build`: build production images; `make up`: run them on http://localhost:8080.
+- `make e2e-https`: verify mounted root/wildcard certificates, HTTPS routing and HTTP redirects in a disposable stack.
+- `make build`: build production images; `make up`: run them on http://ici.localhost:8080.
+- `make migrate-tenants`: apply migrations to all active tenant databases using the privileged worker.
 - `make quality`: the complete CI-equivalent gate.
 - `make format`: intentionally rewrite formatting; `make down`: stop project services without deleting persistent caches.
 
-See nested files for focused commands. Do not run commands concurrently against the same tool/cache volumes. CI uses isolated runners.
+Read docs/operations.md when changing provisioning, SMTP, secrets, TLS or backup procedures. See nested files for focused commands. Do not run commands concurrently against the same tool/cache volumes. CI uses isolated runners.
 
 ## Working agreement
 

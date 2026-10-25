@@ -31,3 +31,19 @@ Never change thresholds to accommodate failing tests. Investigate equivalent mut
 cargo-deny checks advisory, license and source policies. npm audit blocks high/critical advisories in production and development dependencies. Registry/advisory outages fail audit jobs instead of silently skipping them. Locked dependency installs are required in normal execution. Bootstrap is an explicit initial setup step, never a CI fallback.
 
 See docs/validation.md for checks actually executed during scaffolding. Tool configuration is not evidence that a gate passed.
+
+## Identity dependency license decisions
+
+The SMTP quoted-printable encoder `quoted_printable` 0.5.2 uses the permissive 0BSD license. Rustls' Mozilla CA datasets `webpki-roots` 0.26.11 and 1.0.11 use CDLA-Permissive-2.0 for certificate data. `deny.toml` permits only these named, resolved versions under those licenses; it does not change the general license allowlist or advisory policy. SQLx and Lettre require these components for PostgreSQL/SMTP TLS. Workspace path dependencies also declare their exact package version, preserving the wildcard ban.
+
+Vite and Vitest were upgraded to compatible patch releases (7.3.7 and 4.1.12) to fix advisories present in the original lockfile; npm audit fix refreshed vulnerable transitive development dependencies. No new frontend runtime dependency was added.
+
+## Equivalent mutation decisions
+
+Three mount-only React effects (App configuration, identity session and greeting) narrowly exclude the ArrayDeclaration mutation on their empty dependency lists: replacing [] with one constant string preserves the same effect lifetime across renders. Obsolete responses are still tested through StrictMode; no conditional or cleanup mutation is excluded. POST bodies, methods and headers remain mutation-tested. No UI text, field, whole function, capability or adapter is excluded.
+
+## Database test isolation
+
+Rust account contracts require TEST_DATABASE_URL and ICI_TEST_DATABASE=1, supplied only by the ici-tools Compose project. Before each contract run they clear the registry and drop generated ici_t_<UUID> databases/roles in that dedicated PostgreSQL instance. This also recovers from mutants killed before teardown. Never point the test environment at development or production data. Cache volumes remain persistent; regular dev/production databases are in separate Compose projects.
+
+The tools stack's Mailpit requires explicit test SMTP authentication. Development and production-stack E2E capture also exercise unauthenticated local delivery. This detects regressions that accidentally omit configured SMTP credentials without requiring access to a real mail provider.

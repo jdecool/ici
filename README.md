@@ -1,6 +1,6 @@
 # ici
 
-A Rust/Axum backend and React/TypeScript/Vite frontend, organized by capability. React displays the message from `GET /api/hello`; there is no database or authentication.
+A Rust/Axum backend and React/TypeScript/Vite frontend, organized by capability. The French landing page follows `.design/`. Registration reserves a workspace, verifies email and provisions an isolated PostgreSQL database. Each tenant owns its administrator accounts, consent records, sessions and password recovery.
 
 ## Start
 
@@ -13,12 +13,14 @@ make bootstrap
 make dev
 ```
 
-Open http://localhost:5173. Rust reloads when backend files change; React uses Vite HMR. Initial image builds compile the Rust quality tools and can take several minutes. Subsequent builds reuse Docker layers and named dependency/build caches.
+Open http://ici.localhost:5173. Rust reloads when backend files change; React uses Vite HMR. Initial image builds compile the Rust quality tools and can take several minutes. Subsequent builds reuse Docker layers and named dependency/build caches.
 
 ```sh
-make up      # Production images at http://localhost:8080
+make up      # Production images at http://ici.localhost:8080
 make down    # Stop services, preserving caches
 ```
+
+Development email is captured by Mailpit at http://localhost:8025. Tenant workspaces use `http://<workspace>.ici.localhost:5173` (port 8080 for the local production images). PostgreSQL persists across `make down`; E2E uses its own disposable database volume. See [operations](docs/operations.md) for configuration, production SMTP, TLS, migrations and backup/restore.
 
 Development and production use a same-origin proxy for `/api`, avoiding browser CORS configuration. Production also proxies `/health`. The backend is reachable on port 3000 only within the Compose network.
 
@@ -27,11 +29,16 @@ Development and production use a same-origin proxy for `/api`, avoiding browser 
 ```text
 backend/crates/
   greeting/             Independent greeting capability
-  server/src/greeting/  HTTP adapter for that capability
+  tenancy/              Workspace naming and host isolation rules
+  identity/             Account validation and session policy
+  server/src/tenancy/    Registry, HTTP, SQLx and privileged worker adapters
+  server/src/identity/   Authentication HTTP and cryptographic adapters
   server/tests/         HTTP integration contracts
 frontend/src/
   app/                  Application composition
-  features/greeting/    Greeting UI, client and tests
+  features/tenancy/     Registration, availability and activation status
+  features/identity/    Login, email verification, recovery and tenant home
+  shared/               Transport validation and form fields
   test/                 Shared test infrastructure
 frontend/e2e/            Production-stack browser and HTTP tests
 docs/                    Architecture, quality policy and decisions
@@ -48,8 +55,10 @@ scripts/                 Shared local/CI commands
 | `make coverage` | 90% minimum backend and frontend coverage |
 | `make mutation` | Full mutation runs with 100% required score |
 | `make audit` | Dependency vulnerabilities, Rust licenses and sources |
+| `make e2e-https` | Verify mounted TLS certificates, HTTPS routing and redirects |
 | `make e2e` | Build, start and test production containers; always tear down |
 | `make build` | Build production images |
+| `make migrate-tenants` | Apply migrations to every active tenant database |
 | `make quality` | All required gates |
 | `make format` | Apply source formatting |
 

@@ -24,6 +24,6 @@ make mutation-rust
 make audit-rust
 ```
 
-Put unit tests in each module's cfg(test) block and public integration tests in the owning crate's tests directory. HTTP tests build the actual router through tower::ServiceExt without opening a port. Functional tests run against production images via make e2e.
+Put unit tests in each module's cfg(test) block and public integration tests in the owning crate's tests directory. HTTP tests build the actual router through tower::ServiceExt without opening a port. Account contracts require the tools stack PostgreSQL and Mailpit services; do not silently skip these tests when PostgreSQL is absent. The worker executable is also exercised as a subprocess with runtime secrets. Functional tests run against production images via make e2e.
 
 Coverage includes all application crates and HTTP adapters, requiring 90% lines/functions. Only process startup and signal handling in server/src/main.rs is excluded; its startup is exercised through container health checks. cargo-mutants must succeed with no missed mutations or timeouts. Do not add exclusions for entire crates or adapters.
