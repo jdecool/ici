@@ -52,3 +52,26 @@ it('ignores an obsolete failure after effect cleanup', async () => {
   expect(screen.getByRole('heading')).toHaveTextContent('Current');
   expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 });
+
+it('announces loading until the greeting arrives', async () => {
+  const pending = deferred();
+  vi.mocked(fetchGreeting).mockReturnValueOnce(pending.promise);
+  render(<Greeting />);
+  expect(screen.getByRole('status')).toHaveTextContent('Loading greeting…');
+  expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  await act(async () => {
+    pending.resolve('Hello World');
+    await pending.promise;
+  });
+  expect(screen.getByRole('heading')).toHaveTextContent('Hello World');
+  expect(screen.queryByRole('status')).not.toBeInTheDocument();
+});
+it('announces greeting failures', async () => {
+  vi.mocked(fetchGreeting).mockRejectedValueOnce(new Error('network'));
+  render(<Greeting />);
+  expect(await screen.findByRole('alert')).toHaveTextContent(
+    'Unable to load greeting.',
+  );
+  expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  expect(screen.queryByRole('heading')).not.toBeInTheDocument();
+});

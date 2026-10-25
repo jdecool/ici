@@ -9,23 +9,31 @@ type GreetingState =
 export function Greeting() {
   const [state, setState] = useState<GreetingState>({ status: 'loading' });
 
-  useEffect(() => {
-    let active = true;
-    void fetchGreeting().then(
-      (message) => {
-        if (active) setState({ status: 'success', message });
-      },
-      () => {
-        if (active) setState({ status: 'error' });
-      },
-    );
-    return () => {
-      active = false;
-    };
-  }, []);
+  useEffect(
+    () => {
+      let active = true;
+      void fetchGreeting().then(
+        (message) => {
+          if (active) setState({ status: 'success', message });
+        },
+        () => {
+          if (active) setState({ status: 'error' });
+        },
+      );
+      return () => {
+        active = false;
+      };
+    },
+    // Stryker disable next-line ArrayDeclaration: A constant sentinel and an empty dependency list both stay stable across renders.
+    [],
+  );
 
-  if (state.status === 'loading') return <p role="status">Loading greeting…</p>;
-  if (state.status === 'error')
-    return <p role="alert">Unable to load greeting.</p>;
-  return <h1>{state.message}</h1>;
+  switch (state.status) {
+    case 'loading':
+      return <p role="status">Loading greeting…</p>;
+    case 'error':
+      return <p role="alert">Unable to load greeting.</p>;
+    case 'success':
+      return <h1>{state.message}</h1>;
+  }
 }
