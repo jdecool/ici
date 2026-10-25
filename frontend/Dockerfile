@@ -1,4 +1,5 @@
 FROM node:24.21.0-bookworm-slim AS base
+RUN apt-get update && apt-get install -y --no-install-recommends procps && rm -rf /var/lib/apt/lists/*
 RUN npm install --global npm@11.20.0
 WORKDIR /workspace/frontend
 FROM base AS tools
