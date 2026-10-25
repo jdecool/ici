@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Ici — Présences</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#F6F7F9;font-family:'Geist',system-ui,sans-serif;color:#1B2140;-webkit-font-smoothing:antialiased}
+a{color:#2B4ACB;text-decoration:none}a:hover{color:#1E36A0;text-decoration:underline}
+button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
+</style>
+</helmet>
+<sc-if value="{{ showLogin }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Landing" style="min-height:100vh;display:flex;flex-direction:column">
+<header style="border-bottom:1px solid #E4E6EB;background:#FFFFFF">
+  <div style="max-width:1160px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;gap:10px">
+    <div style="width:28px;height:28px;border-radius:8px;background:#2B4ACB;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 22s-7.5-6.6-7.5-12.6a7.5 7.5 0 0 1 15 0C19.5 15.4 12 22 12 22z" fill="#FFFFFF"></path><circle cx="12" cy="9.4" r="2.9" fill="#1B2140"></circle></svg></div>
+    <span style="font-weight:600;font-size:16px;letter-spacing:-0.01em">Ici</span>
+  </div>
+</header>
+<main style="flex:1;width:100%;max-width:1160px;margin:0 auto;padding:56px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:56px;align-items:center">
+  <section style="display:flex;flex-direction:column;gap:28px;min-width:0">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <span style="font-family:'Geist Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#2B4ACB">Planning de présence d’équipe</span>
+      <h1 style="margin:0;font-size:clamp(34px,4.4vw,52px);line-height:1.05;font-weight:600;letter-spacing:-0.035em;text-wrap:balance">Sachez qui est au bureau avant de vous déplacer.</h1>
+      <p style="margin:0;font-size:17px;line-height:1.5;color:#5E6470;max-width:520px;text-wrap:pretty">Chacun indique sa semaine en quelques clics : présentiel, distanciel ou absence. Toute l’équipe voit en un coup d’œil quand se retrouver.</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #E4E6EB;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px;max-width:520px">
+      <div style="display:grid;grid-template-columns:84px repeat(5,minmax(0,1fr));gap:6px;font-size:12px;color:#8A909B;font-weight:500">
+        <span></span><span style="text-align:center">Lun</span><span style="text-align:center">Mar</span><span style="text-align:center">Mer</span><span style="text-align:center">Jeu</span><span style="text-align:center">Ven</span>
+      </div>
+      <div style="display:grid;grid-template-columns:84px repeat(5,minmax(0,1fr));gap:6px;align-items:center;font-size:13px">
+        <span style="font-weight:500">Camille</span>
+        <span style="height:28px;border-radius:6px;background:#EAF0FD"></span><span style="height:28px;border-radius:6px;background:#EAF0FD"></span><span style="height:28px;border-radius:6px;background:#E6F4EC"></span><span style="height:28px;border-radius:6px;background:#EAF0FD"></span><span style="height:28px;border-radius:6px;background:#E6F4EC"></span>
+      </div>
+      <div style="display:grid;grid-template-columns:84px repeat(5,minmax(0,1fr));gap:6px;align-items:center;font-size:13px">
+        <span style="font-weight:500">Lucas</span>
+        <span style="height:28px;border-radius:6px;background:#E6F4EC"></span><span style="height:28px;border-radius:6px;background:#EAF0FD"></span><span style="height:28px;border-radius:6px;background:#E6F4EC"></span><span style="height:28px;border-radius:6px;background:#EAF0FD"></span><span style="height:28px;border-radius:6px;border:1px dashed #CDD1D8"></span>
+      </div>
+      <div style="display:grid;grid-template-columns:84px repeat(5,minmax(0,1fr));gap:6px;align-items:center;font-size:13px">
+        <span style="font-weight:500">Inès</span>
+        <span style="height:28px;border-radius:6px;background:#EAF0FD"></span><span style="height:28px;border-radius:6px;background:#EAF0FD"></span><span style="height:28px;border-radius:6px;background:#E6F4EC"></span><span style="height:28px;border-radius:6px;background:#EAF0FD"></span><span style="height:28px;border-radius:6px;background:#E6F4EC"></span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;padding-top:6px;font-size:12px;color:#5E6470">
+        <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#2B4ACB"></span>Présentiel</span>
+        <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#1D6B43"></span>Distanciel</span>
+        <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;border:1px dashed #8A909B"></span>Non renseigné</span>
+      </div>
+    </div>
+  </section>
+  <div style="width:100%;max-width:420px;justify-self:center;display:flex;flex-direction:column;gap:16px;min-width:0">
+    <sc-if value="{{ login.isLogin }}" hint-placeholder-val="{{ true }}">
+    <form onSubmit="{{ login.submit }}" style="background:#FFFFFF;border:1px solid #E4E6EB;border-radius:14px;padding:28px 24px;display:flex;flex-direction:column;gap:16px">
+      <div>
+        <h1 style="margin:0;font-size:22px;font-weight:600;letter-spacing:-0.02em">Connexion</h1>
+        <div style="font-size:14px;color:#5E6470;margin-top:4px;text-wrap:pretty">Accédez au planning de présence de votre équipe.</div>
+      </div>
+      <button type="button" onClick="{{ login.sso }}" style="height:44px;border:1px solid #DADDE3;background:#FFFFFF;border-radius:8px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" style-hover="background:#F3F4F6"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>Continuer avec le SSO entreprise</button>
+      <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#8A909B"><span style="flex:1;height:1px;background:#E4E6EB"></span>ou<span style="flex:1;height:1px;background:#E4E6EB"></span></div>
+      <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470">Email professionnel
+        <input type="email" autocomplete="username" value="{{ login.email }}" onChange="{{ login.onEmail }}" placeholder="prenom.nom@entreprise.fr" style="height:44px;border:{{ login.emailBorder }};border-radius:8px;padding:0 12px;outline:none;color:#1B2140;font-size:14px" style-focus="border-color:#2B4ACB;box-shadow:0 0 0 3px #E3EAFC">
+      </label>
+      <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470">
+        <span style="display:flex;justify-content:space-between;align-items:baseline">Mot de passe<a href="#" onClick="{{ login.forgot }}" style="font-size:12px;font-weight:500">Mot de passe oublié ?</a></span>
+        <span style="position:relative;display:flex">
+          <input type="{{ login.pwdType }}" autocomplete="current-password" value="{{ login.pwd }}" onChange="{{ login.onPwd }}" style="flex:1;min-width:0;height:44px;border:{{ login.pwdBorder }};border-radius:8px;padding:0 64px 0 12px;outline:none;color:#1B2140;font-size:14px" style-focus="border-color:#2B4ACB;box-shadow:0 0 0 3px #E3EAFC">
+          <button type="button" onClick="{{ login.togglePwd }}" style="position:absolute;right:6px;top:6px;height:32px;padding:0 8px;border:none;background:none;color:#5E6470;font-size:12px;font-weight:500;cursor:pointer;border-radius:6px" style-hover="background:#F3F4F6">{{ login.pwdToggleLabel }}</button>
+        </span>
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#3B3F48;cursor:pointer">
+        <input type="checkbox" checked="{{ login.remember }}" onChange="{{ login.onRemember }}" style="width:16px;height:16px;margin:0;accent-color:#2B4ACB">Rester connecté
+      </label>
+      <sc-if value="{{ login.hasError }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size:13px;color:#B42318;padding:10px 12px;background:#FDF0EF;border-radius:8px">{{ login.error }}</div>
+      </sc-if>
+      <button type="submit" style="height:44px;border:none;border-radius:8px;background:#2B4ACB;color:#FFFFFF;font-weight:500;cursor:pointer;opacity:{{ login.btnOpacity }}" style-hover="background:#2340B5">{{ login.cta }}</button>
+      <div style="font-size:13px;color:#5E6470;text-align:center">Pas encore de compte ? <a href="#" onClick="{{ login.goSignup }}" style="font-weight:500">Créer un compte</a></div>
+    </form>
+    <div style="font-size:12px;color:#8A909B;text-align:center;text-wrap:pretty">Démo : n’importe quel email de l’annuaire, ex. camille.durand@ici-demo.fr (admin), lucas.martin@ici-demo.fr ou margaux.lemoine@atelier-nord.fr (autre entreprise) — mot de passe libre.</div>
+    </sc-if>
+    <sc-if value="{{ signup.show }}" hint-placeholder-val="{{ false }}">
+    <form onSubmit="{{ signup.submit }}" style="background:#FFFFFF;border:1px solid #E4E6EB;border-radius:14px;padding:28px 24px;display:flex;flex-direction:column;gap:16px">
+      <div>
+        <h1 style="margin:0;font-size:22px;font-weight:600;letter-spacing:-0.02em">Créer un compte</h1>
+        <div style="font-size:14px;color:#5E6470;margin-top:4px;text-wrap:pretty">Rejoignez le planning de présence de votre équipe.</div>
+      </div>
+      <button type="button" onClick="{{ login.sso }}" style="height:44px;border:1px solid #DADDE3;background:#FFFFFF;border-radius:8px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" style-hover="background:#F3F4F6"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>S’inscrire avec le SSO entreprise</button>
+      <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#8A909B"><span style="flex:1;height:1px;background:#E4E6EB"></span>ou<span style="flex:1;height:1px;background:#E4E6EB"></span></div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+        <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470;min-width:0">Prénom<input autocomplete="given-name" value="{{ signup.first }}" onChange="{{ signup.onFirst }}" style="height:44px;border:1px solid #DADDE3;border-radius:8px;padding:0 12px;outline:none;color:#1B2140;font-size:14px;width:100%;min-width:0" style-focus="border-color:#2B4ACB;box-shadow:0 0 0 3px #E3EAFC"></label>
+        <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470;min-width:0">Nom<input autocomplete="family-name" value="{{ signup.last }}" onChange="{{ signup.onLast }}" style="height:44px;border:1px solid #DADDE3;border-radius:8px;padding:0 12px;outline:none;color:#1B2140;font-size:14px;width:100%;min-width:0" style-focus="border-color:#2B4ACB;box-shadow:0 0 0 3px #E3EAFC"></label>
+      </div>
+      <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470;min-width:0">Nom de domaine de l’entreprise<span style="display:flex;align-items:stretch;height:44px;border:{{ signup.domainBorder }};border-radius:8px;overflow:hidden;background:#FFFFFF"><input autocomplete="off" value="{{ signup.domain }}" onChange="{{ signup.onDomain }}" placeholder="entreprise" style="flex:1;min-width:0;border:none;padding:0 12px;outline:none;color:#1B2140;font-size:14px;background:transparent" style-focus="box-shadow:inset 0 0 0 2px #2B4ACB"><span style="display:flex;align-items:center;padding:0 12px;background:#F4F5F7;border-left:1px solid #DADDE3;color:#5E6470;font-size:14px;font-weight:400">.example.com</span></span></label>
+      <div style="font-size:12px;color:#5E6470;margin-top:-8px">Entreprise : <strong style="color:#1B2140;font-weight:600">{{ signup.coName }}</strong> <span style="color:#8A909B">{{ signup.coHint }}</span></div>
+      <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470;min-width:0">Email professionnel<input type="email" autocomplete="email" value="{{ signup.email }}" onChange="{{ signup.onEmail }}" placeholder="prenom.nom@entreprise.fr" style="height:44px;border:1px solid #DADDE3;border-radius:8px;padding:0 12px;outline:none;color:#1B2140;font-size:14px;width:100%;min-width:0" style-focus="border-color:#2B4ACB;box-shadow:0 0 0 3px #E3EAFC"></label>
+      <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470;min-width:0">Mot de passe
+        <span style="position:relative;display:flex">
+          <input type="{{ login.pwdType }}" autocomplete="new-password" value="{{ signup.pwd }}" onChange="{{ signup.onPwd }}" style="flex:1;min-width:0;height:44px;border:1px solid #DADDE3;border-radius:8px;padding:0 64px 0 12px;outline:none;color:#1B2140;font-size:14px" style-focus="border-color:#2B4ACB;box-shadow:0 0 0 3px #E3EAFC">
+          <button type="button" onClick="{{ login.togglePwd }}" style="position:absolute;right:6px;top:6px;height:32px;padding:0 8px;border:none;background:none;color:#5E6470;font-size:12px;font-weight:500;cursor:pointer;border-radius:6px" style-hover="background:#F3F4F6">{{ login.pwdToggleLabel }}</button>
+        </span>
+        <span style="display:flex;gap:4px;margin-top:2px">
+          <sc-for list="{{ signup.bars }}" as="b" hint-placeholder-count="4"><span style="flex:1;height:4px;border-radius:2px;background:{{ b.bg }}"></span></sc-for>
+        </span>
+        <span style="font-weight:400;color:{{ signup.pwdHintColor }}">{{ signup.pwdHint }}</span>
+      </label>
+      <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#3B3F48;cursor:pointer;line-height:1.4">
+        <input type="checkbox" checked="{{ signup.cgu }}" onChange="{{ signup.onCgu }}" style="width:16px;height:16px;margin:1px 0 0;flex:none;accent-color:#2B4ACB"><span>J’accepte les <a href="#" onClick="{{ signup.noop }}">conditions d’utilisation</a> et la <a href="#" onClick="{{ signup.noop }}">politique de confidentialité</a>.</span>
+      </label>
+      <sc-if value="{{ signup.hasError }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size:13px;color:#B42318;padding:10px 12px;background:#FDF0EF;border-radius:8px">{{ signup.error }}</div>
+      </sc-if>
+      <button type="submit" style="height:44px;border:none;border-radius:8px;background:#2B4ACB;color:#FFFFFF;font-weight:500;cursor:pointer;opacity:{{ login.btnOpacity }}" style-hover="background:#2340B5">{{ signup.cta }}</button>
+      <div style="font-size:13px;color:#5E6470;text-align:center">Déjà un compte ? <a href="#" onClick="{{ signup.goLogin }}" style="font-weight:500">Se connecter</a></div>
+    </form>
+    <div style="font-size:12px;color:#8A909B;text-align:center;text-wrap:pretty">Votre compte est créé avec le rôle Collaborateur. Un administrateur peut modifier vos droits.</div>
+    </sc-if>
+  </div>
+</main>
+<footer style="border-top:1px solid #E4E6EB">
+  <div style="max-width:1160px;margin:0 auto;padding:20px 24px;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;font-size:12px;color:#8A909B">
+    <span>© 2026 Ici</span>
+    <div style="display:flex;gap:16px"><a href="#" onClick="{{ signup.noop }}" style="color:#5E6470">Conditions d’utilisation</a><a href="#" onClick="{{ signup.noop }}" style="color:#5E6470">Confidentialité</a></div>
+  </div>
+</footer>
+</div>
+</sc-if>
+<sc-if value="{{ authed }}" hint-placeholder-val="{{ true }}">
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+<sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+<header style="position:sticky;top:0;z-index:20;background:#FFFFFF;border-bottom:1px solid #E4E6EB">
+  <div style="max-width:1320px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;gap:{{ headGap }}">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:28px;height:28px;border-radius:8px;background:#2B4ACB;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 22s-7.5-6.6-7.5-12.6a7.5 7.5 0 0 1 15 0C19.5 15.4 12 22 12 22z" fill="#FFFFFF"></path><circle cx="12" cy="9.4" r="2.9" fill="#1B2140"></circle></svg></div>
+      <span style="font-weight:600;font-size:16px;letter-spacing:-0.01em">Ici</span>
+      <sc-if value="{{ showMeText }}" hint-placeholder-val="{{ true }}"><span style="width:1px;height:18px;background:#E4E6EB"></span>
+      <span style="font-size:14px;color:#5E6470;white-space:nowrap">{{ coName }}</span></sc-if>
+    </div>
+    <nav style="display:flex;gap:4px;height:100%">
+      <button onClick="{{ nav.planning.go }}" style="height:100%;padding:0 12px;border:none;background:none;cursor:pointer;font-size:14px;font-weight:500;white-space:nowrap;color:{{ nav.planning.color }};box-shadow:inset 0 -2px 0 {{ nav.planning.line }}">Planning</button>
+      <button onClick="{{ nav.me.go }}" style="height:100%;padding:0 12px;border:none;background:none;cursor:pointer;font-size:14px;font-weight:500;white-space:nowrap;color:{{ nav.me.color }};box-shadow:inset 0 -2px 0 {{ nav.me.line }}">Ma semaine</button>
+      <button onClick="{{ nav.lieux.go }}" style="height:100%;padding:0 12px;border:none;background:none;cursor:pointer;font-size:14px;font-weight:500;white-space:nowrap;color:{{ nav.lieux.color }};box-shadow:inset 0 -2px 0 {{ nav.lieux.line }}">Lieux</button>
+      <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ nav.users.go }}" style="height:100%;padding:0 12px;border:none;background:none;cursor:pointer;font-size:14px;font-weight:500;white-space:nowrap;color:{{ nav.users.color }};box-shadow:inset 0 -2px 0 {{ nav.users.line }}">Utilisateurs</button>
+        <button onClick="{{ nav.org.go }}" style="height:100%;padding:0 12px;border:none;background:none;cursor:pointer;font-size:14px;font-weight:500;white-space:nowrap;color:{{ nav.org.color }};box-shadow:inset 0 -2px 0 {{ nav.org.line }}">Entreprise</button>
+        <button onClick="{{ nav.config.go }}" style="height:100%;padding:0 12px;border:none;background:none;cursor:pointer;font-size:14px;font-weight:500;white-space:nowrap;color:{{ nav.config.color }};box-shadow:inset 0 -2px 0 {{ nav.config.line }}">Configuration</button>
+      </sc-if>
+    </nav>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:18px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <sc-if value="{{ showMeText }}" hint-placeholder-val="{{ true }}"><span style="font-size:12px;color:#5E6470">Vue</span></sc-if>
+        <div style="display:flex;padding:3px;background:#F0F1F4;border-radius:8px;gap:2px">
+          <button onClick="{{ roleCollab.go }}" style="border:none;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:500;cursor:pointer;background:{{ roleCollab.bg }};color:{{ roleCollab.color }};box-shadow:{{ roleCollab.shadow }}">Collaborateur</button>
+          <button onClick="{{ roleAdmin.go }}" style="border:none;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:500;cursor:pointer;background:{{ roleAdmin.bg }};color:{{ roleAdmin.color }};box-shadow:{{ roleAdmin.shadow }}">Admin</button>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:32px;height:32px;border-radius:50%;background:#2B4ACB;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">{{ me.initials }}</div>
+        <sc-if value="{{ showMeText }}" hint-placeholder-val="{{ true }}">
+        <div style="line-height:1.2;white-space:nowrap">
+          <div style="font-size:13px;font-weight:600">{{ me.name }}</div>
+          <div style="font-size:12px;color:#5E6470">{{ me.team }} · {{ me.locCity }}</div>
+        </div>
+        </sc-if>
+        <button onClick="{{ logout }}" title="Se déconnecter" style="width:32px;height:32px;border:1px solid #E4E6EB;background:#FFFFFF;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#5E6470" style-hover="background:#F3F4F6"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l-4-4 4-4M6 12h10"></path></svg></button>
+      </div>
+    </div>
+  </div>
+</header>
+</sc-if>
+
+<sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+<header style="position:sticky;top:0;z-index:20;background:#FFFFFF;border-bottom:1px solid #E4E6EB;height:56px;padding:0 16px;display:flex;align-items:center;gap:10px">
+  <div style="width:28px;height:28px;border-radius:8px;background:#2B4ACB;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 22s-7.5-6.6-7.5-12.6a7.5 7.5 0 0 1 15 0C19.5 15.4 12 22 12 22z" fill="#FFFFFF"></path><circle cx="12" cy="9.4" r="2.9" fill="#1B2140"></circle></svg></div>
+  <span style="font-weight:600;font-size:16px">Ici</span>
+  <button onClick="{{ toggleRole }}" style="margin-left:auto;border:1px solid #E4E6EB;background:#FFFFFF;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer">Vue : {{ roleLabel }}</button>
+  <button onClick="{{ logout }}" title="Se déconnecter" style="width:32px;height:32px;border-radius:50%;border:none;background:#2B4ACB;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;cursor:pointer">{{ me.initials }}</button>
+</header>
+</sc-if>
+
+<main style="flex:1;width:100%;max-width:1320px;margin:0 auto;padding:{{ mainPad }}">
+
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:20px">
+    <div>
+      <h1 style="margin:0;font-size:{{ h1Size }};font-weight:600;letter-spacing:-0.02em">{{ pageTitle }}</h1>
+      <div style="font-size:14px;color:#5E6470;margin-top:4px">{{ pageSub }}</div>
+    </div>
+    <sc-if value="{{ showWeekNav }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <button onClick="{{ prevWeek }}" title="Semaine précédente" style="width:36px;height:36px;border:1px solid #DADDE3;background:#FFFFFF;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:#F3F4F6"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"></path></svg></button>
+        <button onClick="{{ nextWeek }}" title="Semaine suivante" style="width:36px;height:36px;border:1px solid #DADDE3;background:#FFFFFF;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:#F3F4F6"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+        <button onClick="{{ thisWeek }}" style="height:36px;padding:0 12px;border:1px solid #DADDE3;background:#FFFFFF;border-radius:8px;cursor:pointer;font-weight:500" style-hover="background:#F3F4F6">Aujourd’hui</button>
+        <div style="display:flex;flex-direction:column;line-height:1.2;margin-left:6px">
+          <span style="font-size:14px;font-weight:600">{{ weekLabel }}</span>
+          <span style="font-size:12px;color:#5E6470">Semaine {{ weekNum }}</span>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{ showMissing }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;border:1px solid #D9E2FB;background:#F3F6FE;border-radius:10px;margin-bottom:16px">
+      <dc-import name="StatusIcon" status="none" style="width:18px;height:18px;display:flex;color:#2B4ACB" hint-size="18px,18px"></dc-import>
+      <span style="font-size:14px;flex:1;min-width:200px">Il vous reste <strong>{{ missingCount }} demi-journée(s)</strong> à renseigner cette semaine.</span>
+      <button onClick="{{ goMe }}" style="height:32px;padding:0 14px;border:none;border-radius:8px;background:#2B4ACB;color:#FFFFFF;font-weight:500;cursor:pointer" style-hover="background:#2340B5">Renseigner</button>
+    </div>
+  </sc-if>
+
+  <!-- PLANNING DESKTOP -->
+  <sc-if value="{{ showPlanDesk }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:14px">
+      <div style="position:relative;flex:0 1 240px;min-width:180px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A909B" stroke-width="2" stroke-linecap="round" style="position:absolute;left:11px;top:11px"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+        <input value="{{ search }}" onChange="{{ onSearch }}" placeholder="Rechercher un collaborateur" style="width:100%;height:38px;border:1px solid #DADDE3;border-radius:8px;padding:0 12px 0 34px;background:#FFFFFF;outline:none" style-focus="border-color:#2B4ACB;box-shadow:0 0 0 3px #E3EAFC">
+      </div>
+      <select value="{{ team }}" onChange="{{ onTeam }}" style="height:38px;border:1px solid #DADDE3;border-radius:8px;padding:0 34px 0 10px;appearance:none;-webkit-appearance:none;background:#FFFFFF url('data:image/svg+xml,%3Csvg xmlns=%27http%3A//www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath d=%27M3 4.5l3 3 3-3%27 fill=%27none%27 stroke=%27%235E6470%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E') no-repeat right 12px center;cursor:pointer">
+        <sc-for list="{{ teamOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+      </select>
+      <select value="{{ loc }}" onChange="{{ onLoc }}" style="height:38px;border:1px solid #DADDE3;border-radius:8px;padding:0 34px 0 10px;appearance:none;-webkit-appearance:none;background:#FFFFFF url('data:image/svg+xml,%3Csvg xmlns=%27http%3A//www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath d=%27M3 4.5l3 3 3-3%27 fill=%27none%27 stroke=%27%235E6470%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E') no-repeat right 12px center;cursor:pointer">
+        <sc-for list="{{ locOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+      </select>
+      <div style="margin-left:auto;display:flex;flex-wrap:wrap;gap:14px">
+        <sc-for list="{{ legend }}" as="lg" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#5E6470">
+            <span style="width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;background:{{ lg.bg }};color:{{ lg.fg }};border:{{ lg.border }}"><dc-import name="StatusIcon" status="{{ lg.s }}" style="width:13px;height:13px;display:flex" hint-size="13px,13px"></dc-import></span>
+            {{ lg.label }}
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="background:#FFFFFF;border:1px solid #E4E6EB;border-radius:12px;overflow-x:auto">
+      <div style="min-width:{{ planMinW }}">
+        <div style="display:grid;grid-template-columns:230px repeat({{ nDays }},minmax(110px,1fr));border-bottom:1px solid #E4E6EB;position:sticky;top:0;background:#FFFFFF">
+          <div style="padding:14px 16px;font-size:12px;color:#5E6470;display:flex;align-items:flex-end">{{ rowCountLabel }}</div>
+          <sc-for list="{{ dayHeads }}" as="dh" hint-placeholder-count="5">
+            <div style="padding:12px 10px;border-left:1px solid #EEF0F3;background:{{ dh.bg }}">
+              <div style="display:flex;align-items:baseline;gap:6px">
+                <span style="font-size:13px;color:{{ dh.color }};font-weight:500">{{ dh.name }}</span>
+                <span style="font-size:18px;font-weight:600;color:{{ dh.color }}">{{ dh.num }}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:#5E6470;margin-top:4px">
+                <span>{{ dh.onsite }}</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#8A909B;text-align:center"><span>Matin</span><span>Ap.-midi</span></div>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+          <div>
+            <div style="padding:8px 16px;background:#FAFAFB;border-bottom:1px solid #EEF0F3;font-size:12px;font-weight:600;color:#5E6470;display:flex;gap:8px">{{ g.name }}<span style="font-weight:400">{{ g.count }}</span></div>
+            <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="6">
+              <div style="display:grid;grid-template-columns:230px repeat({{ nDays }},minmax(110px,1fr));border-bottom:1px solid #EEF0F3;background:{{ r.bg }}">
+                <div style="padding:8px 16px;display:flex;align-items:center;gap:10px;min-width:0">
+                  <div style="width:30px;height:30px;flex:none;border-radius:50%;background:{{ r.avBg }};color:{{ r.avFg }};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600">{{ r.initials }}</div>
+                  <div style="min-width:0;line-height:1.25">
+                    <div style="font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;gap:6px;align-items:center">{{ r.name }}<sc-if value="{{ r.isMe }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px;background:#2B4ACB;color:#FFFFFF">Vous</span></sc-if></div>
+                    <div style="font-size:12px;color:#8A909B">{{ r.homeCity }}</div>
+                  </div>
+                </div>
+                <sc-for list="{{ r.days }}" as="d" hint-placeholder-count="5">
+                  <div style="padding:6px 5px;border-left:1px solid #EEF0F3;display:flex;gap:3px;background:{{ d.colBg }}">
+                    <sc-if value="{{ d.merged }}" hint-placeholder-val="{{ true }}">
+                      <button data-sel="{{ d.full.selKey }}" onMouseDown="{{ d.full.onDown }}" onClick="{{ d.full.onClick }}" onMouseEnter="{{ d.full.onEnter }}" onMouseLeave="{{ d.full.onLeave }}" title="{{ d.full.title }}" style="position:relative;flex:1;min-width:0;height:38px;border-radius:8px;border:{{ d.full.border }};background:{{ d.full.bg }};color:{{ d.full.fg }};opacity:{{ d.full.opacity }};box-shadow:{{ d.full.ring }};user-select:none;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-size:12px;font-weight:600" style-hover="filter:brightness(0.96)">
+                        <dc-import name="StatusIcon" status="{{ d.full.s }}" style="width:15px;height:15px;display:flex;flex:none" hint-size="15px,15px"></dc-import>
+                        <sc-if value="{{ showLabels }}" hint-placeholder-val="{{ true }}"><span>{{ d.full.label }}</span></sc-if>
+                        <sc-if value="{{ d.full.hasNote }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:5px;right:5px;width:5px;height:5px;border-radius:50%;background:currentColor"></span></sc-if><sc-if value="{{ d.full.tipOn }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);z-index:30;pointer-events:none;display:flex;flex-direction:column;gap:2px;align-items:flex-start;width:max-content;max-width:220px;padding:7px 10px;border-radius:7px;background:#1F2430;color:#FFFFFF;font-size:12px;font-weight:400;line-height:1.35;text-align:left;white-space:normal;box-shadow:0 4px 14px rgba(20,24,34,0.18)"><span style="font-size:11px;font-weight:600;color:#B9BEC8">{{ d.full.tipHead }}</span><span>{{ d.full.tipNote }}</span><span style="position:absolute;top:100%;left:50%;margin-left:-5px;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid #1F2430"></span></span></sc-if>
+                      </button>
+                    </sc-if>
+                    <sc-if value="{{ d.split }}" hint-placeholder-val="{{ false }}">
+                      <button data-sel="{{ d.am.selKey }}" onMouseDown="{{ d.am.onDown }}" onClick="{{ d.am.onClick }}" onMouseEnter="{{ d.am.onEnter }}" onMouseLeave="{{ d.am.onLeave }}" title="{{ d.am.title }}" style="position:relative;flex:1;min-width:0;height:38px;border-radius:8px 3px 3px 8px;border:{{ d.am.border }};background:{{ d.am.bg }};color:{{ d.am.fg }};opacity:{{ d.am.opacity }};box-shadow:{{ d.am.ring }};user-select:none;display:flex;align-items:center;justify-content:center;gap:4px;cursor:pointer;font-size:11px;font-weight:600" style-hover="filter:brightness(0.96)">
+                        <dc-import name="StatusIcon" status="{{ d.am.s }}" style="width:14px;height:14px;display:flex;flex:none" hint-size="14px,14px"></dc-import>
+                        <sc-if value="{{ showLabels }}" hint-placeholder-val="{{ true }}"><span>{{ d.am.label }}</span></sc-if>
+                        <sc-if value="{{ d.am.hasNote }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:4px;right:4px;width:5px;height:5px;border-radius:50%;background:currentColor"></span></sc-if><sc-if value="{{ d.am.tipOn }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);z-index:30;pointer-events:none;display:flex;flex-direction:column;gap:2px;align-items:flex-start;width:max-content;max-width:220px;padding:7px 10px;border-radius:7px;background:#1F2430;color:#FFFFFF;font-size:12px;font-weight:400;line-height:1.35;text-align:left;white-space:normal;box-shadow:0 4px 14px rgba(20,24,34,0.18)"><span style="font-size:11px;font-weight:600;color:#B9BEC8">{{ d.am.tipHead }}</span><span>{{ d.am.tipNote }}</span><span style="position:absolute;top:100%;left:50%;margin-left:-5px;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid #1F2430"></span></span></sc-if>
+                      </button>
+                      <button data-sel="{{ d.pm.selKey }}" onMouseDown="{{ d.pm.onDown }}" onClick="{{ d.pm.onClick }}" onMouseEnter="{{ d.pm.onEnter }}" onMouseLeave="{{ d.pm.onLeave }}" title="{{ d.pm.title }}" style="position:relative;flex:1;min-width:0;height:38px;border-radius:3px 8px 8px 3px;border:{{ d.pm.border }};background:{{ d.pm.bg }};color:{{ d.pm.fg }};opacity:{{ d.pm.opacity }};box-shadow:{{ d.pm.ring }};user-select:none;display:flex;align-items:center;justify-content:center;gap:4px;cursor:pointer;font-size:11px;font-weight:600" style-hover="filter:brightness(0.96)">
+                        <dc-import name="StatusIcon" status="{{ d.pm.s }}" style="width:14px;height:14px;display:flex;flex:none" hint-size="14px,14px"></dc-import>
+                        <sc-if value="{{ showLabels }}" hint-placeholder-val="{{ true }}"><span>{{ d.pm.label }}</span></sc-if>
+                        <sc-if value="{{ d.pm.hasNote }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:4px;right:4px;width:5px;height:5px;border-radius:50%;background:currentColor"></span></sc-if><sc-if value="{{ d.pm.tipOn }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);z-index:30;pointer-events:none;display:flex;flex-direction:column;gap:2px;align-items:flex-start;width:max-content;max-width:220px;padding:7px 10px;border-radius:7px;background:#1F2430;color:#FFFFFF;font-size:12px;font-weight:400;line-height:1.35;text-align:left;white-space:normal;box-shadow:0 4px 14px rgba(20,24,34,0.18)"><span style="font-size:11px;font-weight:600;color:#B9BEC8">{{ d.pm.tipHead }}</span><span>{{ d.pm.tipNote }}</span><span style="position:absolute;top:100%;left:50%;margin-left:-5px;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid #1F2430"></span></span></sc-if>
+                      </button>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+        <sc-if value="{{ noRows }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:40px;text-align:center;color:#5E6470;font-size:14px">Aucun collaborateur ne correspond à ces filtres.</div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- PLANNING MOBILE -->
+  <sc-if value="{{ showPlanMobile }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#FFFFFF;border:1px solid #E4E6EB;border-radius:12px;padding:14px;margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="font-size:14px;font-weight:600">Ma semaine</span>
+        <button onClick="{{ goMe }}" style="border:none;background:none;color:#2B4ACB;font-size:13px;font-weight:500;cursor:pointer;padding:4px">Détail</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat({{ nDays }},minmax(0,1fr));gap:6px">
+        <sc-for list="{{ myDays }}" as="d" hint-placeholder-count="5">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="text-align:center;font-size:11px;color:{{ d.headColor }};font-weight:500">{{ d.short }}</div>
+            <button onClick="{{ d.am.onClick }}" style="height:34px;border-radius:7px;border:{{ d.am.border }};background:{{ d.am.bg }};color:{{ d.am.fg }};display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0"><dc-import name="StatusIcon" status="{{ d.am.s }}" style="width:15px;height:15px;display:flex" hint-size="15px,15px"></dc-import></button>
+            <button onClick="{{ d.pm.onClick }}" style="height:34px;border-radius:7px;border:{{ d.pm.border }};background:{{ d.pm.bg }};color:{{ d.pm.fg }};display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0"><dc-import name="StatusIcon" status="{{ d.pm.s }}" style="width:15px;height:15px;display:flex" hint-size="15px,15px"></dc-import></button>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px">
+      <span style="font-size:16px;font-weight:600">Qui est où</span>
+      <select value="{{ team }}" onChange="{{ onTeam }}" style="height:36px;border:1px solid #DADDE3;border-radius:8px;padding:0 34px 0 10px;appearance:none;-webkit-appearance:none;background:#FFFFFF url('data:image/svg+xml,%3Csvg xmlns=%27http%3A//www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath d=%27M3 4.5l3 3 3-3%27 fill=%27none%27 stroke=%27%235E6470%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E') no-repeat right 12px center;max-width:170px">
+        <sc-for list="{{ teamOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+      </select>
+    </div>
+    <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px">
+      <sc-for list="{{ dayChips }}" as="c" hint-placeholder-count="5">
+        <button onClick="{{ c.onClick }}" style="flex:1 0 auto;min-width:58px;height:44px;border-radius:10px;border:{{ c.border }};background:{{ c.bg }};color:{{ c.fg }};cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1"><span style="font-size:11px">{{ c.name }}</span><span style="font-size:15px;font-weight:600">{{ c.num }}</span></button>
+      </sc-for>
+    </div>
+    <div style="display:flex;padding:3px;background:#ECEEF1;border-radius:9px;gap:2px;margin-bottom:14px">
+      <button onClick="{{ halfAm.go }}" style="flex:1;height:36px;border:none;border-radius:7px;font-weight:500;cursor:pointer;background:{{ halfAm.bg }};box-shadow:{{ halfAm.shadow }}">Matin</button>
+      <button onClick="{{ halfPm.go }}" style="flex:1;height:36px;border:none;border-radius:7px;font-weight:500;cursor:pointer;background:{{ halfPm.bg }};box-shadow:{{ halfPm.shadow }}">Après-midi</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <sc-for list="{{ whoGroups }}" as="wg" hint-placeholder-count="4">
+        <div style="background:#FFFFFF;border:1px solid #E4E6EB;border-radius:12px;overflow:hidden">
+          <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #EEF0F3">
+            <span style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:{{ wg.bg }};color:{{ wg.fg }};border:{{ wg.border }}"><dc-import name="StatusIcon" status="{{ wg.s }}" style="width:15px;height:15px;display:flex" hint-size="15px,15px"></dc-import></span>
+            <span style="font-size:14px;font-weight:600;flex:1">{{ wg.title }}</span>
+            <span style="font-size:13px;color:#5E6470">{{ wg.count }}</span>
+          </div>
+          <sc-for list="{{ wg.people }}" as="p" hint-placeholder-count="3">
+            <button onClick="{{ p.onClick }}" style="width:100%;display:flex;align-items:center;gap:10px;padding:10px 14px;border:none;border-bottom:1px solid #F3F4F6;background:#FFFFFF;text-align:left;cursor:pointer;min-height:52px">
+              <div style="width:30px;height:30px;flex:none;border-radius:50%;background:#EEF0F3;color:#3B3F48;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600">{{ p.initials }}</div>
+              <div style="flex:1;min-width:0;line-height:1.25">
+                <div style="font-size:14px;font-weight:500">{{ p.name }}</div>
+                <div style="font-size:12px;color:#8A909B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.sub }}</div>
+              </div>
+            </button>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <!-- MA SEMAINE -->
+  <sc-if value="{{ showMe }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid;grid-template-columns:{{ meCols }};gap:20px;align-items:start">
+      <div style="background:#FFFFFF;border:1px solid #E4E6EB;border-radius:12px;overflow:hidden">
+        <sc-for list="{{ myDays }}" as="d" hint-placeholder-count="5">
+          <div style="padding:16px 18px;border-bottom:1px solid #EEF0F3;display:grid;grid-template-columns:{{ dayRowCols }};gap:12px;align-items:center">
+            <div style="grid-column:{{ spanAll }};display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <div style="line-height:1.25">
+                <div style="font-size:14px;font-weight:600;color:{{ d.headColor }}">{{ d.dayName }}</div>
+                <div style="font-size:13px;color:#5E6470">{{ d.dateLabel }}</div>
+              </div>
+              <sc-if value="{{ d.isToday }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:#EAF0FD;color:#2B4ACB">Aujourd’hui</span></sc-if>
+            </div>
+            <button onClick="{{ d.am.onClick }}" style="text-align:left;padding:10px 12px;border-radius:10px;border:{{ d.am.border }};background:{{ d.am.bg }};color:{{ d.am.fg }};cursor:pointer;display:flex;gap:10px;align-items:flex-start;min-height:62px;min-width:0" style-hover="filter:brightness(0.97)">
+              <dc-import name="StatusIcon" status="{{ d.am.s }}" style="width:17px;height:17px;display:flex;flex:none;margin-top:14px" hint-size="17px,17px"></dc-import>
+              <div style="min-width:0;line-height:1.3">
+                <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em">Matin</div>
+                <div style="font-size:14px;font-weight:600">{{ d.am.statusLabel }}</div>
+                <div style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ d.am.sub }}</div>
+              </div>
+            </button>
+            <button onClick="{{ d.pm.onClick }}" style="text-align:left;padding:10px 12px;border-radius:10px;border:{{ d.pm.border }};background:{{ d.pm.bg }};color:{{ d.pm.fg }};cursor:pointer;display:flex;gap:10px;align-items:flex-start;min-height:62px;min-width:0" style-hover="filter:brightness(0.97)">
+              <dc-import name="StatusIcon" status="{{ d.pm.s }}" style="width:17px;height:17px;display:flex;flex:none;margin-top:14px" hint-size="17px,17px"></dc-import>
+              <div style="min-width:0;line-height:1.3">
+                <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em">Après-midi</div>
+                <div style="font-size:14px;font-weight:600">{{ d.pm.statusLabel }}</div>
+                <div style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ d.pm.sub }}</div>
+              </div>
+            </button>
+            <div style="grid-column:{{ spanAll }};display:flex;gap:6px">
+              <sc-for list="{{ d.quick }}" as="q" hint-placeholder-count="4">
+                <button onClick="{{ q.onClick }}" title="{{ q.title }}" style="width:{{ quickSize }};height:{{ quickSize }};flex:{{ quickFlex }};border-radius:8px;border:{{ q.border }};background:{{ q.bg }};color:{{ q.fg }};display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0" style-hover="border-color:#B7BDC8"><dc-import name="StatusIcon" status="{{ q.s }}" style="width:16px;height:16px;display:flex" hint-size="16px,16px"></dc-import></button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="background:#FFFFFF;border:1px solid #E4E6EB;border-radius:12px;padding:18px">
+        <div style="font-size:15px;font-weight:600">Semaine type</div>
+        <div style="font-size:13px;color:#5E6470;margin:4px 0 14px;text-wrap:pretty">Votre rythme habituel, appliqué en un clic aux semaines à venir.</div>
+        <div style="display:grid;grid-template-columns:44px 1fr 1fr;gap:8px;align-items:center;font-size:11px;color:#8A909B;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px"><span></span><span>Matin</span><span>Après-midi</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ tplRows }}" as="t" hint-placeholder-count="5">
+            <div style="display:grid;grid-template-columns:44px 1fr 1fr;gap:8px;align-items:center">
+              <span style="font-size:13px;font-weight:500">{{ t.label }}</span>
+              <select value="{{ t.am }}" onChange="{{ t.onAm }}" style="height:36px;min-width:0;width:100%;border:1px solid #DADDE3;border-radius:8px;padding:0 28px 0 8px;appearance:none;-webkit-appearance:none;background:#FFFFFF url('data:image/svg+xml,%3Csvg xmlns=%27http%3A//www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath d=%27M3 4.5l3 3 3-3%27 fill=%27none%27 stroke=%27%235E6470%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E') no-repeat right 10px center;font-size:13px">
+                <sc-for list="{{ tplOpts }}" as="o" hint-placeholder-count="6"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+              </select>
+              <select value="{{ t.pm }}" onChange="{{ t.onPm }}" style="height:36px;min-width:0;width:100%;border:1px solid #DADDE3;border-radius:8px;padding:0 28px 0 8px;appearance:none;-webkit-appearance:none;background:#FFFFFF url('data:image/svg+xml,%3Csvg xmlns=%27http%3A//www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath d=%27M3 4.5l3 3 3-3%27 fill=%27none%27 stroke=%27%235E6470%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E') no-repeat right 10px center;font-size:13px">
+                <sc-for list="{{ tplOpts }}" as="o" hint-placeholder-count="6"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+              </select>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px">
+          <button onClick="{{ applyTpl1 }}" style="height:40px;border:none;border-radius:8px;background:#2B4ACB;color:#FFFFFF;font-weight:500;cursor:pointer" style-hover="background:#2340B5">Appliquer à cette semaine</button>
+          <button onClick="{{ applyTpl4 }}" style="height:40px;border:1px solid #DADDE3;border-radius:8px;background:#FFFFFF;font-weight:500;cursor:pointer" style-hover="background:#F3F4F6">Appliquer aux 4 prochaines semaines</button>
+          <div style="font-size:12px;color:#8A909B;text-wrap:pretty">Les demi-journées déjà renseignées seront remplacées.</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- LIEUX -->
+  <sc-if value="{{ showLieux }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:16px">
+      <div style="display:flex;gap:6px;overflow-x:auto">
+        <sc-for list="{{ dayChips }}" as="c" hint-placeholder-count="5">
+          <button onClick="{{ c.onClick }}" style="min-width:64px;height:44px;border-radius:10px;border:{{ c.border }};background:{{ c.bg }};color:{{ c.fg }};cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1"><span style="font-size:11px">{{ c.name }}</span><span style="font-size:15px;font-weight:600">{{ c.num }}</span></button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ newLoc }}" style="margin-left:auto;height:38px;padding:0 14px;border:none;border-radius:8px;background:#2B4ACB;color:#FFFFFF;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px" style-hover="background:#2340B5"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Ajouter un lieu</button>
+      </sc-if>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:16px">
+      <sc-for list="{{ locCards }}" as="l" hint-placeholder-count="3">
+        <div style="background:#FFFFFF;border:1px solid #E4E6EB;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+            <div style="min-width:0">
+              <span style="font-family:'Geist Mono',monospace;font-size:11px;font-weight:600;padding:2px 6px;border-radius:4px;background:#EAF0FD;color:#2B4ACB">{{ l.code }}</span>
+              <div style="font-size:16px;font-weight:600;margin-top:8px">{{ l.name }}</div>
+              <div style="font-size:13px;color:#5E6470;margin-top:2px">{{ l.address }}</div>
+            </div>
+            <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ l.onEdit }}" style="height:32px;padding:0 10px;border:1px solid #DADDE3;border-radius:8px;background:#FFFFFF;font-size:13px;cursor:pointer;flex:none" style-hover="background:#F3F4F6">Modifier</button>
+            </sc-if>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <div style="padding:10px 12px;background:#F6F7F9;border-radius:8px"><div style="font-size:12px;color:#5E6470">Matin</div><div style="font-size:20px;font-weight:600">{{ l.am }}</div></div>
+            <div style="padding:10px 12px;background:#F6F7F9;border-radius:8px"><div style="font-size:12px;color:#5E6470">Après-midi</div><div style="font-size:20px;font-weight:600">{{ l.pm }}</div></div>
+            <div style="padding:10px 12px;background:#F6F7F9;border-radius:8px"><div style="font-size:12px;color:#5E6470">Rattachés</div><div style="font-size:20px;font-weight:600">{{ l.attached }}</div></div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:#5E6470;margin-bottom:8px">Occupation de la semaine</div>
+            <div style="display:grid;grid-template-columns:repeat({{ nDays }},minmax(0,1fr));gap:{{ barGap }}">
+              <sc-for list="{{ l.days }}" as="b" hint-placeholder-count="5">
+                <div style="display:flex;flex-direction:column;gap:6px;align-items:stretch">
+                  <div style="height:72px;display:flex;align-items:flex-end;gap:3px;padding:0 4px">
+                    <div title="{{ b.amTitle }}" style="flex:1;height:{{ b.amH }};background:{{ b.amColor }};border-radius:3px 3px 0 0"></div>
+                    <div title="{{ b.pmTitle }}" style="flex:1;height:{{ b.pmH }};background:{{ b.pmColor }};border-radius:3px 3px 0 0"></div>
+                  </div>
+                  <div style="text-align:center;font-size:11px;color:{{ b.labelColor }};font-weight:{{ b.labelWeight }}">{{ b.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:#5E6470;margin-bottom:8px">Sur site {{ selDayLabel }}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <sc-for list="{{ l.present }}" as="p" hint-placeholder-count="6">
+                <span title="{{ p.name }}" style="display:flex;align-items:center;gap:6px;padding:3px 8px 3px 3px;border:1px solid #E4E6EB;border-radius:999px;font-size:12px"><span style="width:22px;height:22px;border-radius:50%;background:#EEF0F3;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600">{{ p.initials }}</span>{{ p.first }}</span>
+              </sc-for>
+              <sc-if value="{{ l.empty }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:#8A909B">Personne ce jour-là.</span></sc-if>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <!-- UTILISATEURS -->
+  <sc-if value="{{ showUsers }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:14px">
+      <div style="position:relative;flex:0 1 260px;min-width:180px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A909B" stroke-width="2" stroke-linecap="round" style="position:absolute;left:11px;top:11px"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+        <input value="{{ uSearch }}" onChange="{{ onUSearch }}" placeholder="Nom ou email" style="width:100%;height:38px;border:1px solid #DADDE3;border-radius:8px;padding:0 12px 0 34px;background:#FFFFFF;outline:none" style-focus="border-color:#2B4ACB;box-shadow:0 0 0 3px #E3EAFC">
+      </div>
+      <select value="{{ uTeam }}" onChange="{{ onUTeam }}" style="height:38px;border:1px solid #DADDE3;border-radius:8px;padding:0 34px 0 10px;appearance:none;-webkit-appearance:none;background:#FFFFFF url('data:image/svg+xml,%3Csvg xmlns=%27http%3A//www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath d=%27M3 4.5l3 3 3-3%27 fill=%27none%27 stroke=%27%235E6470%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E') no-repeat right 12px center;cursor:pointer">
+        <sc-for list="{{ teamOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+      </select>
+      <button onClick="{{ newUser }}" style="margin-left:auto;height:38px;padding:0 14px;border:none;border-radius:8px;background:#2B4ACB;color:#FFFFFF;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px" style-hover="background:#2340B5"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Ajouter un collaborateur</button>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #E4E6EB;border-radius:12px;overflow:hidden">
+      <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid;grid-template-columns:minmax(0,2fr) minmax(0,2.2fr) minmax(0,1fr) minmax(0,1fr) 110px 70px;gap:12px;padding:10px 16px;border-bottom:1px solid #E4E6EB;font-size:12px;color:#5E6470;background:#FAFAFB">
+          <span>Nom</span><span>Email</span><span>Équipe</span><span>Rattachement</span><span>Rôle</span><span>Actif</span>
+        </div>
+      </sc-if>
+      <sc-for list="{{ userRows }}" as="u" hint-placeholder-count="8">
+        <div style="display:grid;grid-template-columns:{{ userCols }};gap:12px;padding:12px 16px;border-bottom:1px solid #EEF0F3;align-items:center;opacity:{{ u.opacity }}">
+          <button onClick="{{ u.onEdit }}" style="display:flex;align-items:center;gap:10px;border:none;background:none;padding:0;cursor:pointer;text-align:left;min-width:0">
+            <div style="width:32px;height:32px;flex:none;border-radius:50%;background:#EEF0F3;color:#3B3F48;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600">{{ u.initials }}</div>
+            <div style="min-width:0;line-height:1.25">
+              <div style="font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" style-hover="color:#2B4ACB">{{ u.name }}</div>
+              <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:#8A909B">{{ u.team }} · {{ u.locCity }} · {{ u.roleLabel }}</div></sc-if>
+            </div>
+          </button>
+          <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+            <span style="font-size:13px;color:#5E6470;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ u.email }}</span>
+            <span style="font-size:13px">{{ u.team }}</span>
+            <span style="font-size:13px">{{ u.locCity }}</span>
+            <span style="font-size:12px;font-weight:500;justify-self:start;padding:2px 8px;border-radius:4px;background:{{ u.roleBg }};color:{{ u.roleFg }}">{{ u.roleLabel }}</span>
+          </sc-if>
+          <button onClick="{{ u.onToggle }}" title="Activer / désactiver" style="width:36px;height:20px;border-radius:999px;border:none;padding:2px;cursor:pointer;background:{{ u.swBg }};display:flex;justify-content:{{ u.swJustify }};justify-self:start">
+            <span style="width:16px;height:16px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 2px rgba(0,0,0,.2)"></span>
+          </button>
+        </div>
+      </sc-for>
+      <div style="padding:12px 16px;font-size:12px;color:#8A909B">{{ userCount }}</div>
+    </div>
+  </sc-if>
+
+  <!-- ENTREPRISE -->
+  <sc-if value="{{ showOrg }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
+        <span style="font-size:12px;color:#5E6470;margin-right:4px">Entreprise active</span>
+        <sc-for list="{{ orgCos }}" as="c" hint-placeholder-count="2">
+          <button onClick="{{ c.onClick }}" style="height:34px;padding:0 12px;border-radius:999px;border:{{ c.border }};background:{{ c.bg }};color:{{ c.fg }};font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:8px">{{ c.name }}<span style="font-size:12px;opacity:.65">{{ c.count }}</span></button>
+        </sc-for>
+        <button onClick="{{ newCo }}" style="height:34px;padding:0 12px;border-radius:999px;border:1px dashed #CDD1D8;background:transparent;color:#3B3F48;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px" style-hover="background:#FFFFFF"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Nouvelle entreprise</button>
+      </div>
+      <div style="background:#FFFFFF;border:1px solid #E4E6EB;border-radius:12px;padding:20px;display:flex;flex-wrap:wrap;align-items:center;gap:20px">
+        <div style="display:flex;align-items:center;gap:14px;flex:1 1 260px;min-width:0">
+          <div style="width:48px;height:48px;flex:none;border-radius:12px;background:#2B4ACB;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600">{{ org.initials }}</div>
+          <div style="min-width:0">
+            <div style="font-size:18px;font-weight:600;letter-spacing:-0.01em">{{ org.name }}</div>
+            <div style="font-size:13px;color:#5E6470;margin-top:2px;font-family:'Geist Mono',monospace">{{ org.domain }}</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(96px,1fr));gap:8px">
+          <div style="padding:10px 12px;background:#F6F7F9;border-radius:8px"><div style="font-size:12px;color:#5E6470">Équipes</div><div style="font-size:20px;font-weight:600">{{ org.nTeams }}</div></div>
+          <div style="padding:10px 12px;background:#F6F7F9;border-radius:8px"><div style="font-size:12px;color:#5E6470">Collaborateurs</div><div style="font-size:20px;font-weight:600">{{ org.nUsers }}</div></div>
+          <div style="padding:10px 12px;background:#F6F7F9;border-radius:8px"><div style="font-size:12px;color:#5E6470">Lieux</div><div style="font-size:20px;font-weight:600">{{ org.nLocs }}</div></div>
+        </div>
+        <button onClick="{{ org.onEdit }}" style="height:36px;padding:0 12px;border:1px solid #DADDE3;border-radius:8px;background:#FFFFFF;font-weight:500;cursor:pointer" style-hover="background:#F3F4F6">Modifier</button>
+      </div>
+      <div style="display:grid;grid-template-columns:{{ orgCols }};gap:16px;align-items:start">
+        <div style="background:#FFFFFF;border:1px solid #E4E6EB;border-radius:12px;overflow:hidden">
+          <div style="padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #E4E6EB">
+            <span style="font-size:15px;font-weight:600">Équipes</span>
+            <span style="font-size:13px;color:#8A909B">{{ org.nTeams }}</span>
+            <button onClick="{{ newTeam }}" style="margin-left:auto;height:32px;padding:0 10px;border:none;border-radius:8px;background:#2B4ACB;color:#FFFFFF;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px" style-hover="background:#2340B5"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Nouvelle équipe</button>
+          </div>
+          <sc-for list="{{ orgTeams }}" as="t" hint-placeholder-count="4">
+            <button onClick="{{ t.onClick }}" style="width:100%;display:flex;align-items:center;gap:12px;padding:12px 16px;border:none;border-bottom:1px solid #EEF0F3;background:{{ t.bg }};text-align:left;cursor:pointer;min-height:60px">
+              <div style="flex:1;min-width:0;line-height:1.3">
+                <div style="font-size:14px;font-weight:600;color:{{ t.color }}">{{ t.name }}</div>
+                <div style="font-size:12px;color:#8A909B">{{ t.sub }}</div>
+              </div>
+              <div style="display:flex;padding-left:6px">
+                <sc-for list="{{ t.avatars }}" as="a" hint-placeholder-count="3"><span style="width:26px;height:26px;border-radius:50%;background:#EEF0F3;border:2px solid #FFFFFF;margin-left:-6px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:#3B3F48">{{ a.initials }}</span></sc-for>
+                <sc-if value="{{ t.hasMore }}" hint-placeholder-val="{{ false }}"><span style="height:26px;min-width:26px;padding:0 6px;border-radius:999px;background:#2B4ACB;border:2px solid #FFFFFF;margin-left:-6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#FFFFFF">{{ t.more }}</span></sc-if>
+              </div>
+            </button>
+          </sc-for>
+          <sc-if value="{{ orgNoTeams }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:28px 16px;text-align:center;font-size:13px;color:#5E6470;text-wrap:pretty">Aucune équipe. Créez-en une pour y rattacher des collaborateurs.</div>
+          </sc-if>
+        </div>
+        <sc-if value="{{ ot.has }}" hint-placeholder-val="{{ true }}">
+          <div style="background:#FFFFFF;border:1px solid #E4E6EB;border-radius:12px;overflow:hidden">
+            <div style="padding:14px 18px;display:flex;flex-wrap:wrap;align-items:center;gap:10px;border-bottom:1px solid #E4E6EB">
+              <div style="flex:1;min-width:160px;line-height:1.3">
+                <div style="font-size:16px;font-weight:600">{{ ot.name }}</div>
+                <div style="font-size:13px;color:#5E6470">{{ ot.countLabel }}</div>
+              </div>
+              <button onClick="{{ ot.onRename }}" style="height:34px;padding:0 12px;border:1px solid #DADDE3;border-radius:8px;background:#FFFFFF;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:#F3F4F6">Modifier l’équipe</button>
+              <button onClick="{{ ot.onNewUser }}" style="height:34px;padding:0 12px;border:none;border-radius:8px;background:#2B4ACB;color:#FFFFFF;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px" style-hover="background:#2340B5"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Nouveau collaborateur</button>
+            </div>
+            <sc-if value="{{ ot.canAdd }}" hint-placeholder-val="{{ true }}">
+              <div style="padding:12px 18px;border-bottom:1px solid #EEF0F3;background:#FAFAFB;display:flex;flex-wrap:wrap;align-items:center;gap:10px">
+                <span style="font-size:13px;color:#5E6470">Déplacer un membre vers cette équipe</span>
+                <select value="{{ ot.addVal }}" onChange="{{ ot.onAdd }}" style="flex:1 1 220px;min-width:0;height:36px;border:1px solid #DADDE3;border-radius:8px;padding:0 34px 0 10px;appearance:none;-webkit-appearance:none;background:#FFFFFF url('data:image/svg+xml,%3Csvg xmlns=%27http%3A//www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath d=%27M3 4.5l3 3 3-3%27 fill=%27none%27 stroke=%27%235E6470%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E') no-repeat right 12px center;cursor:pointer;font-size:13px">
+                  <sc-for list="{{ ot.addOpts }}" as="o" hint-placeholder-count="6"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+                </select>
+              </div>
+            </sc-if>
+            <sc-for list="{{ ot.members }}" as="m" hint-placeholder-count="6">
+              <div style="display:grid;grid-template-columns:{{ otCols }};gap:12px;padding:10px 18px;border-bottom:1px solid #EEF0F3;align-items:center;opacity:{{ m.opacity }}">
+                <button onClick="{{ m.onEdit }}" style="display:flex;align-items:center;gap:10px;border:none;background:none;padding:0;cursor:pointer;text-align:left;min-width:0">
+                  <div style="width:32px;height:32px;flex:none;border-radius:50%;background:#EEF0F3;color:#3B3F48;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600">{{ m.initials }}</div>
+                  <div style="min-width:0;line-height:1.25">
+                    <div style="font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" style-hover="color:#2B4ACB">{{ m.name }}</div>
+                    <div style="font-size:12px;color:#8A909B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.email }}</div>
+                  </div>
+                </button>
+                <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+                  <span style="font-size:12px;font-weight:500;justify-self:start;padding:2px 8px;border-radius:4px;background:{{ m.roleBg }};color:{{ m.roleFg }}">{{ m.roleLabel }}</span>
+                </sc-if>
+                <select value="{{ m.team }}" onChange="{{ m.onMove }}" title="Changer d’équipe" style="width:100%;min-width:0;height:34px;border:1px solid #DADDE3;border-radius:8px;padding:0 28px 0 10px;appearance:none;-webkit-appearance:none;background:#FFFFFF url('data:image/svg+xml,%3Csvg xmlns=%27http%3A//www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath d=%27M3 4.5l3 3 3-3%27 fill=%27none%27 stroke=%27%235E6470%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E') no-repeat right 10px center;cursor:pointer;font-size:13px">
+                  <sc-for list="{{ teamList }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+                </select>
+              </div>
+            </sc-for>
+            <sc-if value="{{ ot.empty }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:28px 18px;text-align:center;font-size:13px;color:#5E6470">Aucun membre dans cette équipe pour l’instant.</div>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- CONFIGURATION -->
+  <sc-if value="{{ showConfig }}" hint-placeholder-val="{{ false }}">
+    <div style="max-width:760px;display:flex;flex-direction:column;gap:16px">
+      <div style="background:#FFFFFF;border:1px solid #E4E6EB;border-radius:12px;overflow:hidden">
+        <div style="padding:20px 20px 0">
+          <div style="font-size:15px;font-weight:600">Jours affichés dans le planning</div>
+          <div style="font-size:13px;color:#5E6470;margin-top:4px;text-wrap:pretty">Sélectionnez les jours travaillés par votre organisation. Ils s’appliquent au planning, à « Ma semaine », à la semaine type et à l’occupation des lieux.</div>
+        </div>
+        <div style="padding:16px 20px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px">
+          <sc-for list="{{ cfgDays }}" as="c" hint-placeholder-count="7">
+            <button onClick="{{ c.onClick }}" title="{{ c.long }}" style="height:72px;border-radius:10px;border:{{ c.border }};background:{{ c.bg }};color:{{ c.fg }};cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:0" style-hover="filter:brightness(0.97)">
+              <span style="font-size:14px;font-weight:600">{{ c.short }}</span>
+              <span style="width:18px;height:18px;border-radius:5px;border:{{ c.boxBorder }};background:{{ c.boxBg }};display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+            </button>
+          </sc-for>
+        </div>
+        <div style="padding:0 20px 18px;display:flex;flex-wrap:wrap;align-items:center;gap:8px">
+          <span style="font-size:12px;color:#5E6470;margin-right:4px">Préréglages</span>
+          <sc-for list="{{ cfgPresets }}" as="p" hint-placeholder-count="4">
+            <button onClick="{{ p.onClick }}" style="height:32px;padding:0 12px;border-radius:999px;border:{{ p.border }};background:{{ p.bg }};color:{{ p.fg }};font-size:13px;font-weight:500;cursor:pointer">{{ p.label }}</button>
+          </sc-for>
+        </div>
+        <div style="padding:12px 20px;border-top:1px solid #EEF0F3;background:#FAFAFB;font-size:13px;color:#5E6470;text-wrap:pretty">{{ cfgSummary }} Les présences déjà saisies sur un jour masqué sont conservées et réapparaissent s’il est réactivé.</div>
+      </div>
+    </div>
+  </sc-if>
+</main>
+
+<sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+  <nav style="position:fixed;left:0;right:0;bottom:0;z-index:20;background:#FFFFFF;border-top:1px solid #E4E6EB;display:flex;padding:6px 4px calc(6px + env(safe-area-inset-bottom))">
+    <button onClick="{{ nav.planning.go }}" style="flex:1;min-height:52px;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:500;cursor:pointer;color:{{ nav.planning.color }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>Planning</button>
+    <button onClick="{{ nav.me.go }}" style="flex:1;min-height:52px;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:500;cursor:pointer;color:{{ nav.me.color }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg>Ma semaine</button>
+    <button onClick="{{ nav.lieux.go }}" style="flex:1;min-height:52px;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:500;cursor:pointer;color:{{ nav.lieux.color }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"></path><circle cx="12" cy="9" r="2.5"></circle></svg>Lieux</button>
+    <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ true }}">
+      <button onClick="{{ nav.users.go }}" style="flex:1;min-height:52px;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:500;cursor:pointer;color:{{ nav.users.color }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c1-3.5 3.5-5 6.5-5s5.5 1.5 6.5 5"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 15c2 .6 3 2.2 3.5 5"></path></svg>Utilisateurs</button>
+      <button onClick="{{ nav.org.go }}" style="flex:1;min-height:52px;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:500;cursor:pointer;color:{{ nav.org.color }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M9 7h2M13 7h2M9 11h2M13 11h2M10 21v-4h4v4"></path></svg>Entreprise</button>
+      <button onClick="{{ nav.config.go }}" style="flex:1;min-height:52px;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:500;cursor:pointer;color:{{ nav.config.color }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg>Config.</button>
+    </sc-if>
+  </nav>
+</sc-if>
+
+<!-- MODALE PRÉSENCE -->
+<sc-if value="{{ mEntry }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:50;background:rgba(22,24,29,0.42);display:flex;align-items:{{ modalAlign }};justify-content:center;padding:{{ modalPad }}">
+    <div onClick="{{ stop }}" style="background:#FFFFFF;width:100%;max-width:480px;max-height:92vh;overflow:auto;border-radius:{{ modalRadius }};box-shadow:0 20px 50px rgba(0,0,0,0.18)">
+      <div style="padding:20px 22px 0;display:flex;justify-content:space-between;gap:12px">
+        <div>
+          <div style="font-size:12px;color:#5E6470">{{ em.who }}</div>
+          <div style="font-size:18px;font-weight:600;margin-top:2px">{{ em.dateLabel }}</div>
+        </div>
+        <button onClick="{{ closeModal }}" title="Fermer" style="width:36px;height:36px;border:none;background:#F3F4F6;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+      </div>
+
+      <sc-if value="{{ em.canEdit }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:18px 22px;display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;padding:3px;background:#F0F1F4;border-radius:9px;gap:2px">
+            <sc-for list="{{ em.modes }}" as="p" hint-placeholder-count="2">
+              <button onClick="{{ p.onClick }}" style="flex:1;height:38px;border:none;border-radius:7px;font-weight:500;cursor:pointer;background:{{ p.bg }};box-shadow:{{ p.shadow }}">{{ p.label }}</button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ em.quickHint }}" hint-placeholder-val="{{ true }}"><div style="font-size:12px;color:#8A909B;margin-top:-8px">Un clic sur un mode l’enregistre directement.</div></sc-if>
+          <sc-for list="{{ em.halves }}" as="h" hint-placeholder-count="1">
+            <div style="display:flex;flex-direction:column;gap:12px;border:{{ h.cardBorder }};padding:{{ h.cardPad }};background:{{ h.cardBg }};border-radius:12px">
+              <sc-if value="{{ h.split }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;align-items:baseline;gap:8px">
+                  <span style="font-size:15px;font-weight:600">{{ h.title }}</span>
+                  <span style="font-size:12px;color:#8A909B">{{ h.hours }}</span>
+                  <sc-if value="{{ h.canCopy }}" hint-placeholder-val="{{ false }}">
+                    <button onClick="{{ h.copyAm }}" style="margin-left:auto;height:28px;padding:0 10px;border:none;background:none;color:#2B4ACB;font-size:13px;font-weight:500;cursor:pointer;border-radius:6px" style-hover="background:#EAF0FD">Identique au matin</button>
+                  </sc-if>
+                </div>
+              </sc-if>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <sc-for list="{{ h.statuses }}" as="s" hint-placeholder-count="4">
+                  <button onClick="{{ s.onClick }}" style="height:{{ h.stH }};border-radius:10px;border:{{ s.border }};background:{{ s.bg }};color:{{ s.fg }};display:flex;align-items:center;gap:10px;padding:0 14px;cursor:pointer;font-weight:600;text-align:left">
+                    <dc-import name="StatusIcon" status="{{ s.s }}" style="width:18px;height:18px;display:flex;flex:none" hint-size="18px,18px"></dc-import>{{ s.label }}
+                  </button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ h.isOffice }}" hint-placeholder-val="{{ true }}">
+                <div>
+                  <div style="font-size:12px;font-weight:500;color:#5E6470;margin-bottom:6px">Lieu</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px">
+                    <sc-for list="{{ h.locs }}" as="l" hint-placeholder-count="3">
+                      <button onClick="{{ l.onClick }}" style="height:36px;padding:0 12px;border-radius:999px;border:{{ l.border }};background:{{ l.bg }};color:{{ l.fg }};font-weight:500;cursor:pointer">{{ l.label }}</button>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+          <div>
+            <div style="font-size:12px;font-weight:500;color:#5E6470;margin-bottom:6px">Commentaire <span style="font-weight:400;color:#8A909B">(facultatif)</span></div>
+            <input value="{{ em.note }}" onChange="{{ em.onNote }}" placeholder="ex. Réunion client, formation…" maxlength="80" style="width:100%;height:40px;border:1px solid #DADDE3;border-radius:8px;padding:0 12px;outline:none" style-focus="border-color:#2B4ACB;box-shadow:0 0 0 3px #E3EAFC">
+          </div>
+        </div>
+        <div style="padding:14px 22px 20px;display:flex;gap:8px;border-top:1px solid #EEF0F3">
+          <sc-if value="{{ em.wasSet }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ clearEntry }}" style="height:40px;padding:0 12px;border:none;background:none;color:#B42318;font-weight:500;cursor:pointer;border-radius:8px" style-hover="background:#FDF0EF">Effacer</button>
+          </sc-if>
+          <button onClick="{{ closeModal }}" style="margin-left:auto;height:40px;padding:0 16px;border:1px solid #DADDE3;background:#FFFFFF;border-radius:8px;font-weight:500;cursor:pointer">Annuler</button>
+          <sc-if value="{{ em.showSave }}" hint-placeholder-val="{{ false }}"><button onClick="{{ saveEntry }}" style="height:40px;padding:0 18px;border:none;background:#2B4ACB;color:#FFFFFF;border-radius:8px;font-weight:500;cursor:pointer" style-hover="background:#2340B5">Enregistrer</button></sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ em.readOnly }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:18px 22px 22px;display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ em.ro }}" as="r" hint-placeholder-count="2">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;background:{{ r.bg }};color:{{ r.fg }};border:{{ r.border }}">
+              <dc-import name="StatusIcon" status="{{ r.s }}" style="width:18px;height:18px;display:flex;flex:none" hint-size="18px,18px"></dc-import>
+              <div style="line-height:1.3;min-width:0">
+                <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em">{{ r.half }}</div>
+                <div style="font-size:14px;font-weight:600">{{ r.statusLabel }}</div>
+                <div style="font-size:12px">{{ r.sub }}</div>
+              </div>
+            </div>
+          </sc-for>
+          <div style="font-size:12px;color:#8A909B;margin-top:6px">Seuls le collaborateur et les administrateurs peuvent modifier cette présence.</div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</sc-if>
+
+<!-- MODALE UTILISATEUR -->
+<sc-if value="{{ mUser }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:50;background:rgba(22,24,29,0.42);display:flex;align-items:{{ modalAlign }};justify-content:center;padding:{{ modalPad }}">
+    <div onClick="{{ stop }}" style="background:#FFFFFF;width:100%;max-width:520px;max-height:92vh;overflow:auto;border-radius:{{ modalRadius }};box-shadow:0 20px 50px rgba(0,0,0,0.18)">
+      <div style="padding:20px 22px 4px;font-size:18px;font-weight:600">{{ um.title }}</div>
+      <div style="padding:14px 22px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470">Prénom
+          <input value="{{ um.first }}" onChange="{{ um.onFirst }}" style="height:40px;border:{{ um.firstBorder }};border-radius:8px;padding:0 12px;outline:none;color:#1B2140" style-focus="border-color:#2B4ACB">
+        </label>
+        <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470">Nom
+          <input value="{{ um.last }}" onChange="{{ um.onLast }}" style="height:40px;border:{{ um.lastBorder }};border-radius:8px;padding:0 12px;outline:none;color:#1B2140" style-focus="border-color:#2B4ACB">
+        </label>
+        <label style="grid-column:1 / -1;display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470">Email professionnel
+          <input value="{{ um.email }}" onChange="{{ um.onEmail }}" placeholder="prenom.nom@entreprise.fr" style="height:40px;border:{{ um.emailBorder }};border-radius:8px;padding:0 12px;outline:none;color:#1B2140" style-focus="border-color:#2B4ACB">
+        </label>
+        <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470">Équipe
+          <select value="{{ um.team }}" onChange="{{ um.onTeam }}" style="height:40px;border:1px solid #DADDE3;border-radius:8px;padding:0 34px 0 10px;appearance:none;-webkit-appearance:none;background:#FFFFFF url('data:image/svg+xml,%3Csvg xmlns=%27http%3A//www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath d=%27M3 4.5l3 3 3-3%27 fill=%27none%27 stroke=%27%235E6470%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E') no-repeat right 12px center;color:#1B2140">
+            <sc-for list="{{ teamList }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+          </select>
+        </label>
+        <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470">Lieu de rattachement
+          <select value="{{ um.home }}" onChange="{{ um.onHome }}" style="height:40px;border:1px solid #DADDE3;border-radius:8px;padding:0 34px 0 10px;appearance:none;-webkit-appearance:none;background:#FFFFFF url('data:image/svg+xml,%3Csvg xmlns=%27http%3A//www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath d=%27M3 4.5l3 3 3-3%27 fill=%27none%27 stroke=%27%235E6470%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E') no-repeat right 12px center;color:#1B2140">
+            <sc-for list="{{ locList }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+          </select>
+        </label>
+        <div style="grid-column:1 / -1;display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:12px;font-weight:500;color:#5E6470">Rôle</span>
+          <div style="display:flex;padding:3px;background:#F0F1F4;border-radius:9px;gap:2px">
+            <sc-for list="{{ um.roles }}" as="r" hint-placeholder-count="2">
+              <button onClick="{{ r.onClick }}" style="flex:1;height:36px;border:none;border-radius:7px;font-weight:500;cursor:pointer;background:{{ r.bg }};box-shadow:{{ r.shadow }}">{{ r.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <sc-if value="{{ um.hasError }}" hint-placeholder-val="{{ false }}">
+          <div style="grid-column:1 / -1;font-size:13px;color:#B42318">{{ um.error }}</div>
+        </sc-if>
+      </div>
+      <div style="padding:14px 22px 20px;display:flex;gap:8px;border-top:1px solid #EEF0F3">
+        <button onClick="{{ closeModal }}" style="margin-left:auto;height:40px;padding:0 16px;border:1px solid #DADDE3;background:#FFFFFF;border-radius:8px;font-weight:500;cursor:pointer">Annuler</button>
+        <button onClick="{{ saveUser }}" style="height:40px;padding:0 18px;border:none;background:#2B4ACB;color:#FFFFFF;border-radius:8px;font-weight:500;cursor:pointer" style-hover="background:#2340B5">{{ um.cta }}</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- MODALE LIEU -->
+<sc-if value="{{ mLoc }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:50;background:rgba(22,24,29,0.42);display:flex;align-items:{{ modalAlign }};justify-content:center;padding:{{ modalPad }}">
+    <div onClick="{{ stop }}" style="background:#FFFFFF;width:100%;max-width:480px;max-height:92vh;overflow:auto;border-radius:{{ modalRadius }};box-shadow:0 20px 50px rgba(0,0,0,0.18)">
+      <div style="padding:20px 22px 4px;font-size:18px;font-weight:600">{{ lm.title }}</div>
+      <div style="padding:14px 22px;display:grid;grid-template-columns:1fr 110px;gap:14px">
+        <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470">Nom du lieu
+          <input value="{{ lm.name }}" onChange="{{ lm.onName }}" placeholder="ex. Bordeaux — Chartrons" style="height:40px;border:{{ lm.nameBorder }};border-radius:8px;padding:0 12px;outline:none;color:#1B2140" style-focus="border-color:#2B4ACB">
+        </label>
+        <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470">Code
+          <input value="{{ lm.code }}" onChange="{{ lm.onCode }}" maxlength="3" placeholder="BDX" style="height:40px;border:{{ lm.codeBorder }};border-radius:8px;padding:0 12px;outline:none;font-family:'Geist Mono',monospace;text-transform:uppercase;color:#1B2140" style-focus="border-color:#2B4ACB">
+        </label>
+        <label style="grid-column:1 / -1;display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470">Ville
+          <input value="{{ lm.city }}" onChange="{{ lm.onCity }}" style="height:40px;border:1px solid #DADDE3;border-radius:8px;padding:0 12px;outline:none;color:#1B2140" style-focus="border-color:#2B4ACB">
+        </label>
+        <label style="grid-column:1 / -1;display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470">Adresse
+          <input value="{{ lm.address }}" onChange="{{ lm.onAddress }}" style="height:40px;border:1px solid #DADDE3;border-radius:8px;padding:0 12px;outline:none;color:#1B2140" style-focus="border-color:#2B4ACB">
+        </label>
+        <sc-if value="{{ lm.hasError }}" hint-placeholder-val="{{ false }}">
+          <div style="grid-column:1 / -1;font-size:13px;color:#B42318">{{ lm.error }}</div>
+        </sc-if>
+      </div>
+      <div style="padding:14px 22px 20px;display:flex;gap:8px;border-top:1px solid #EEF0F3;align-items:center">
+        <sc-if value="{{ lm.canDelete }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ deleteLoc }}" style="height:40px;padding:0 12px;border:none;background:none;color:#B42318;font-weight:500;cursor:pointer;border-radius:8px" style-hover="background:#FDF0EF">Supprimer</button>
+        </sc-if>
+        <sc-if value="{{ lm.deleteHint }}" hint-placeholder-val="{{ false }}">
+          <span style="font-size:12px;color:#8A909B;max-width:200px">Suppression impossible : des collaborateurs y sont rattachés.</span>
+        </sc-if>
+        <button onClick="{{ closeModal }}" style="margin-left:auto;height:40px;padding:0 16px;border:1px solid #DADDE3;background:#FFFFFF;border-radius:8px;font-weight:500;cursor:pointer">Annuler</button>
+        <button onClick="{{ saveLoc }}" style="height:40px;padding:0 18px;border:none;background:#2B4ACB;color:#FFFFFF;border-radius:8px;font-weight:500;cursor:pointer" style-hover="background:#2340B5">{{ lm.cta }}</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- MODALE ÉQUIPE -->
+<sc-if value="{{ mTeam }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:50;background:rgba(22,24,29,0.42);display:flex;align-items:{{ modalAlign }};justify-content:center;padding:{{ modalPad }}">
+    <div onClick="{{ stop }}" style="background:#FFFFFF;width:100%;max-width:440px;max-height:92vh;overflow:auto;border-radius:{{ modalRadius }};box-shadow:0 20px 50px rgba(0,0,0,0.18)">
+      <div style="padding:20px 22px 4px">
+        <div style="font-size:18px;font-weight:600">{{ tmm.title }}</div>
+        <div style="font-size:13px;color:#5E6470;margin-top:2px">{{ tmm.coName }}</div>
+      </div>
+      <div style="padding:14px 22px;display:flex;flex-direction:column;gap:14px">
+        <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470">Nom de l’équipe
+          <input value="{{ tmm.name }}" onChange="{{ tmm.onName }}" placeholder="ex. Marketing" style="height:40px;border:{{ tmm.nameBorder }};border-radius:8px;padding:0 12px;outline:none;color:#1B2140" style-focus="border-color:#2B4ACB">
+        </label>
+        <sc-if value="{{ tmm.hasError }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:13px;color:#B42318">{{ tmm.error }}</div>
+        </sc-if>
+      </div>
+      <div style="padding:14px 22px 20px;display:flex;gap:8px;border-top:1px solid #EEF0F3;align-items:center">
+        <sc-if value="{{ tmm.canDelete }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ deleteTeam }}" style="height:40px;padding:0 12px;border:none;background:none;color:#B42318;font-weight:500;cursor:pointer;border-radius:8px" style-hover="background:#FDF0EF">Supprimer</button>
+        </sc-if>
+        <sc-if value="{{ tmm.deleteHint }}" hint-placeholder-val="{{ false }}">
+          <span style="font-size:12px;color:#8A909B;max-width:200px">{{ tmm.deleteHintText }}</span>
+        </sc-if>
+        <button onClick="{{ closeModal }}" style="margin-left:auto;height:40px;padding:0 16px;border:1px solid #DADDE3;background:#FFFFFF;border-radius:8px;font-weight:500;cursor:pointer">Annuler</button>
+        <button onClick="{{ saveTeam }}" style="height:40px;padding:0 18px;border:none;background:#2B4ACB;color:#FFFFFF;border-radius:8px;font-weight:500;cursor:pointer" style-hover="background:#2340B5">{{ tmm.cta }}</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- MODALE ENTREPRISE -->
+<sc-if value="{{ mCo }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:50;background:rgba(22,24,29,0.42);display:flex;align-items:{{ modalAlign }};justify-content:center;padding:{{ modalPad }}">
+    <div onClick="{{ stop }}" style="background:#FFFFFF;width:100%;max-width:480px;max-height:92vh;overflow:auto;border-radius:{{ modalRadius }};box-shadow:0 20px 50px rgba(0,0,0,0.18)">
+      <div style="padding:20px 22px 4px;font-size:18px;font-weight:600">{{ cm.title }}</div>
+      <div style="padding:14px 22px;display:flex;flex-direction:column;gap:14px">
+        <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470">Nom de l’entreprise
+          <input value="{{ cm.name }}" onChange="{{ cm.onName }}" placeholder="ex. Atelier Nord" style="height:40px;border:{{ cm.nameBorder }};border-radius:8px;padding:0 12px;outline:none;color:#1B2140" style-focus="border-color:#2B4ACB">
+        </label>
+        <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:#5E6470">Domaine email
+          <input value="{{ cm.domain }}" onChange="{{ cm.onDomain }}" placeholder="entreprise.fr" style="height:40px;border:{{ cm.domainBorder }};border-radius:8px;padding:0 12px;outline:none;color:#1B2140;font-family:'Geist Mono',monospace" style-focus="border-color:#2B4ACB">
+          <span style="font-weight:400;color:#8A909B;text-wrap:pretty">Les inscriptions avec ce domaine rejoignent automatiquement cette entreprise.</span>
+        </label>
+        <sc-if value="{{ cm.hasError }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:13px;color:#B42318">{{ cm.error }}</div>
+        </sc-if>
+      </div>
+      <div style="padding:14px 22px 20px;display:flex;gap:8px;border-top:1px solid #EEF0F3;align-items:center">
+        <sc-if value="{{ cm.canDelete }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ deleteCo }}" style="height:40px;padding:0 12px;border:none;background:none;color:#B42318;font-weight:500;cursor:pointer;border-radius:8px" style-hover="background:#FDF0EF">Supprimer</button>
+        </sc-if>
+        <sc-if value="{{ cm.deleteHint }}" hint-placeholder-val="{{ false }}">
+          <span style="font-size:12px;color:#8A909B;max-width:200px">{{ cm.deleteHintText }}</span>
+        </sc-if>
+        <button onClick="{{ closeModal }}" style="margin-left:auto;height:40px;padding:0 16px;border:1px solid #DADDE3;background:#FFFFFF;border-radius:8px;font-weight:500;cursor:pointer">Annuler</button>
+        <button onClick="{{ saveCo }}" style="height:40px;padding:0 18px;border:none;background:#2B4ACB;color:#FFFFFF;border-radius:8px;font-weight:500;cursor:pointer" style-hover="background:#2340B5">{{ cm.cta }}</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ hasBar }}" hint-placeholder-val="{{ false }}">
+  <div ref="{{ barRef }}" style="position:fixed;left:{{ bar.left }};top:{{ bar.top }};visibility:{{ bar.vis }};z-index:55;background:#FFFFFF;border:1px solid #E4E6EB;border-radius:12px;box-shadow:0 12px 32px rgba(20,24,34,0.16);padding:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;width:max-content;max-width:calc(100vw - 32px)">
+    <div style="padding:0 10px 0 6px;line-height:1.25;border-right:1px solid #EEF0F3">
+      <div style="font-size:13px;font-weight:600">{{ bar.cnt }}</div>
+      <div style="font-size:12px;color:#5E6470">{{ bar.range }}</div>
+    </div>
+    <sc-for list="{{ bar.opts }}" as="o" hint-placeholder-count="5">
+      <button onClick="{{ o.onClick }}" style="height:38px;padding:0 12px;border-radius:8px;border:1px solid transparent;background:{{ o.bg }};color:{{ o.fg }};display:flex;align-items:center;gap:7px;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="filter:brightness(0.95)"><dc-import name="StatusIcon" status="{{ o.s }}" style="width:16px;height:16px;display:flex;flex:none" hint-size="16px,16px"></dc-import>{{ o.label }}</button>
+    </sc-for>
+    <button onClick="{{ bar.clear }}" style="height:38px;padding:0 10px;border:none;background:none;color:#B42318;font-weight:500;font-size:13px;cursor:pointer;border-radius:8px" style-hover="background:#FDF0EF">Effacer</button>
+    <button onClick="{{ bar.close }}" title="Annuler la sélection (Échap)" style="width:32px;height:32px;border:none;background:#F3F4F6;border-radius:8px;cursor:pointer;font-size:16px;color:#5E6470;display:flex;align-items:center;justify-content:center">×</button>
+  </div>
+</sc-if>
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;left:50%;transform:translateX(-50%);bottom:{{ toastBottom }};z-index:60;background:#1F2A6E;color:#FFFFFF;padding:10px 16px;border-radius:8px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,0.2);display:flex;align-items:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7BD3A0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>{{ toast }}</div>
+</sc-if>
+</div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;defaultRole&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;admin&quot;,&quot;collab&quot;],&quot;default&quot;:&quot;admin&quot;,&quot;tsType&quot;:&quot;'admin' | 'collab'&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;showLabels&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Planning&quot;}}">
+const KEY = 'ici-presences-v1';
+const CO0 = [{ id: 'c1', name: 'Ici Démo', domain: 'ici-demo.fr' }, { id: 'c2', name: 'Atelier Nord', domain: 'atelier-nord.fr' }];
+const TEAMS0 = [{ id: 't1', name: 'Produit', co: 'c1' }, { id: 't2', name: 'Tech', co: 'c1' }, { id: 't3', name: 'Commercial', co: 'c1' }, { id: 't4', name: 'Opérations', co: 'c1' }, { id: 't5', name: 'Design', co: 'c2' }, { id: 't6', name: 'Production', co: 'c2' }];
+const PEOPLE2 = [['Margaux','Lemoine'],['Antoine','Faure'],['Élise','Chevalier'],['Bastien','Roussel'],['Noémie','Blanc'],['Maxime','Guérin']];
+const LOC_C2 = { id: 'l4', name: 'Lille — Euratechnologies', city: 'Lille', code: 'LIL', address: '165 avenue de Bretagne, 59000 Lille', co: 'c2' };
+const PEOPLE = [['Camille','Durand'],['Lucas','Martin'],['Inès','Bernard'],['Hugo','Petit'],['Léa','Robert'],['Nathan','Richard'],['Chloé','Moreau'],['Théo','Simon'],['Manon','Laurent'],['Louis','Lefebvre'],['Emma','Michel'],['Jules','Garcia'],['Sarah','David'],['Arthur','Bertrand'],['Zoé','Roux'],['Gabriel','Vincent'],['Alice','Fournier'],['Raphaël','Morel'],['Juliette','Girard'],['Adam','André'],['Lina','Mercier'],['Paul','Dupont'],['Clara','Lambert'],['Victor','Bonnet']];
+const LOCS0 = [
+  { id: 'l1', name: 'Paris — Siège', city: 'Paris', code: 'PAR', address: '12 rue de la Chaussée-d’Antin, 75009 Paris', co: 'c1' },
+  { id: 'l2', name: 'Lyon — Confluence', city: 'Lyon', code: 'LYO', address: '34 cours Charlemagne, 69002 Lyon', co: 'c1' },
+  { id: 'l3', name: 'Nantes — Île de Nantes', city: 'Nantes', code: 'NAN', address: '8 quai François Mitterrand, 44200 Nantes', co: 'c1' },
+  LOC_C2
+];
+const TODAY = new Date(2026, 9, 26);
+const ST = {
+  office: { label: 'Présentiel', short: '', bg: '#EAF0FD', fg: '#2B4ACB' },
+  remote: { label: 'Distanciel', short: 'Télé', bg: '#E6F4EC', fg: '#1D6B43' },
+  travel: { label: 'Déplacement', short: 'Dépl.', bg: '#FBEFDB', fg: '#86500A' },
+  off: { label: 'Absent', short: 'Abs.', bg: '#EFF0F2', fg: '#565A63' },
+  none: { label: 'Non renseigné', short: '', bg: '#FFFFFF', fg: '#9AA0AA' }
+};
+const DNA = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+const DLA = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+const DEF_WD = [0, 1, 2, 3, 4];
+const MO = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+const pad = n => String(n).padStart(2, '0');
+const iso = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+const fromIso = s => { const [y, m, dd] = s.split('-').map(Number); return new Date(y, m - 1, dd); };
+function isoWeek(d) { const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const day = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - day); const y0 = new Date(Date.UTC(t.getUTCFullYear(), 0, 1)); return Math.ceil(((t - y0) / 86400000 + 1) / 7); }
+function hs(str) { let x = 2166136261; for (let i = 0; i < str.length; i++) { x ^= str.charCodeAt(i); x = Math.imul(x, 16777619); } return x >>> 0; }
+function rng(seed) { let a = seed; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const strip = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+function seedUsers() {
+  return PEOPLE.map((p, i) => ({ id: 'u' + (i + 1), first: p[0], last: p[1], email: strip(p[0] + '.' + p[1]) + '@ici-demo.fr', team: 't' + (i % 4 + 1), home: i % 6 === 4 ? 'l2' : (i % 8 === 7 ? 'l3' : 'l1'), role: (i === 0 || i === 5) ? 'admin' : 'collab', active: true })).concat(seedUsers2());
+}
+function seedUsers2() {
+  return PEOPLE2.map((p, i) => ({ id: 'u' + (101 + i), first: p[0], last: p[1], email: strip(p[0] + '.' + p[1]) + '@atelier-nord.fr', team: i % 2 ? 't6' : 't5', home: 'l4', role: i === 0 ? 'admin' : 'collab', active: true }));
+}
+const DEF_TPL = [['office:l1', 'office:l1'], ['office:l1', 'office:l1'], ['remote', 'remote'], ['office:l1', 'office:l1'], ['remote', 'remote'], ['off', 'off'], ['off', 'off']];
+const parseVal = v => v === 'none' ? { s: 'none' } : v.indexOf('office:') === 0 ? { s: 'office', loc: v.slice(7) } : { s: v };
+const ini = u => ((u.first || '')[0] || '') + ((u.last || '')[0] || '');
+const seg = (on, go) => ({ go, onClick: go, bg: on ? '#FFFFFF' : 'transparent', shadow: on ? '0 1px 2px rgba(0,0,0,0.12)' : 'none', color: on ? '#1B2140' : '#5E6470' });
+
+class Component extends DCLogic {
+  state = (() => {
+    let s = {}; try { s = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+    const hadCo = !!s.companies; const companies = s.companies || CO0; const teams = s.teams || TEAMS0;
+    let users = (s.users || seedUsers()).map(u => teams.some(t => t.id === u.team) ? u : { ...u, team: (TEAMS0.find(t => t.name === u.team) || TEAMS0[0]).id });
+    if (!hadCo && s.users) users = users.concat(seedUsers2());
+    let locs = (s.locs || LOCS0).map(l => l.co ? l : { ...l, co: 'c1' });
+    if (!hadCo && s.locs) locs = locs.concat([LOC_C2]);
+    return { tab: s.tab || 'planning', role: s.role || this.props.defaultRole || 'admin', wk: 0, team: 'all', loc: 'all', search: '', ov: s.ov || {}, users, locs, companies, teams, co: s.co || null, orgTeam: null, tpl: [0, 1, 2, 3, 4, 5, 6].map(i => (s.tpl || DEF_TPL)[i] || ['off', 'off']), workDays: (s.workDays && s.workDays.length) ? s.workDays : DEF_WD, modal: null, sel: null, dayIdx: 0, mHalf: 'am', toast: null, w: typeof window !== 'undefined' ? window.innerWidth : 1200, uSearch: '', uTeam: 'all', authed: !!s.authed, meId: (s.users || []).some(u => u.id === s.meId) ? s.meId : 'u1', lView: 'login', sFirst: '', sLast: '', sEmail: '', sTeam: '', sHome: '', sPwd: '', sCgu: false, sErr: '', lEmail: 'camille.durand@ici-demo.fr', lPwd: '', lErr: '', lShow: false, lRemember: true, lBusy: false };
+  })();
+  _c = {};
+  componentDidMount() {
+    this._r = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this._r);
+    this._up = () => { const d = this._drag; if (!d) return; this._drag = null; if (d.moved) { this._skipClick = true; setTimeout(() => { this._skipClick = false; }, 0); } else this.setState({ sel: null }); };
+    this._key = e => { if (e.key === 'Escape' && this.state.sel) this.setState({ sel: null }); };
+    window.addEventListener('mouseup', this._up); window.addEventListener('keydown', this._key);
+    this._pos = () => this.placeBar(); window.addEventListener('scroll', this._pos, true); window.addEventListener('resize', this._pos);
+  }
+  barRef = React.createRef();
+  placeBar() {
+    const b = this.barRef.current; const els = b ? document.querySelectorAll('[data-sel="1"]') : [];
+    if (!b || !els.length) { if (this.state.barPos) this.setState({ barPos: null }); return; }
+    let l = Infinity, t = Infinity, r = -Infinity, bt = -Infinity;
+    els.forEach(el => { const q = el.getBoundingClientRect(); l = Math.min(l, q.left); t = Math.min(t, q.top); r = Math.max(r, q.right); bt = Math.max(bt, q.bottom); });
+    const W = b.offsetWidth, H = b.offsetHeight, vw = window.innerWidth, vh = window.innerHeight;
+    const left = Math.round(Math.max(12, Math.min(vw - W - 12, (l + r) / 2 - W / 2)));
+    const top = Math.round(bt + 8 + H > vh - 8 ? Math.max(8, t - H - 8) : bt + 8);
+    const p = this.state.barPos; if (!p || p.left !== left || p.top !== top) this.setState({ barPos: { left, top } });
+  }
+  componentWillUnmount() { window.removeEventListener('scroll', this._pos, true); window.removeEventListener('resize', this._pos); window.removeEventListener('resize', this._r); window.removeEventListener('mouseup', this._up); window.removeEventListener('keydown', this._key); clearTimeout(this._t); }
+  dragStart(ev, uid, rng) {
+    if (!rng || ev.button !== 0 || !this.canEdit(uid)) return; ev.preventDefault();
+    const S = this.state; const sel = S.sel;
+    if (ev.shiftKey && sel && sel.uid === uid && sel.wk === S.wk) { this._drag = { uid, a: sel.a, moved: true }; this.setState({ sel: { ...sel, lo: Math.min(sel.a[0], rng[0]), hi: Math.max(sel.a[1], rng[1]) } }); return; }
+    this._drag = { uid, a: rng, moved: false }; this.setState({ sel: { uid, wk: S.wk, a: rng, lo: rng[0], hi: rng[1] }, tip: null });
+  }
+  dragTo(uid, rng) { const d = this._drag; if (!d || !rng || d.uid !== uid) return; const lo = Math.min(d.a[0], rng[0]), hi = Math.max(d.a[1], rng[1]); if (lo !== d.a[0] || hi !== d.a[1]) d.moved = true; this.setState(s => ({ sel: { ...s.sel, lo, hi } })); }
+  componentDidUpdate() { this.placeBar(); const { tab, role, ov, users, locs, tpl, workDays, authed, lRemember, meId, companies, teams, co } = this.state; try { localStorage.setItem(KEY, JSON.stringify({ tab, role, ov, users, locs, tpl, workDays, meId, companies, teams, co, authed: authed && lRemember })); } catch (e) {} }
+  toast(m) { clearTimeout(this._t); this.setState({ toast: m }); this._t = setTimeout(() => this.setState({ toast: null }), 2200); }
+
+  plan(u, monIso) {
+    const k = u.id + monIso + u.home; if (this._c[k]) return this._c[k];
+    const r = rng(hs(k)); const diff = Math.round((fromIso(monIso) - TODAY) / 864e5 / 7);
+    const sales = this.tName(u.team) === 'Commercial'; const vac = r() < 0.05;
+    const nOff = 2 + (hs(u.id) % 2); const order = [0, 1, 2, 3, 4];
+    for (let i = 4; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+    const officeSet = new Set(order.slice(0, nOff)); const days = [];
+    for (let i = 0; i < 5; i++) {
+      let s, loc = null, note = '';
+      if (vac) { s = 'off'; note = 'Congés'; }
+      else {
+        const x = r();
+        if (x < (sales ? 0.18 : 0.05)) { s = 'travel'; note = ['Visite client Bordeaux', 'Salon professionnel', 'Rendez-vous client', 'Séminaire'][Math.floor(r() * 4)]; }
+        else if (x < (sales ? 0.22 : 0.09)) { s = 'off'; note = r() < 0.5 ? 'RTT' : ''; }
+        else if (officeSet.has(i)) { s = 'office'; loc = u.home; }
+        else s = 'remote';
+      }
+      let am = { s, loc, note }, pm = { s, loc, note };
+      if (!vac && (s === 'office' || s === 'remote') && r() < 0.12) pm = s === 'office' ? { s: 'remote', loc: null, note: '' } : { s: 'office', loc: u.home, note: '' };
+      if (!vac && s !== 'off' && r() < 0.04) am = { s: 'off', loc: null, note: 'Rendez-vous médical' };
+      const un = diff >= 2 ? r() < 0.55 : diff === 1 ? r() < 0.2 : false;
+      if (un) { am = { s: 'none' }; pm = { s: 'none' }; }
+      days.push({ am, pm });
+    }
+    for (let i = 5; i < 7; i++) { const x = r(); const s = vac ? 'off' : (diff >= 2 && r() < 0.55) ? 'none' : x < 0.3 ? 'office' : x < 0.4 ? 'remote' : 'off'; const e = { s, loc: s === 'office' ? u.home : null, note: vac ? 'Congés' : '' }; days.push({ am: e, pm: { ...e } }); }
+    if (u.id === 'u1' && diff === 0) { days[3] = { am: { s: 'none' }, pm: { s: 'none' } }; days[4] = { am: { s: 'none' }, pm: { s: 'none' } }; }
+    return (this._c[k] = days);
+  }
+  entry(uid, date, half) {
+    const o = this.state.ov[uid + '|' + date + '|' + half]; if (o) return o;
+    const u = this.state.users.find(x => x.id === uid); if (!u) return { s: 'none' };
+    const d = fromIso(date); const idx = (d.getDay() + 6) % 7;
+    return this.plan(u, iso(addDays(d, -idx)))[idx][half];
+  }
+  locBy(id) { return this.state.locs.find(l => l.id === id); }
+  teamBy(id) { return this.state.teams.find(t => t.id === id); }
+  tName(id) { const t = this.teamBy(id); return t ? t.name : '—'; }
+  uCo(u) { const t = u && this.teamBy(u.team); return t ? t.co : null; }
+  openUser(u, preset) { const f = u ? { first: u.first, last: u.last, email: u.email, team: u.team, home: u.home, role: u.role } : { first: '', last: '', email: '', team: '', home: '', role: 'collab', ...preset }; this.setState({ modal: { type: 'user', id: u ? u.id : null, form: f, error: '' } }); }
+  canEdit(uid) { return this.state.role === 'admin' || uid === this.state.meId; }
+  openEntry(uid, date, period) {
+    const e = this.entry(uid, date, period === 'pm' ? 'pm' : 'am'); const u = this.state.users.find(x => x.id === uid);
+    const fallbackLoc = this.locBy(u.home) ? u.home : (this.state.locs[0] || {}).id;
+    const ea = this.entry(uid, date, 'am'), ep = this.entry(uid, date, 'pm');
+    const norm = x => ({ s: x.s === 'none' ? 'office' : x.s, loc: (x.loc && this.locBy(x.loc)) ? x.loc : fallbackLoc });
+    let am = norm(ea), pm = norm(ep);
+    if (ea.s === 'none' && ep.s !== 'none') am = { ...pm }; if (ep.s === 'none' && ea.s !== 'none') pm = { ...am };
+    const split = am.s !== pm.s || (am.s === 'office' && am.loc !== pm.loc);
+    this.setState({ modal: { type: 'entry', uid, date, period, split, am, pm, note: ea.note || ep.note || '', wasSet: e.s !== 'none' || ea.s !== 'none' || ep.s !== 'none' } });
+  }
+  setEntries(list, msg) { const ov = { ...this.state.ov }; list.forEach(([k, v]) => { ov[k] = v; }); this.setState({ ov, modal: null }); if (msg) this.toast(msg); }
+  setM(patch) { this.setState(s => ({ modal: { ...s.modal, ...patch } })); }
+  setF(patch) { this.setState(s => ({ modal: { ...s.modal, error: '', form: { ...s.modal.form, ...patch } } })); }
+  applyTpl(n) {
+    const list = []; const mon = addDays(TODAY, this.state.wk * 7);
+    for (let w = 0; w < n; w++) for (const i of this.state.workDays) {
+      const d = iso(addDays(mon, w * 7 + i));
+      ['am', 'pm'].forEach((h, hi) => { const p = parseVal(this.state.tpl[i][hi]); list.push([this.state.meId + '|' + d + '|' + h, { s: p.s, loc: p.loc || null, note: '' }]); });
+    }
+    this.setEntries(list, n === 1 ? 'Semaine type appliquée' : 'Semaine type appliquée aux 4 prochaines semaines');
+  }
+
+  cell(e, uid, date, period, u, rng) {
+    const sl = this.state.sel; const on = !!rng && !!sl && sl.wk === this.state.wk && sl.uid === uid && rng[0] <= sl.hi && rng[1] >= sl.lo;
+    const st = ST[e.s] || ST.none; const loc = e.s === 'office' ? this.locBy(e.loc) : null;
+    const lf = this.state.loc; const dim = lf !== 'all' && !(e.s === 'office' && e.loc === lf);
+    const statusLabel = e.s === 'office' ? 'Bureau' + (loc ? ' · ' + loc.city : '') : st.label;
+    return {
+      s: e.s, bg: st.bg, fg: st.fg, border: on ? '1.5px solid #2B4ACB' : e.s === 'none' ? '1px dashed #CDD1D8' : '1px solid transparent', ring: on ? '0 0 0 3px #D3DDFA' : 'none', selKey: on ? '1' : '0',
+      label: e.s === 'office' ? (loc ? loc.code : '—') : st.short, statusLabel,
+      sub: [loc ? loc.name : '', e.note || ''].filter(Boolean).join(' · ') || (e.s === 'none' ? 'Touchez pour renseigner' : ''),
+      hasNote: !!e.note, opacity: dim ? 0.3 : 1,
+      title: e.note ? undefined : (u ? u.first + ' ' + u.last + ' — ' : '') + statusLabel,
+      tipOn: !!e.note && this.state.tip === uid + '|' + date + '|' + period,
+      tipHead: (u ? u.first + ' · ' : '') + statusLabel + (period === 'am' ? ' · matin' : period === 'pm' ? ' · après-midi' : ''), tipNote: e.note || '',
+      onEnter: () => { this.dragTo(uid, rng); if (e.note && !this._drag) this.setState({ tip: uid + '|' + date + '|' + period }); },
+      onLeave: e.note ? () => this.setState(s => s.tip === uid + '|' + date + '|' + period ? { tip: null } : null) : undefined,
+      onDown: ev => this.dragStart(ev, uid, rng),
+      onClick: () => { if (this._skipClick) { this._skipClick = false; return; } this.openEntry(uid, date, period); }
+    };
+  }
+
+  renderVals() {
+    const S = this.state; const isMobile = S.w < 1000; const isAdmin = S.role === 'admin';
+    const tab = (!isAdmin && (S.tab === 'users' || S.tab === 'config' || S.tab === 'org')) ? 'planning' : S.tab;
+    const WD = S.workDays; const nD = WD.length; const DN = WD.map(i => DNA[i]); const DL = WD.map(i => DLA[i]); const dIdx = Math.min(S.dayIdx, nD - 1);
+    const go = t => () => this.setState({ tab: t });
+    const navItem = t => ({ go: go(t), color: tab === t ? '#2B4ACB' : '#5E6470', line: tab === t ? '#2B4ACB' : 'transparent' });
+    const meU = S.users.find(u => u.id === this.state.meId); const meLoc = this.locBy(meU.home);
+    const meCo = this.uCo(meU) || (S.companies[0] || {}).id;
+    const co = isAdmin && S.companies.some(c => c.id === S.co) ? S.co : meCo;
+    const coObj = S.companies.find(c => c.id === co) || { name: '', domain: '' };
+    const coTeams = S.teams.filter(t => t.co === co); const locs = S.locs.filter(l => l.co === co);
+    const inCo = u => this.uCo(u) === co;
+    const mon = addDays(TODAY, S.wk * 7); const dates = WD.map(i => addDays(mon, i)); const isos = dates.map(iso);
+    const todayIso = iso(TODAY); const fri = dates[nD - 1]; const d0 = dates[0];
+    const weekLabel = nD === 1 ? DLA[WD[0]] + ' ' + d0.getDate() + ' ' + MO[d0.getMonth()] + ' ' + d0.getFullYear() : d0.getDate() + (d0.getMonth() !== fri.getMonth() ? ' ' + MO[d0.getMonth()] : '') + ' – ' + fri.getDate() + ' ' + MO[fri.getMonth()] + ' ' + fri.getFullYear();
+    const active = S.users.filter(u => u.active && inCo(u));
+    const q = strip(S.search.trim());
+    const filtered = active.filter(u => (S.team === 'all' || u.team === S.team) && (!q || strip(u.first + ' ' + u.last).includes(q)));
+
+    // Planning grid
+    const groups = coTeams.map(t => {
+      const rows = filtered.filter(u => u.team === t.id).sort((a, b) => (a.id === this.state.meId ? -1 : b.id === this.state.meId ? 1 : a.last.localeCompare(b.last))).map(u => {
+        const isMe = u.id === this.state.meId; const hl = this.locBy(u.home);
+        return {
+          name: u.first + ' ' + u.last, initials: ini(u), isMe, homeCity: hl ? hl.city : '—', bg: isMe ? '#FBFCFF' : '#FFFFFF',
+          avBg: isMe ? '#2B4ACB' : '#EEF0F3', avFg: isMe ? '#FFFFFF' : '#3B3F48',
+          days: isos.map((d, i) => {
+            const am = this.entry(u.id, d, 'am'), pm = this.entry(u.id, d, 'pm');
+            const merged = am.s === pm.s && (am.loc || '') === (pm.loc || '');
+            const full = this.cell({ ...am, note: am.note || pm.note }, u.id, d, 'day', u, [2 * i, 2 * i + 1]);
+            return { merged, split: !merged, full, am: this.cell(am, u.id, d, 'am', u, [2 * i, 2 * i]), pm: this.cell(pm, u.id, d, 'pm', u, [2 * i + 1, 2 * i + 1]), colBg: d === todayIso ? '#FAFBFF' : 'transparent' };
+          })
+        };
+      });
+      return { name: t.name, count: rows.length, rows };
+    }).filter(g => g.rows.length);
+    const dayHeads = isos.map((d, i) => {
+      let n = 0; const per = {};
+      filtered.forEach(u => { const e = this.entry(u.id, d, 'am'); if (e.s === 'office' && (S.loc === 'all' || e.loc === S.loc)) { n++; per[e.loc] = (per[e.loc] || 0) + 1; } });
+      const isT = d === todayIso;
+      return { name: DN[i], num: dates[i].getDate(), onsite: n + ' sur site' + (S.loc === 'all' && n ? ' · ' + locs.filter(l => per[l.id]).map(l => l.code + ' ' + per[l.id]).join(' · ') : ''), color: isT ? '#2B4ACB' : '#1B2140', bg: isT ? '#F5F8FF' : '#FFFFFF' };
+    });
+
+    // My week
+    const missingCount = isos.reduce((a, d) => a + ['am', 'pm'].filter(h => this.entry(this.state.meId, d, h).s === 'none').length, 0);
+    const myDays = isos.map((d, i) => {
+      const am = this.entry(this.state.meId, d, 'am'), pm = this.entry(this.state.meId, d, 'pm');
+      const quick = ['office', 'remote', 'travel', 'off'].map(s => {
+        const on = am.s === s && pm.s === s;
+        return { s, title: (s === 'office' ? 'Bureau · ' + (meLoc ? meLoc.city : '') : ST[s].label) + ' toute la journée', bg: on ? ST[s].bg : '#FFFFFF', fg: on ? ST[s].fg : '#5E6470', border: on ? '1px solid ' + ST[s].fg : '1px solid #DADDE3',
+          onClick: () => this.setEntries(['am', 'pm'].map(h => [this.state.meId + '|' + d + '|' + h, { s, loc: s === 'office' ? meU.home : null, note: '' }]), DL[i] + ' : ' + ST[s].label.toLowerCase()) };
+      });
+      const isT = d === todayIso;
+      return { dayName: DL[i], short: DN[i] + ' ' + dates[i].getDate(), dateLabel: dates[i].getDate() + ' ' + MO[dates[i].getMonth()], isToday: isT, headColor: isT ? '#2B4ACB' : '#1B2140', am: this.cell(am, this.state.meId, d, 'am'), pm: this.cell(pm, this.state.meId, d, 'pm'), quick };
+    });
+    const tplOpts = [...locs.map(l => ({ v: 'office:' + l.id, l: 'Bureau · ' + l.city })), { v: 'remote', l: 'Distanciel' }, { v: 'travel', l: 'Déplacement' }, { v: 'off', l: 'Absent' }, { v: 'none', l: '—' }];
+    const tplRows = WD.map(i => { const lbl = DNA[i];
+      const upd = hi => e => { const v = e.target.value; this.setState(s => { const tpl = s.tpl.map(r => r.slice()); tpl[i][hi] = v; return { tpl }; }); };
+      return { label: lbl, am: S.tpl[i][0], pm: S.tpl[i][1], onAm: upd(0), onPm: upd(1) };
+    });
+
+    // Day chips + mobile who-is-where
+    const dayChips = isos.map((d, i) => { const on = i === dIdx; return { name: DN[i], num: dates[i].getDate(), bg: on ? '#2B4ACB' : '#FFFFFF', fg: on ? '#FFFFFF' : '#1B2140', border: on ? '1px solid #2B4ACB' : '1px solid #E4E6EB', onClick: () => this.setState({ dayIdx: i }) }; });
+    const sd = isos[dIdx];
+    const buckets = {}; filtered.forEach(u => { const e = this.entry(u.id, sd, S.mHalf); const k = e.s === 'office' ? 'office:' + e.loc : e.s; (buckets[k] = buckets[k] || []).push({ u, e }); });
+    const whoGroups = [...locs.map(l => 'office:' + l.id), 'remote', 'travel', 'off', 'none'].filter(k => buckets[k]).map(k => {
+      const s = k.indexOf('office') === 0 ? 'office' : k; const l = s === 'office' ? this.locBy(k.slice(7)) : null; const st = ST[s];
+      return { s, title: l ? 'Bureau · ' + l.city : st.label, count: buckets[k].length, bg: st.bg, fg: st.fg, border: s === 'none' ? '1px dashed #CDD1D8' : '1px solid transparent',
+        people: buckets[k].map(({ u, e }) => ({ name: u.first + ' ' + u.last + (u.id === this.state.meId ? ' (vous)' : ''), initials: ini(u), sub: this.tName(u.team) + (e.note ? ' · ' + e.note : ''), onClick: () => this.openEntry(u.id, sd, S.mHalf) })) };
+    });
+
+    // Lieux
+    let maxC = 1; const counts = {};
+    locs.forEach(l => { counts[l.id] = isos.map(d => ['am', 'pm'].map(h => { const c = active.filter(u => { const e = this.entry(u.id, d, h); return e.s === 'office' && e.loc === l.id; }).length; maxC = Math.max(maxC, c); return c; })); });
+    const locCards = locs.map(l => {
+      const present = active.filter(u => ['am', 'pm'].some(h => { const e = this.entry(u.id, sd, h); return e.s === 'office' && e.loc === l.id; }));
+      return { ...l, am: counts[l.id][dIdx][0], pm: counts[l.id][dIdx][1], attached: active.filter(u => u.home === l.id).length,
+        days: counts[l.id].map((c, i) => { const on = i === dIdx; return { amH: Math.max(2, Math.round(c[0] / maxC * 72)) + 'px', pmH: Math.max(2, Math.round(c[1] / maxC * 72)) + 'px', amColor: on ? '#2B4ACB' : '#B9C8F4', pmColor: on ? '#6F89DE' : '#D6DFF8', amTitle: 'Matin : ' + c[0], pmTitle: 'Après-midi : ' + c[1], label: DN[i] + ' ' + dates[i].getDate(), labelColor: on ? '#1B2140' : '#8A909B', labelWeight: on ? '600' : '400' }; }),
+        present: present.map(u => ({ name: u.first + ' ' + u.last, first: u.first, initials: ini(u) })), empty: present.length === 0,
+        onEdit: () => this.setState({ modal: { type: 'loc', id: l.id, form: { name: l.name, city: l.city, code: l.code, address: l.address }, error: '' } }) };
+    });
+
+    // Users
+    const uq = strip(S.uSearch.trim());
+    const urows = S.users.filter(u => inCo(u) && (S.uTeam === 'all' || u.team === S.uTeam) && (!uq || strip(u.first + ' ' + u.last + ' ' + u.email).includes(uq))).sort((a, b) => a.last.localeCompare(b.last));
+    const userRows = urows.map(u => { const l = this.locBy(u.home); return { name: u.first + ' ' + u.last, initials: ini(u), email: u.email, team: this.tName(u.team), locCity: l ? l.city : '—', roleLabel: u.role === 'admin' ? 'Admin' : 'Collaborateur', roleBg: u.role === 'admin' ? '#2B4ACB' : '#F0F1F4', roleFg: u.role === 'admin' ? '#FFFFFF' : '#3B3F48', opacity: u.active ? 1 : 0.5, swBg: u.active ? '#2B4ACB' : '#CDD1D8', swJustify: u.active ? 'flex-end' : 'flex-start',
+      onEdit: () => this.setState({ modal: { type: 'user', id: u.id, form: { first: u.first, last: u.last, email: u.email, team: u.team, home: u.home, role: u.role }, error: '' } }),
+      onToggle: () => { if (u.id === this.state.meId) { this.toast('Vous ne pouvez pas désactiver votre propre compte'); return; } this.setState(s => ({ users: s.users.map(x => x.id === u.id ? { ...x, active: !x.active } : x) })); this.toast(u.first + ' ' + (u.active ? 'désactivé(e)' : 'réactivé(e)')); } }; });
+
+    // Sélection multiple
+    const SL = S.sel && S.sel.wk === S.wk && !S.modal ? S.sel : null; let bar = {};
+    if (SL) {
+      const slots = []; for (let o = SL.lo; o <= SL.hi; o++) if (isos[o >> 1]) slots.push([isos[o >> 1], o & 1 ? 'pm' : 'am']);
+      const su = S.users.find(x => x.id === SL.uid); const d0 = SL.lo >> 1, d1 = SL.hi >> 1;
+      const fullDays = SL.lo % 2 === 0 && SL.hi % 2 === 1; const nd = d1 - d0 + 1;
+      const cnt = fullDays ? nd + ' jour' + (nd > 1 ? 's' : '') : slots.length + ' demi-journée' + (slots.length > 1 ? 's' : '');
+      const dl = (i, h) => DN[i] + ' ' + dates[i].getDate() + (fullDays ? '' : h);
+      const range = (su && su.id !== S.meId ? su.first + ' ' + su.last + ' · ' : '') + (SL.lo === SL.hi ? dl(d0, SL.lo & 1 ? ' ap.-midi' : ' matin') : dl(d0, SL.lo & 1 ? ' ap.-midi' : '') + ' → ' + dl(d1, SL.hi & 1 ? '' : ' matin'));
+      const apply = (v, label) => { const ov = { ...this.state.ov }; slots.forEach(([d, h]) => { ov[SL.uid + '|' + d + '|' + h] = v; }); this.setState({ ov, sel: null }); this.toast(cnt + ' : ' + label); };
+      const bp = S.barPos; bar = { left: bp ? bp.left + 'px' : '0px', top: bp ? bp.top + 'px' : '0px', vis: bp ? 'visible' : 'hidden', cnt, range, close: () => this.setState({ sel: null }), clear: () => apply({ s: 'none' }, 'effacé'),
+        opts: [...locs.map(l => ({ s: 'office', label: locs.length > 1 ? 'Bureau · ' + l.city : 'Bureau', v: { s: 'office', loc: l.id, note: '' } })), ...['remote', 'travel', 'off'].map(s => ({ s, label: ST[s].label, v: { s, loc: null, note: '' } }))]
+          .map(o => ({ s: o.s, label: o.label, bg: ST[o.s].bg, fg: ST[o.s].fg, onClick: () => apply(o.v, o.label.toLowerCase()) })) };
+    }
+
+    // Modals
+    const M = S.modal; let em = {}, um = {}, lm = {};
+    if (M && M.type === 'entry') {
+      const u = S.users.find(x => x.id === M.uid); const d = fromIso(M.date); const di = (d.getDay() + 6) % 7; const ce = this.canEdit(M.uid);
+      const quickSave = o => this.setEntries(['am', 'pm'].map(h => [M.uid + '|' + M.date + '|' + h, { s: o.s, loc: o.loc || null, note: (M.note || '').trim() }]), DLA[di] + ' : ' + o.label.toLowerCase());
+      const quick = [...locs.map(l => ({ s: 'office', loc: l.id, label: locs.length > 1 ? 'Bureau · ' + l.city : 'Bureau' })), ...['remote', 'travel', 'off'].map(s => ({ s, loc: null, label: ST[s].label }))].map(o => { const on = M.wasSet && M.am.s === o.s && (o.s !== 'office' || M.am.loc === o.loc); return { s: o.s, label: o.label, bg: on ? ST[o.s].bg : '#FFFFFF', fg: on ? ST[o.s].fg : '#3B3F48', border: on ? '1.5px solid ' + ST[o.s].fg : '1px solid #DADDE3', onClick: () => quickSave(o) }; });
+      em = { who: M.uid === this.state.meId ? 'Ma présence' : u.first + ' ' + u.last + ' · ' + this.tName(u.team), dateLabel: DLA[di] + ' ' + d.getDate() + ' ' + MO[d.getMonth()], canEdit: ce, readOnly: !ce, wasSet: M.wasSet, note: M.note, showSave: M.split, quickHint: !M.split,
+        onNote: e => this.setM({ note: e.target.value }),
+        modes: [[false, 'Journée entière'], [true, 'Matin ≠ après-midi']].map(([v, lbl]) => ({ label: lbl, ...seg(M.split === v, () => this.setM(v ? { split: true } : { split: false, pm: { ...M.am } })) })),
+        halves: (M.split ? ['am', 'pm'] : ['am']).map(h => {
+          const v = M[h]; const upd = patch => this.setM(M.split ? { [h]: { ...v, ...patch } } : { am: { ...v, ...patch }, pm: { ...v, ...patch } });
+          const sameAsAm = h === 'pm' && M.pm.s === M.am.s && (M.am.s !== 'office' || M.pm.loc === M.am.loc);
+          const focus = M.split && M.period === h;
+          return { split: M.split, title: h === 'am' ? 'Matin' : 'Après-midi', hours: h === 'am' ? '8h – 12h' : '14h – 18h', isOffice: M.split && v.s === 'office',
+            canCopy: h === 'pm' && !sameAsAm, copyAm: () => this.setM({ pm: { ...M.am } }),
+            cardBorder: M.split ? (focus ? '1.5px solid #2B4ACB' : '1px solid #E3E5EA') : 'none', cardPad: M.split ? '14px' : '0', cardBg: M.split ? '#FAFBFC' : 'transparent',
+            stH: M.split ? '44px' : '54px',
+            statuses: !M.split ? quick : ['office', 'remote', 'travel', 'off'].map(s => { const on = v.s === s; return { s, label: ST[s].label, bg: on ? ST[s].bg : '#FFFFFF', fg: on ? ST[s].fg : '#3B3F48', border: on ? '1.5px solid ' + ST[s].fg : '1px solid #DADDE3', onClick: () => upd({ s }) }; }),
+            locs: locs.map(l => { const on = v.loc === l.id; return { label: l.city, bg: on ? '#EAF0FD' : '#FFFFFF', fg: on ? '#2B4ACB' : '#3B3F48', border: on ? '1.5px solid #2B4ACB' : '1px solid #DADDE3', onClick: () => upd({ loc: l.id }) }; }) };
+        }),
+        summary: M.split ? ['am', 'pm'].map(h => { const v = M[h]; const l = this.locBy(v.loc); return (h === 'am' ? 'Matin : ' : 'Après-midi : ') + (v.s === 'office' ? 'Bureau · ' + (l ? l.city : '') : ST[v.s].label); }).join('  ·  ') : '',
+        ro: [['am', 'Matin'], ['pm', 'Après-midi']].map(([h, lbl]) => ({ half: lbl, ...this.cell(this.entry(M.uid, M.date, h), M.uid, M.date, h) })).map(c => ({ ...c, sub: c.s === 'none' ? '' : c.sub }))
+      };
+    }
+    if (M && M.type === 'user') {
+      const f = M.form; const err = M.error || '';
+      um = { title: M.id ? 'Modifier le collaborateur' : 'Nouveau collaborateur', cta: M.id ? 'Enregistrer' : 'Ajouter', ...f, hasError: !!err, error: err,
+        firstBorder: err && !f.first.trim() ? '1px solid #B42318' : '1px solid #DADDE3', lastBorder: err && !f.last.trim() ? '1px solid #B42318' : '1px solid #DADDE3', emailBorder: M.emailErr ? '1px solid #B42318' : '1px solid #DADDE3',
+        onFirst: e => this.setF({ first: e.target.value }), onLast: e => this.setF({ last: e.target.value }), onEmail: e => this.setF({ email: e.target.value }), onTeam: e => this.setF({ team: e.target.value }), onHome: e => this.setF({ home: e.target.value }),
+        roles: [['collab', 'Collaborateur'], ['admin', 'Administrateur']].map(([r, lbl]) => ({ label: lbl, ...seg(f.role === r, () => this.setF({ role: r })) })) };
+    }
+    if (M && M.type === 'loc') {
+      const f = M.form; const err = M.error || ''; const att = M.id ? S.users.filter(u => u.home === M.id).length : 0;
+      lm = { title: M.id ? 'Modifier le lieu' : 'Nouveau lieu', cta: M.id ? 'Enregistrer' : 'Ajouter', ...f, hasError: !!err, error: err, canDelete: !!M.id && att === 0, deleteHint: !!M.id && att > 0,
+        nameBorder: err && !f.name.trim() ? '1px solid #B42318' : '1px solid #DADDE3', codeBorder: err && f.code.trim().length < 2 ? '1px solid #B42318' : '1px solid #DADDE3',
+        onName: e => this.setF({ name: e.target.value }), onCode: e => this.setF({ code: e.target.value.toUpperCase() }), onCity: e => this.setF({ city: e.target.value }), onAddress: e => this.setF({ address: e.target.value }) };
+    }
+
+    const plural = (n, w) => n + ' ' + w + (n > 1 ? 's' : '');
+    const byLast = (a, b) => a.last.localeCompare(b.last);
+    const coUsers = S.users.filter(inCo);
+    const orgTeamId = coTeams.some(t => t.id === S.orgTeam) ? S.orgTeam : (coTeams[0] || {}).id;
+    const selTeam = coTeams.find(t => t.id === orgTeamId);
+    const moveTo = (u, tid) => { if (!tid || tid === u.team) return; this.setState(s => ({ users: s.users.map(x => x.id === u.id ? { ...x, team: tid } : x) })); this.toast(u.first + ' ' + u.last + ' → ' + this.tName(tid)); };
+    const orgCos = S.companies.map(c => { const on = c.id === co; return { name: c.name, count: S.users.filter(u => this.uCo(u) === c.id).length, bg: on ? '#2B4ACB' : '#FFFFFF', fg: on ? '#FFFFFF' : '#1B2140', border: on ? '1px solid #2B4ACB' : '1px solid #DADDE3', onClick: () => this.setState({ co: c.id, orgTeam: null, team: 'all', uTeam: 'all', loc: 'all' }) }; });
+    const orgTeams = coTeams.map(t => { const mem = coUsers.filter(u => u.team === t.id).sort(byLast); const adm = mem.filter(u => u.role === 'admin').length; const on = t.id === orgTeamId;
+      return { name: t.name, sub: plural(mem.length, 'membre') + (adm ? ' · ' + adm + ' admin' : ''), avatars: mem.slice(0, 4).map(u => ({ initials: ini(u) })), hasMore: mem.length > 4, more: '+' + (mem.length - 4), bg: on ? '#F3F6FE' : '#FFFFFF', color: on ? '#2B4ACB' : '#1B2140', onClick: () => this.setState({ orgTeam: t.id }) }; });
+    const tmem = selTeam ? coUsers.filter(u => u.team === selTeam.id).sort(byLast) : [];
+    const others = selTeam ? coUsers.filter(u => u.team !== selTeam.id).sort(byLast) : [];
+    const ot = selTeam ? { has: true, name: selTeam.name, countLabel: plural(tmem.length, 'membre') + ' · ' + plural(tmem.filter(u => u.active).length, 'actif'), empty: !tmem.length, canAdd: others.length > 0, addVal: '',
+      addOpts: [{ v: '', l: 'Choisir un collaborateur…' }, ...others.map(u => ({ v: u.id, l: u.first + ' ' + u.last + ' — ' + this.tName(u.team) }))],
+      onAdd: e => { const u = S.users.find(x => x.id === e.target.value); if (u) moveTo(u, selTeam.id); },
+      onRename: () => this.setState({ modal: { type: 'team', id: selTeam.id, form: { name: selTeam.name }, error: '' } }),
+      onNewUser: () => this.openUser(null, { team: selTeam.id, home: (locs[0] || {}).id || '' }),
+      members: tmem.map(u => ({ name: u.first + ' ' + u.last, initials: ini(u), email: u.email, team: u.team, opacity: u.active ? 1 : 0.5, roleLabel: u.role === 'admin' ? 'Admin' : 'Collaborateur', roleBg: u.role === 'admin' ? '#2B4ACB' : '#F0F1F4', roleFg: u.role === 'admin' ? '#FFFFFF' : '#3B3F48', onEdit: () => this.openUser(u), onMove: e => moveTo(u, e.target.value) })) } : { has: false, members: [], addOpts: [] };
+    const org = { name: coObj.name, domain: coObj.domain || 'Aucun domaine', initials: (coObj.name || '?').split(/\s+/).filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase(), nTeams: coTeams.length, nUsers: coUsers.filter(u => u.active).length, nLocs: locs.length,
+      onEdit: () => this.setState({ modal: { type: 'co', id: co, form: { name: coObj.name, domain: coObj.domain || '' }, error: '' } }) };
+    let tmm = {}, cm = {};
+    const RED = '1px solid #B42318', GREY = '1px solid #DADDE3';
+    if (M && M.type === 'team') { const f = M.form; const err = M.error || ''; const n = M.id ? S.users.filter(u => u.team === M.id).length : 0;
+      tmm = { title: M.id ? 'Modifier l’équipe' : 'Nouvelle équipe', cta: M.id ? 'Enregistrer' : 'Créer l’équipe', name: f.name, coName: coObj.name, hasError: !!err, error: err, canDelete: !!M.id && n === 0, deleteHint: !!M.id && n > 0, deleteHintText: 'Suppression impossible : ' + plural(n, 'membre') + ' dans cette équipe.', nameBorder: err ? RED : GREY, onName: e => this.setF({ name: e.target.value }) }; }
+    if (M && M.type === 'co') { const f = M.form; const err = M.error || ''; const nt = M.id ? S.teams.filter(t => t.co === M.id).length : 0; const isMine = M.id === meCo;
+      cm = { title: M.id ? 'Modifier l’entreprise' : 'Nouvelle entreprise', cta: M.id ? 'Enregistrer' : 'Créer l’entreprise', name: f.name, domain: f.domain, hasError: !!err, error: err, canDelete: !!M.id && nt === 0 && !isMine, deleteHint: !!M.id && (nt > 0 || isMine), deleteHintText: isMine ? 'Suppression impossible : votre compte est rattaché à cette entreprise.' : 'Suppression impossible : supprimez d’abord ses équipes.',
+        nameBorder: err && !f.name.trim() ? RED : GREY, domainBorder: err && M.domainErr ? RED : GREY, onName: e => this.setF({ name: e.target.value }), onDomain: e => this.setF({ domain: e.target.value.trim().toLowerCase() }) }; }
+    const titles = { org: ['Entreprise', 'Équipes et membres de l’organisation.'], config: ['Configuration', 'Paramètres de l’organisation, réservés aux administrateurs.'], planning: ['Planning de l’équipe', 'Qui est où, chaque demi-journée.'], me: ['Ma semaine', 'Renseignez votre présence, ou appliquez votre semaine type.'], lieux: ['Lieux de travail', 'Occupation des bureaux sur la semaine.'], users: ['Utilisateurs', 'Gérez les comptes, équipes et rattachements.'] };
+    const selD = dates[dIdx];
+
+    const doLogin = (role, name, meId, extra, msg) => { this.setState({ lBusy: true, lErr: '', sErr: '' }); clearTimeout(this._lt); this._lt = setTimeout(() => { this.setState({ ...(extra || {}), authed: true, lBusy: false, lPwd: '', sPwd: '', role, tab: msg ? 'me' : 'planning', meId: meId || 'u1', lView: 'login', co: null, orgTeam: null }); this.toast(msg || ('Bienvenue ' + name)); }, 600); };
+    const pw = S.sPwd; const score = !pw ? 0 : Math.min(4, (pw.length >= 8) + /[A-Z]/.test(pw) + /[0-9]/.test(pw) + /[^A-Za-z0-9]/.test(pw));
+    const sPre = (S.sDomain || '').trim().toLowerCase(); const sDom = sPre ? sPre + '.example.com' : ''; const sCoM = sPre ? S.companies.find(c => c.domain && (c.domain.toLowerCase() === sDom || c.domain.toLowerCase().split('.')[0] === sPre)) : null; const sCo = sCoM || { id: null, name: '—' };
+    const sTeams = S.teams.filter(t => t.co === sCo.id); const sLocs = S.locs.filter(l => l.co === sCo.id);
+    const sTeam = sTeams.some(t => t.id === S.sTeam) ? S.sTeam : (sTeams[0] || {}).id || '';
+    const sHome = S.sHome && sLocs.some(l => l.id === S.sHome) ? S.sHome : (sLocs[0] || {}).id || '';
+    const PC = ['#B42318', '#C4790A', '#2B4ACB', '#1F7A4D'];
+    const signup = {
+      show: S.lView === 'signup', first: S.sFirst, last: S.sLast, email: S.sEmail, team: sTeam, home: sHome, pwd: S.sPwd, cgu: S.sCgu,
+      teams: sTeams.map(t => ({ v: t.id, l: t.name })), locs: sLocs.map(l => ({ v: l.id, l: l.city })),
+      domain: S.sDomain || '', domainBorder: /domaine/i.test(S.sErr || '') ? '1px solid #B42318' : '1px solid #DADDE3',
+      onDomain: e => this.setState({ sDomain: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''), sErr: '' }),
+      coName: sCoM ? sCo.name : '—', coHint: sCoM ? '· reconnue' : (sDom ? '· domaine non enregistré' : '· saisissez le domaine'),
+      bars: [1, 2, 3, 4].map(i => ({ bg: i <= score ? PC[score - 1] : '#E4E6EB' })),
+      pwdHint: !pw ? '8 caractères minimum, avec majuscule, chiffre ou symbole.' : ['Trop faible', 'Faible', 'Correct', 'Robuste'][Math.max(0, score - 1)] + (pw.length < 8 ? ' · 8 caractères minimum' : ''),
+      pwdHintColor: !pw ? '#8A909B' : PC[Math.max(0, score - 1)],
+      hasError: !!S.sErr, error: S.sErr, cta: S.lBusy ? 'Création du compte…' : 'Créer mon compte',
+      onFirst: e => this.setState({ sFirst: e.target.value, sErr: '' }), onLast: e => this.setState({ sLast: e.target.value, sErr: '' }),
+      onEmail: e => this.setState({ sEmail: e.target.value, sErr: '' }), onTeam: e => this.setState({ sTeam: e.target.value }),
+      onHome: e => this.setState({ sHome: e.target.value }), onPwd: e => this.setState({ sPwd: e.target.value, sErr: '' }),
+      onCgu: e => this.setState({ sCgu: e.target.checked, sErr: '' }), noop: e => e.preventDefault(),
+      goLogin: e => { e.preventDefault(); this.setState({ lView: 'login', sErr: '' }); },
+      submit: e => {
+        e.preventDefault(); if (S.lBusy) return; const em = S.sEmail.trim().toLowerCase();
+        if (!S.sFirst.trim() || !S.sLast.trim()) return this.setState({ sErr: 'Renseignez votre prénom et votre nom.' });
+        if (!sDom) return this.setState({ sErr: 'Renseignez le nom de domaine de votre entreprise.' });
+        if (!sCoM) return this.setState({ sErr: 'Aucune entreprise n’est enregistrée avec le domaine ' + sDom + '. Contactez votre administrateur.' });
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return this.setState({ sErr: 'Saisissez une adresse email valide.' });
+        if (em.split('@')[1] !== sCoM.domain.toLowerCase()) return this.setState({ sErr: 'Votre email doit appartenir au domaine @' + sCoM.domain + '.' });
+        if (S.users.some(x => x.email === em)) return this.setState({ sErr: 'Un compte existe déjà avec cet email. Connectez-vous.' });
+        if (pw.length < 8) return this.setState({ sErr: 'Le mot de passe doit contenir au moins 8 caractères.' });
+        if (!S.sCgu) return this.setState({ sErr: 'Acceptez les conditions d’utilisation pour continuer.' });
+        const nu = { id: 'u' + Date.now(), first: S.sFirst.trim(), last: S.sLast.trim(), email: em, team: sTeam, home: sHome, role: 'collab', active: true };
+        doLogin('collab', nu.first, nu.id, { users: [...S.users, nu], lEmail: em, sFirst: '', sLast: '', sEmail: '', sDomain: '', sCgu: false }, 'Compte créé — bienvenue ' + nu.first + ' !');
+      }
+    };
+    const login = {
+      email: S.lEmail, pwd: S.lPwd, remember: S.lRemember, hasError: !!S.lErr, error: S.lErr,
+      pwdType: S.lShow ? 'text' : 'password', pwdToggleLabel: S.lShow ? 'Masquer' : 'Afficher',
+      emailBorder: /email|compte/i.test(S.lErr) ? '1px solid #B42318' : '1px solid #DADDE3', pwdBorder: /mot de passe/i.test(S.lErr) ? '1px solid #B42318' : '1px solid #DADDE3',
+      cta: S.lBusy ? 'Connexion…' : 'Se connecter', btnOpacity: S.lBusy ? 0.7 : 1,
+      onEmail: e => this.setState({ lEmail: e.target.value, lErr: '' }), onPwd: e => this.setState({ lPwd: e.target.value, lErr: '' }),
+      onRemember: e => this.setState({ lRemember: e.target.checked }), togglePwd: () => this.setState(s => ({ lShow: !s.lShow })),
+      forgot: e => { e.preventDefault(); const em = S.lEmail.trim(); this.toast(em ? 'Lien de réinitialisation envoyé à ' + em : 'Saisissez d’abord votre email'); },
+      sso: () => { const u0 = S.users.find(x => x.id === 'u1'); doLogin(u0.role, u0.first, 'u1'); },
+      isLogin: S.lView !== 'signup', goSignup: e => { e.preventDefault(); this.setState({ lView: 'signup', lErr: '' }); },
+      submit: e => {
+        e.preventDefault(); if (S.lBusy) return; const em = S.lEmail.trim().toLowerCase();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return this.setState({ lErr: 'Saisissez une adresse email valide.' });
+        if (!S.lPwd) return this.setState({ lErr: 'Saisissez votre mot de passe.' });
+        const u = S.users.find(x => x.email === em);
+        if (!u) return this.setState({ lErr: 'Aucun compte ne correspond à cet email.' });
+        if (!u.active) return this.setState({ lErr: 'Ce compte est désactivé. Contactez un administrateur.' });
+        doLogin(u.role, u.first, u.id);
+      }
+    };
+    return {
+      showLogin: !S.authed, authed: S.authed, login, signup,
+      logout: () => this.setState({ authed: false, modal: null, lErr: '' }),
+      isMobile, isDesktop: !isMobile, isAdmin, showMeText: S.w >= 1100, headGap: S.w >= 1100 ? '36px' : '16px', showLabels: this.props.showLabels ?? true,
+      nav: { planning: navItem('planning'), me: navItem('me'), lieux: navItem('lieux'), users: navItem('users'), org: navItem('org'), config: navItem('config') }, coName: coObj.name,
+      roleCollab: seg(!isAdmin, () => this.setState({ role: 'collab' })), roleAdmin: seg(isAdmin, () => this.setState({ role: 'admin' })),
+      toggleRole: () => this.setState({ role: isAdmin ? 'collab' : 'admin' }), roleLabel: isAdmin ? 'Admin' : 'Collaborateur',
+      me: { initials: ini(meU), name: meU.first + ' ' + meU.last, team: this.tName(meU.team), locCity: meLoc ? meLoc.city : '—' },
+      mainPad: isMobile ? '18px 14px 96px' : '28px 24px 48px', h1Size: isMobile ? '22px' : '26px',
+      pageTitle: titles[tab][0], pageSub: titles[tab][1], showWeekNav: tab !== 'users' && tab !== 'config' && tab !== 'org', showOrg: tab === 'org' && isAdmin, orgCos, org, orgTeams, orgNoTeams: !coTeams.length, ot, orgCols: S.w < 900 ? 'minmax(0,1fr)' : '340px minmax(0,1fr)', otCols: isMobile ? 'minmax(0,1fr) 130px' : 'minmax(0,1fr) 110px 170px', showConfig: tab === 'config' && isAdmin,
+      nDays: nD, planMinW: (230 + nD * 118) + 'px', barGap: nD > 5 ? '4px' : '10px',
+      cfgDays: DNA.map((short, i) => { const on = WD.includes(i); return { short, long: DLA[i], bg: on ? '#EAF0FD' : '#FFFFFF', fg: on ? '#2B4ACB' : '#5E6470', border: on ? '1.5px solid #2B4ACB' : '1px solid #DADDE3', boxBg: on ? '#2B4ACB' : '#FFFFFF', boxBorder: on ? '1px solid #2B4ACB' : '1px solid #CDD1D8',
+        onClick: () => { if (on && nD === 1) return this.toast('Au moins un jour doit rester affiché'); this.setState({ workDays: on ? WD.filter(x => x !== i) : [...WD, i].sort((a, b) => a - b) }); this.toast(DLA[i] + (on ? ' masqué du planning' : ' ajouté au planning')); } }; }),
+      cfgPresets: [['Lun – Ven', [0, 1, 2, 3, 4]], ['Lun – Sam', [0, 1, 2, 3, 4, 5]], ['Mar – Sam', [1, 2, 3, 4, 5]], ['7 j / 7', [0, 1, 2, 3, 4, 5, 6]]].map(([label, arr]) => { const on = arr.join() === WD.join(); return { label, bg: on ? '#2B4ACB' : '#FFFFFF', fg: on ? '#FFFFFF' : '#1B2140', border: on ? '1px solid #2B4ACB' : '1px solid #DADDE3', onClick: () => { this.setState({ workDays: arr }); this.toast('Planning : ' + label); } }; }),
+      cfgSummary: nD + ' jour' + (nD > 1 ? 's' : '') + ' affiché' + (nD > 1 ? 's' : '') + ' : ' + DL.join(', ').toLowerCase() + '.',
+      prevWeek: () => this.setState(s => ({ wk: s.wk - 1 })), nextWeek: () => this.setState(s => ({ wk: s.wk + 1 })), thisWeek: () => this.setState({ wk: 0, dayIdx: 0 }),
+      weekLabel, weekNum: isoWeek(mon),
+      showMissing: missingCount > 0 && tab === 'planning', missingCount, goMe: go('me'),
+      showPlanDesk: tab === 'planning' && !isMobile, showPlanMobile: tab === 'planning' && isMobile, showMe: tab === 'me', showLieux: tab === 'lieux', showUsers: tab === 'users' && isAdmin,
+      search: S.search, onSearch: e => this.setState({ search: e.target.value }), team: S.team, onTeam: e => this.setState({ team: e.target.value }), loc: S.loc, onLoc: e => this.setState({ loc: e.target.value }),
+      teamOpts: [{ v: 'all', l: 'Toutes les équipes' }, ...coTeams.map(t => ({ v: t.id, l: t.name }))], teamList: coTeams.map(t => ({ v: t.id, l: t.name })),
+      locOpts: [{ v: 'all', l: 'Tous les lieux' }, ...locs.map(l => ({ v: l.id, l: l.name }))], locList: locs.map(l => ({ v: l.id, l: l.name })),
+      legend: [...['office', 'remote', 'travel', 'off', 'none'].map(s => ({ s, label: ST[s].label, bg: ST[s].bg, fg: ST[s].fg, border: s === 'none' ? '1px dashed #CDD1D8' : '1px solid transparent' }))],
+      rowCountLabel: filtered.length + ' collaborateurs', groups, noRows: groups.length === 0, dayHeads,
+      myDays, tplOpts, tplRows, applyTpl1: () => this.applyTpl(1), applyTpl4: () => this.applyTpl(4),
+      meCols: S.w < 1040 ? 'minmax(0,1fr)' : 'minmax(0,1fr) 360px', dayRowCols: isMobile ? 'minmax(0,1fr) minmax(0,1fr)' : '120px minmax(0,1fr) minmax(0,1fr) auto', spanAll: isMobile ? '1 / -1' : 'auto',
+      quickSize: isMobile ? '44px' : '34px', quickFlex: isMobile ? '1' : 'none',
+      dayChips, halfAm: seg(S.mHalf === 'am', () => this.setState({ mHalf: 'am' })), halfPm: seg(S.mHalf === 'pm', () => this.setState({ mHalf: 'pm' })), whoGroups,
+      locCards, selDayLabel: isos[dIdx] === todayIso ? 'aujourd’hui' : 'le ' + DL[dIdx].toLowerCase() + ' ' + selD.getDate() + ' ' + MO[selD.getMonth()],
+      newLoc: () => this.setState({ modal: { type: 'loc', id: null, form: { name: '', city: '', code: '', address: '' }, error: '' } }),
+      uSearch: S.uSearch, onUSearch: e => this.setState({ uSearch: e.target.value }), uTeam: S.uTeam, onUTeam: e => this.setState({ uTeam: e.target.value }),
+      userRows, userCols: isMobile ? 'minmax(0,1fr) auto' : 'minmax(0,2fr) minmax(0,2.2fr) minmax(0,1fr) minmax(0,1fr) 110px 70px',
+      userCount: urows.length + ' collaborateur(s) · ' + urows.filter(u => u.active).length + ' actif(s)',
+      newUser: () => { if (!coTeams.length) return this.toast('Créez d’abord une équipe dans l’onglet Entreprise'); this.openUser(null, { team: coTeams[0].id, home: (locs[0] || {}).id || '' }); },
+      newTeam: () => this.setState({ modal: { type: 'team', id: null, form: { name: '' }, error: '' } }),
+      newCo: () => this.setState({ modal: { type: 'co', id: null, form: { name: '', domain: '' }, error: '' } }),
+      mTeam: !!M && M.type === 'team', mCo: !!M && M.type === 'co', tmm, cm,
+      saveTeam: () => { const name = M.form.name.trim(); if (!name) return this.setState({ modal: { ...M, error: 'Le nom de l’équipe est obligatoire.' } });
+        if (S.teams.some(t => t.co === co && t.id !== M.id && strip(t.name) === strip(name))) return this.setState({ modal: { ...M, error: 'Une équipe porte déjà ce nom.' } });
+        if (M.id) { this.setState({ teams: S.teams.map(t => t.id === M.id ? { ...t, name } : t), modal: null }); this.toast('Équipe mise à jour'); }
+        else { const id = 't' + Date.now(); this.setState({ teams: [...S.teams, { id, name, co }], orgTeam: id, modal: null }); this.toast('Équipe « ' + name + ' » créée'); } },
+      deleteTeam: () => { this.setState({ teams: S.teams.filter(t => t.id !== M.id), modal: null, orgTeam: null, team: S.team === M.id ? 'all' : S.team, uTeam: S.uTeam === M.id ? 'all' : S.uTeam }); this.toast('Équipe supprimée'); },
+      saveCo: () => { const name = M.form.name.trim(); const domain = M.form.domain.trim().replace(/^@/, '');
+        if (!name) return this.setState({ modal: { ...M, error: 'Le nom de l’entreprise est obligatoire.' } });
+        if (domain && !/^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(domain)) return this.setState({ modal: { ...M, error: 'Domaine invalide (ex. entreprise.fr).', domainErr: true } });
+        if (domain && S.companies.some(c => c.id !== M.id && c.domain === domain)) return this.setState({ modal: { ...M, error: 'Ce domaine est déjà associé à une autre entreprise.', domainErr: true } });
+        if (M.id) { this.setState({ companies: S.companies.map(c => c.id === M.id ? { ...c, name, domain } : c), modal: null }); this.toast('Entreprise mise à jour'); }
+        else { const id = 'c' + Date.now(); this.setState({ companies: [...S.companies, { id, name, domain }], co: id, orgTeam: null, team: 'all', uTeam: 'all', loc: 'all', modal: null }); this.toast('Entreprise « ' + name + ' » créée'); } },
+      deleteCo: () => { this.setState({ companies: S.companies.filter(c => c.id !== M.id), locs: S.locs.filter(l => l.co !== M.id), co: null, orgTeam: null, team: 'all', uTeam: 'all', loc: 'all', modal: null }); this.toast('Entreprise supprimée'); },
+      mEntry: !!M && M.type === 'entry', mUser: !!M && M.type === 'user', mLoc: !!M && M.type === 'loc', em, um, lm,
+      closeModal: () => this.setState({ modal: null }), stop: e => e.stopPropagation(),
+      modalAlign: isMobile ? 'flex-end' : 'center', modalPad: isMobile ? '0' : '24px', modalRadius: isMobile ? '16px 16px 0 0' : '14px',
+      saveEntry: () => { this.setEntries(['am', 'pm'].map(h => { const v = M.split ? M[h] : M.am; return [M.uid + '|' + M.date + '|' + h, { s: v.s, loc: v.s === 'office' ? v.loc : null, note: M.note.trim() }]; }), 'Présence enregistrée'); },
+      clearEntry: () => { const halves = ['am', 'pm']; this.setEntries(halves.map(h => [M.uid + '|' + M.date + '|' + h, { s: 'none' }]), 'Présence effacée'); },
+      saveUser: () => {
+        const f = M.form; const email = f.email.trim().toLowerCase();
+        if (!f.first.trim() || !f.last.trim()) return this.setState({ modal: { ...M, error: 'Le prénom et le nom sont obligatoires.' } });
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return this.setState({ modal: { ...M, error: 'Adresse email invalide.', emailErr: true } });
+        if (S.users.some(u => u.email === email && u.id !== M.id)) return this.setState({ modal: { ...M, error: 'Cet email est déjà utilisé.', emailErr: true } });
+        const data = { first: f.first.trim(), last: f.last.trim(), email, team: f.team, home: f.home, role: f.role };
+        const users = M.id ? S.users.map(u => u.id === M.id ? { ...u, ...data } : u) : [...S.users, { id: 'u' + Date.now(), active: true, ...data }];
+        this.setState({ users, modal: null }); this.toast(M.id ? 'Collaborateur mis à jour' : data.first + ' a été ajouté(e)');
+      },
+      saveLoc: () => {
+        const f = M.form; if (!f.name.trim() || f.code.trim().length < 2) return this.setState({ modal: { ...M, error: 'Le nom et un code de 2 à 3 lettres sont obligatoires.' } });
+        const data = { name: f.name.trim(), city: f.city.trim() || f.name.split('—')[0].trim(), code: f.code.trim().toUpperCase(), address: f.address.trim() };
+        const locs = M.id ? S.locs.map(l => l.id === M.id ? { ...l, ...data } : l) : [...S.locs, { id: 'l' + Date.now(), co, ...data }];
+        this.setState({ locs, modal: null }); this.toast(M.id ? 'Lieu mis à jour' : 'Lieu ajouté');
+      },
+      deleteLoc: () => { this.setState({ locs: S.locs.filter(l => l.id !== M.id), modal: null, loc: S.loc === M.id ? 'all' : S.loc }); this.toast('Lieu supprimé'); },
+      hasBar: !!SL, bar, hasToast: !!S.toast, toast: S.toast, barRef: this.barRef, toastBottom: isMobile ? '84px' : '28px'
+    };
+  }
+}
+</script>
+</body>
+</html>
