@@ -1,10 +1,34 @@
+include:
+  - compose.data.yaml
 services:
+  postgres:
+    environment:
+      POSTGRES_PASSWORD: local-provisioner-only
+  mailpit:
+    environment:
+      MP_SMTP_AUTH: ici-tests:local-mailpit-only
+      MP_SMTP_AUTH_ALLOW_INSECURE: "true"
   rust:
     build:
       context: .
       dockerfile: backend/Dockerfile
       target: tools
     working_dir: /workspace
+    environment:
+      ICI_TEST_DATABASE: "1"
+      TEST_DATABASE_URL: postgres://postgres:local-provisioner-only@postgres/ici
+      TENANT_DATABASE_BASE_URL: postgres://postgres@postgres/ici
+      SMTP_USERNAME: ici-tests
+      SMTP_PASSWORD: local-mailpit-only
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+      SMTP_TLS: "false"
+      SMTP_FROM: Ici <noreply@ici.localhost>
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
     volumes:
       - .:/workspace
       - cargo-registry:/usr/local/cargo/registry

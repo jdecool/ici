@@ -7,7 +7,14 @@ export default defineConfig({
   workers: 1,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
-    baseURL: process.env['BASE_URL'] ?? 'http://localhost:8080',
+    baseURL: process.env['BASE_URL'] ?? 'http://ici.localhost:8080',
+    launchOptions: {
+      args: process.env['E2E_WEB_IP']
+        ? [
+            `--host-resolver-rules=MAP ici.localhost ${process.env['E2E_WEB_IP']}, MAP *.ici.localhost ${process.env['E2E_WEB_IP']}`,
+          ]
+        : [],
+    },
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },

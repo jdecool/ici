@@ -1,17 +1,27 @@
+include:
+  - compose.data.yaml
 services:
   backend:
     build:
       context: .
       dockerfile: backend/Dockerfile
       target: tools
-    command: cargo watch --why -w backend -w Cargo.toml -w Cargo.lock -x 'run --locked -p ici-server'
+    command: cargo watch --why -w backend -w Cargo.toml -w Cargo.lock -x 'run --locked -p ici-server --bin ici-server'
     environment:
+      TRUST_PROXY: "true"
+      ROOT_DOMAIN: ${ROOT_DOMAIN:-ici.localhost}
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:-http://ici.localhost:5173}
+      CENTRAL_DATABASE_URL: ${CENTRAL_DATABASE_URL:-postgres://ici_registry:local-registry-only@postgres/ici}
+      REGISTRY_KEY: ${REGISTRY_KEY:-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
       RUST_LOG: ${RUST_LOG:-info,tower_http=debug}
+    depends_on:
+      worker:
+        condition: service_healthy
     init: true
     volumes:
       - .:/workspace
-      - cargo-registry:/usr/local/cargo/registry
-      - cargo-git:/usr/local/cargo/git
+      - worker-registry:/usr/local/cargo/registry
+      - worker-git:/usr/local/cargo/git
       - cargo-target:/workspace/target
     healthcheck:
       test: [CMD, curl, --fail, --silent, 'http://localhost:3000/health']
@@ -19,6 +29,9 @@ services:
       timeout: 2s
       start_period: 120s
       retries: 40
+  mailpit:
+    ports:
+      - "127.0.0.1:${MAILPIT_PORT:-8025}:8025"
   web:
     build:
       context: .
@@ -26,6 +39,7 @@ services:
       target: tools
     command: sh -c 'npm ci && npm run dev'
     environment:
+      ROOT_DOMAIN: ${ROOT_DOMAIN:-ici.localhost}
       API_PROXY_TARGET: http://backend:3000
     init: true
     ports:
@@ -36,7 +50,45 @@ services:
     depends_on:
       backend:
         condition: service_started
+  worker:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      target: tools
+    command: cargo watch --why -w backend -w Cargo.toml -w Cargo.lock -s 'rm -f /tmp/ici-worker-ready && cargo run --locked -p ici-server --bin ici-worker'
+    environment:
+      ROOT_DOMAIN: ${ROOT_DOMAIN:-ici.localhost}
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:-http://ici.localhost:5173}
+      CENTRAL_DATABASE_URL: ${CENTRAL_DATABASE_URL:-postgres://ici_registry:local-registry-only@postgres/ici}
+      REGISTRY_KEY: ${REGISTRY_KEY:-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
+      PROVISIONER_DATABASE_URL: ${PROVISIONER_DATABASE_URL:-postgres://postgres:local-provisioner-only@postgres/ici}
+      TENANT_DATABASE_BASE_URL: ${TENANT_DATABASE_BASE_URL:-postgres://postgres@postgres/ici}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_HOST: ${SMTP_HOST:-mailpit}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_TLS: ${SMTP_TLS:-false}
+      SMTP_FROM: ${SMTP_FROM:-Ici <noreply@ici.localhost>}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    healthcheck:
+      test: [CMD, test, -f, /tmp/ici-worker-ready]
+      interval: 2s
+      timeout: 2s
+      start_period: 120s
+      retries: 60
+    volumes:
+      - .:/workspace
+      - worker-registry:/usr/local/cargo/registry
+      - worker-git:/usr/local/cargo/git
+      - worker-target:/workspace/target
 volumes:
+  worker-registry:
+  worker-git:
+  worker-target:
   cargo-registry:
   cargo-git:
   cargo-target:

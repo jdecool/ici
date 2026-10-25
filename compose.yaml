@@ -1,11 +1,23 @@
+include:
+  - compose.data.yaml
 services:
+  mailpit:
+    profiles: [test]
   backend:
     build:
       context: .
       dockerfile: backend/Dockerfile
       target: production
     environment:
+      TRUST_PROXY: "true"
+      ROOT_DOMAIN: ${ROOT_DOMAIN:-ici.localhost}
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:-http://ici.localhost:8080}
+      CENTRAL_DATABASE_URL: ${CENTRAL_DATABASE_URL:-postgres://ici_registry:local-registry-only@postgres/ici}
+      REGISTRY_KEY: ${REGISTRY_KEY:-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
       RUST_LOG: ${RUST_LOG:-info,tower_http=debug}
+    depends_on:
+      worker:
+        condition: service_healthy
     init: true
   web:
     build:
@@ -14,6 +26,12 @@ services:
       target: production
     ports:
       - "127.0.0.1:${HTTP_PORT:-8080}:8080"
+    networks:
+      default:
+        aliases:
+          - ici.localhost
+          - acme.ici.localhost
+          - bravo.ici.localhost
     depends_on:
       backend:
         condition: service_healthy
@@ -24,7 +42,8 @@ services:
       dockerfile: frontend/Dockerfile
       target: e2e
     environment:
-      BASE_URL: http://web:8080
+      BASE_URL: http://ici.localhost:8080
+      MAILPIT_URL: http://mailpit:8025
       CI: "true"
     init: true
     ipc: host
@@ -34,3 +53,32 @@ services:
     volumes:
       - ./frontend/playwright-report:/workspace/frontend/playwright-report
       - ./frontend/test-results:/workspace/frontend/test-results
+
+  worker:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      target: production
+    entrypoint: [ici-worker]
+    environment:
+      ROOT_DOMAIN: ${ROOT_DOMAIN:-ici.localhost}
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:-http://ici.localhost:8080}
+      CENTRAL_DATABASE_URL: ${CENTRAL_DATABASE_URL:-postgres://ici_registry:local-registry-only@postgres/ici}
+      REGISTRY_KEY: ${REGISTRY_KEY:-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
+      PROVISIONER_DATABASE_URL: ${PROVISIONER_DATABASE_URL:-postgres://postgres:local-provisioner-only@postgres/ici}
+      TENANT_DATABASE_BASE_URL: ${TENANT_DATABASE_BASE_URL:-postgres://postgres@postgres/ici}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_HOST: ${SMTP_HOST:-mailpit}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_TLS: ${SMTP_TLS:-false}
+      SMTP_FROM: ${SMTP_FROM:-Ici <noreply@ici.localhost>}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, test, -f, /tmp/ici-worker-ready]
+      interval: 2s
+      timeout: 2s
+      start_period: 120s
+      retries: 60

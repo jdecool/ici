@@ -12,12 +12,15 @@ COPY . .
 
 FROM base AS builder
 COPY . .
-RUN cargo build --locked --release -p ici-server
+RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
+    --mount=type=cache,target=/workspace/target,sharing=locked \
+    cargo build --locked --release -p ici-server && mkdir -p /out && cp target/release/ici-server target/release/ici-worker /out/
 
 FROM debian:bookworm-slim AS production
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && rm -rf /var/lib/apt/lists/* \
     && groupadd --gid 10001 app && useradd --uid 10001 --gid app --no-create-home app
-COPY --from=builder /workspace/target/release/ici-server /usr/local/bin/ici-server
+COPY --from=builder /out/ici-server /usr/local/bin/ici-server
+COPY --from=builder /out/ici-worker /usr/local/bin/ici-worker
 USER 10001:10001
 ENV BIND_ADDRESS=0.0.0.0:3000
 EXPOSE 3000

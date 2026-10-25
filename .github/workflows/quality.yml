@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [check-infra, check-rust, check-frontend, test-rust, test-frontend, coverage-rust, coverage-frontend, mutation-rust, mutation-frontend, audit-rust, audit-frontend, build, e2e]
+        target: [check-infra, check-rust, check-frontend, test-rust, test-frontend, coverage-rust, coverage-frontend, mutation-rust, mutation-frontend, audit-rust, audit-frontend, build, e2e, e2e-https]
     steps:
       - uses: actions/checkout@v4
       - run: make ${{ matrix.target }}

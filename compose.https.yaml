@@ -1,0 +1,13 @@
+services:
+  web:
+    ports:
+      - "${HTTPS_BIND_ADDRESS:-127.0.0.1}:${HTTPS_PORT:-443}:8443"
+    environment:
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:?Set PUBLIC_ORIGIN to the HTTPS root origin}
+    volumes:
+      - ./frontend/nginx.https.conf:/etc/nginx/templates/default.conf.template:ro
+      - ./frontend/nginx.https-main.conf:/etc/nginx/https-main.conf:ro
+      - ${TLS_CERT_DIRECTORY:-./secrets/tls}:/etc/nginx/tls:ro
+    entrypoint: [/bin/sh, -c]
+    command:
+      - envsubst '$$PUBLIC_ORIGIN' < /etc/nginx/templates/default.conf.template > /tmp/https.conf && exec nginx -c /etc/nginx/https-main.conf -g 'daemon off;'

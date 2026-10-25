@@ -6,9 +6,11 @@ PROD = docker compose -p ici -f compose.yaml
 RUST = $(TOOLS) run --build --rm rust
 NODE = $(TOOLS) run --build --rm node
 
-.PHONY: bootstrap require-locks check-infra help dev check check-rust check-frontend test test-rust test-frontend coverage coverage-rust coverage-frontend mutation mutation-rust mutation-frontend audit audit-rust audit-frontend e2e build up down quality format
+.PHONY: migrate-tenants bootstrap require-locks check-infra help dev check check-rust check-frontend test test-rust test-frontend coverage coverage-rust coverage-frontend mutation mutation-rust mutation-frontend audit audit-rust audit-frontend e2e e2e-https build up down quality format
 help:
-	@echo 'bootstrap dev check test coverage mutation audit e2e build up down quality format'
+	@echo 'bootstrap dev check test coverage mutation audit e2e e2e-https build up down migrate-tenants quality format'
+migrate-tenants: require-locks
+	$(PROD) run --rm worker --migrate-tenants
 bootstrap:
 	sh scripts/bootstrap.sh
 require-locks:
@@ -21,6 +23,7 @@ check-infra:
 	docker compose -f compose.dev.yaml config --quiet
 	docker compose -f compose.tools.yaml config --quiet
 	docker compose -f compose.bootstrap.yaml config --quiet
+	PUBLIC_ORIGIN=https://ici.localhost docker compose -f compose.yaml -f compose.https.yaml config --quiet
 	set -e; for script in scripts/*.sh; do bash -n "$$script"; done
 check-rust: require-locks
 	$(RUST) sh scripts/check-rust.sh
@@ -49,15 +52,17 @@ audit-frontend: require-locks
 	$(NODE) npm run audit:dependencies
 e2e: require-locks
 	sh scripts/e2e.sh
+e2e-https: require-locks
+	sh scripts/e2e-https.sh
 build: require-locks
-	$(PROD) build backend web
+	$(PROD) build backend worker web
 up: require-locks
-	$(PROD) up --build --detach --wait backend web
+	$(PROD) up --build --detach --wait backend worker web
 down:
 	$(DEV) down --remove-orphans
 	$(PROD) down --remove-orphans
 	$(TOOLS) down --remove-orphans
-quality: check test coverage mutation audit build e2e
+quality: check test coverage mutation audit build e2e e2e-https
 format:
 	$(RUST) cargo fmt --all
 	$(NODE) npm run format
