@@ -2,7 +2,7 @@ use std::{env, net::SocketAddr};
 use tracing_subscriber::EnvFilter;
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let filter = match env::var("RUST_LOG") {
         Ok(value) => EnvFilter::try_new(value)?,
         Err(env::VarError::NotPresent) => EnvFilter::new("info,tower_http=debug"),
@@ -19,9 +19,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     let listener = tokio::net::TcpListener::bind(address).await?;
     tracing::info!(%address, "HTTP server listening");
-    axum::serve(listener, ici_server::router())
-        .with_graceful_shutdown(shutdown())
-        .await?;
+    let state =
+        ici_server::tenancy::registry::State::connect(ici_server::config::Config::from_env()?)
+            .await?;
+    axum::serve(
+        listener,
+        ici_server::application(state).into_make_service_with_connect_info::<SocketAddr>(),
+    )
+    .with_graceful_shutdown(shutdown())
+    .await?;
     Ok(())
 }
 

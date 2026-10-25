@@ -11,3 +11,7 @@ test-results/
 .stryker-tmp/
 mutants.out*/
 .DS_Store
+
+/secrets/
+
+!backend/crates/server/migrations/**/*.sql

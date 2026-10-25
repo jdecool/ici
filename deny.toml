@@ -6,6 +6,23 @@ version = 2
 allow = ["MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "ISC", "Unicode-3.0", "Zlib"]
 private = { ignore = true }
 
+# SMTP quoted-printable encoder and Mozilla CA certificate data used by Rustls.
+# Scoped to the resolved crate versions; all other licenses retain the default policy.
+[[licenses.exceptions]]
+name = "quoted_printable"
+version = "=0.5.2"
+allow = ["0BSD"]
+
+[[licenses.exceptions]]
+name = "webpki-roots"
+version = "=0.26.11"
+allow = ["CDLA-Permissive-2.0"]
+
+[[licenses.exceptions]]
+name = "webpki-roots"
+version = "=1.0.11"
+allow = ["CDLA-Permissive-2.0"]
+
 [bans]
 multiple-versions = "warn"
 wildcards = "deny"
