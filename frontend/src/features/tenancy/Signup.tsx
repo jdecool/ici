@@ -139,12 +139,13 @@ export function Signup({ config }: { config: Configuration }) {
         type="password"
         autoComplete="new-password"
         required
-        minLength={15}
+        minLength={8}
         maxLength={128}
         error={fields['password']}
       />
       <p className="hint">
-        Entre 15 et 128 caractères, sans règle de composition.
+        Entre 8 et 128 caractères, avec une minuscule, une majuscule, un chiffre
+        et un caractère spécial.
       </p>
       <label className="checkbox">
         <input

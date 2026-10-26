@@ -169,7 +169,7 @@ function Recovery({
         <>
           <p>
             {reset
-              ? 'Choisissez un mot de passe de 15 à 128 caractères.'
+              ? 'Choisissez un mot de passe de 8 à 128 caractères, avec une minuscule, une majuscule, un chiffre et un caractère spécial.'
               : 'Recevez un lien pour retrouver l’accès à votre espace.'}
           </p>
           {reset ? (
@@ -179,7 +179,7 @@ function Recovery({
               type="password"
               autoComplete="new-password"
               required
-              minLength={15}
+              minLength={8}
               maxLength={128}
               error={fields['password']}
             />

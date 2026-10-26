@@ -4,7 +4,13 @@ pub const RESET_SECONDS: i64 = 30 * 60;
 pub const HANDOFF_SECONDS: i64 = 60;
 
 pub fn valid_password(value: &str) -> bool {
-    (15..=128).contains(&value.chars().count())
+    (8..=128).contains(&value.chars().count())
+        && value.chars().any(char::is_lowercase)
+        && value.chars().any(char::is_uppercase)
+        && value.chars().any(|c| c.is_ascii_digit())
+        && value
+            .chars()
+            .any(|c| !c.is_alphanumeric() && !c.is_whitespace() && !c.is_control())
 }
 pub fn normalize_email(value: &str) -> Option<String> {
     let value = value.trim().to_lowercase();
@@ -36,14 +42,24 @@ pub fn session_seconds(remember: bool) -> i64 {
 mod tests {
     use super::*;
     #[test]
-    fn password_length_counts_characters() {
-        for length in [15, 128] {
-            assert!(valid_password(&"é".repeat(length)));
+    fn password_composition_and_character_limits() {
+        for value in ["Abcdef1!", "Ébcdef1!", &format!("Aa1!{}", "é".repeat(124))] {
+            assert!(valid_password(value));
         }
-        for length in [0, 14, 129] {
-            assert!(!valid_password(&"a".repeat(length)));
+        for value in [
+            "",
+            "Abcde1!",
+            "abcdef1!",
+            "ABCDEF1!",
+            "Abcdefg!",
+            "Abcdef12",
+            "Abcdef1 ",
+            "Abcdef1\n",
+            "Abcdef١!",
+            &format!("Aa1!{}", "a".repeat(125)),
+        ] {
+            assert!(!valid_password(value), "{value:?}");
         }
-        assert!(valid_password("a long pass phrase"));
     }
     #[test]
     fn account_fields() {

@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import type { APIRequestContext, Page } from '@playwright/test';
 
 const root = 'http://ici.localhost:8080';
-const password = 'a secure pass phrase';
+const password = 'A secure pass phrase1!';
 const email = 'owner@example.com';
 const mailpit = process.env['MAILPIT_URL'] ?? 'http://localhost:8025';
 function record(value: unknown): Record<string, unknown> {
@@ -96,7 +96,7 @@ test('isolated tenant lifecycle with real captured email and password recovery',
   // Register a second tenant with the same email and a different password.
   const secondContext = await browser.newContext({ baseURL: root });
   const second = await secondContext.newPage();
-  await signup(second, 'bravo', 'another secure pass phrase');
+  await signup(second, 'bravo', 'Another secure pass phrase1!');
   link = await emailLink(request, 'Confirmez', '/verify', 'bravo');
   await second.goto(link);
   await second.getByRole('button', { name: 'Activer mon entreprise' }).click();
@@ -309,7 +309,7 @@ test('isolated tenant lifecycle with real captured email and password recovery',
   await expect(second.getByRole('alert')).toHaveText(
     'Email ou mot de passe incorrect.',
   );
-  await login(second, null, 'another secure pass phrase');
+  await login(second, null, 'Another secure pass phrase1!');
   await expect(
     second.getByRole('heading', { name: 'bravo', exact: true }),
   ).toBeVisible();
@@ -326,7 +326,7 @@ test('isolated tenant lifecycle with real captured email and password recovery',
   await recovery.goto(link);
   await recovery
     .getByLabel('Nouveau mot de passe', { exact: true })
-    .fill('the new secure pass phrase');
+    .fill('The New secure pass phrase1!1!');
   await recovery
     .getByRole('button', { name: 'Modifier le mot de passe' })
     .click();
@@ -337,7 +337,7 @@ test('isolated tenant lifecycle with real captured email and password recovery',
   await expect(
     page.getByRole('heading', { name: 'Connexion — acme' }),
   ).toBeVisible();
-  await login(page, null, 'the new secure pass phrase');
+  await login(page, null, 'The New secure pass phrase1!1!');
   await expect(
     page.getByRole('heading', { name: 'acme', exact: true }),
   ).toBeVisible();

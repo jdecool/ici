@@ -24,6 +24,10 @@ Development email is captured by Mailpit at http://localhost:8025. Tenant worksp
 
 Development and production use a same-origin proxy for `/api`, avoiding browser CORS configuration. Production also proxies `/health`. The backend is reachable on port 3000 only within the Compose network.
 
+## Password policy
+
+New passwords require 8–128 characters including a lowercase letter, an uppercase letter, an ASCII digit and a symbol or punctuation character. Existing passwords remain usable for login.
+
 ## Repository map
 
 ```text

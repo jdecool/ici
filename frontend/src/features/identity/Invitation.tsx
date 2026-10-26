@@ -82,10 +82,14 @@ export function Invitation({
                 type="password"
                 autoComplete="new-password"
                 required
-                minLength={15}
+                minLength={8}
                 maxLength={128}
                 error={fields['password']}
               />
+              <p>
+                Entre 8 et 128 caractères, avec une minuscule, une majuscule, un
+                chiffre et un caractère spécial.
+              </p>
               <label className="checkbox">
                 <input name="accepted_terms" type="checkbox" required />
                 J’accepte les{' '}

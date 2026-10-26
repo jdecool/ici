@@ -111,7 +111,7 @@ it('posts registration with the accepted legal version and shows email confirmat
         last_name: 'Durand',
         slug: 'acme',
         email: 'owner@example.com',
-        password: 'a secure pass phrase',
+        password: 'A secure pass phrase1!',
         accepted_terms: true,
         terms_version: '2026-10-draft',
       });
@@ -131,7 +131,7 @@ it('posts registration with the accepted legal version and shows email confirmat
     ['Nom', 'Durand'],
     ['Espace d’entreprise', 'ACME'],
     ['Email professionnel', 'owner@example.com'],
-    ['Mot de passe', 'a secure pass phrase'],
+    ['Mot de passe', 'A secure pass phrase1!'],
   ]) {
     if (label && value)
       fireEvent.change(screen.getByLabelText(label), { target: { value } });

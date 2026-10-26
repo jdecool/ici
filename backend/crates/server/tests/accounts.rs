@@ -22,7 +22,7 @@ mod planning;
 
 type TestResult<T = ()> = Result<T, Box<dyn std::error::Error + Send + Sync>>;
 const ROOT: &str = "ici.localhost:5173";
-const PASSWORD: &str = "a secure pass phrase";
+const PASSWORD: &str = "A secure pass phrase1!";
 async fn call(
     app: &Router,
     method: &str,
@@ -547,7 +547,7 @@ async fn complete_account_lifecycle_and_database_isolation() -> TestResult {
     );
     // A second tenant with the same email owns an independent account and database.
     let mut body = registration(&other);
-    body["password"] = json!("another secure pass phrase");
+    body["password"] = json!("Another secure pass phrase1!");
     assert_eq!(
         call(&app, "POST", "/api/registrations", ROOT, Some(body), &[])
             .await?
@@ -648,7 +648,7 @@ async fn complete_account_lifecycle_and_database_isolation() -> TestResult {
             "POST",
             "/api/auth/reset-password",
             &host,
-            Some(json!({"token":reset,"password":"the new secure pass phrase"})),
+            Some(json!({"token":reset,"password":"The New secure pass phrase1!1!"})),
             &[]
         )
         .await?
@@ -685,8 +685,8 @@ async fn complete_account_lifecycle_and_database_isolation() -> TestResult {
         handoff(&app, &slug, &pending_code).await?.status(),
         StatusCode::UNPROCESSABLE_ENTITY
     );
-    let _ = login(&app, &slug, "the new secure pass phrase").await?;
-    let _ = login(&app, &other, "another secure pass phrase").await?;
+    let _ = login(&app, &slug, "The New secure pass phrase1!1!").await?;
+    let _ = login(&app, &other, "Another secure pass phrase1!").await?;
     // Active migrations can be rerun without changing the administrator.
     worker::tick(&state, &admin, &admin_url, true).await?;
     assert_eq!(
@@ -826,7 +826,7 @@ async fn complete_account_lifecycle_and_database_isolation() -> TestResult {
         .status(),
         StatusCode::UNAUTHORIZED
     );
-    let expired_code = login(&app, &other, "another secure pass phrase").await?;
+    let expired_code = login(&app, &other, "Another secure pass phrase1!").await?;
     sqlx::query("UPDATE handoffs SET expires_at=now()-interval '1 second' WHERE token_hash=$1")
         .bind(crypto::digest(&expired_code))
         .execute(&admin)
@@ -835,7 +835,7 @@ async fn complete_account_lifecycle_and_database_isolation() -> TestResult {
         handoff(&app, &other, &expired_code).await?.status(),
         StatusCode::UNPROCESSABLE_ENTITY
     );
-    let direct=call(&app,"POST","/api/auth/login",&host,Some(json!({"slug":other,"email":"owner@example.com","password":"the new secure pass phrase"})),&[]).await?;
+    let direct=call(&app,"POST","/api/auth/login",&host,Some(json!({"slug":other,"email":"owner@example.com","password":"The New secure pass phrase1!1!"})),&[]).await?;
     assert_eq!(direct.status(), StatusCode::OK);
     let direct = data(direct).await?;
     let direct_code = direct["code"].as_str().ok_or("direct code")?;
@@ -1062,7 +1062,7 @@ async fn complete_account_lifecycle_and_database_isolation() -> TestResult {
     tls_config.secure = true;
     tls_config.public_origin = "https://ici.localhost".into();
     let tls_app = application(State::connect(tls_config).await?);
-    let tls_login=data(call(&tls_app,"POST","/api/auth/login","ici.localhost",Some(json!({"slug":other,"email":"owner@example.com","password":"another secure pass phrase"})),&[("origin","https://ici.localhost")]).await?).await?;
+    let tls_login=data(call(&tls_app,"POST","/api/auth/login","ici.localhost",Some(json!({"slug":other,"email":"owner@example.com","password":"Another secure pass phrase1!"})),&[("origin","https://ici.localhost")]).await?).await?;
     let code = tls_login["code"].as_str().ok_or("TLS transfer")?;
     let request = Request::builder()
         .method("POST")
@@ -1105,7 +1105,7 @@ async fn complete_account_lifecycle_and_database_isolation() -> TestResult {
         .bind(crypto::digest(&format!("login:{other}:owner@example.com")))
         .execute(&admin)
         .await?;
-    assert_eq!(call(&app,"POST","/api/auth/login",ROOT,Some(json!({"slug":other,"email":"owner@example.com","password":"another secure pass phrase"})),&[]).await?.status(),StatusCode::TOO_MANY_REQUESTS);
+    assert_eq!(call(&app,"POST","/api/auth/login",ROOT,Some(json!({"slug":other,"email":"owner@example.com","password":"Another secure pass phrase1!"})),&[]).await?.status(),StatusCode::TOO_MANY_REQUESTS);
     // A root-origin POST is allowed only for the transfer endpoint, never tenant logout/login.
     let forged = call(
         &app,

@@ -40,7 +40,7 @@ it('posts credentials then transfers the one-use code with a form POST', async (
       expect(await request.json()).toEqual({
         slug: 'acme',
         email: 'owner@example.com',
-        password: 'a secure pass phrase',
+        password: 'A secure pass phrase1!',
         remember: true,
       });
       return HttpResponse.json({
@@ -61,7 +61,7 @@ it('posts credentials then transfers the one-use code with a form POST', async (
     target: { value: 'owner@example.com' },
   });
   fireEvent.change(screen.getByLabelText('Mot de passe'), {
-    target: { value: 'a secure pass phrase' },
+    target: { value: 'A secure pass phrase1!' },
   });
   fireEvent.click(screen.getByLabelText('Rester connecté'));
   submit('Se connecter');
@@ -170,7 +170,7 @@ it('resets a password using the fragment token and removes it after success', as
     http.post('/api/auth/reset-password', async ({ request }) => {
       expect(await request.json()).toEqual({
         token: 'secret',
-        password: 'new secure pass phrase',
+        password: 'New secure pass phrase1!',
       });
       return HttpResponse.json({ reset: true });
     }),
@@ -179,7 +179,7 @@ it('resets a password using the fragment token and removes it after success', as
     <Identity config={{ ...config, tenant: 'acme' }} path="/reset-password" />,
   );
   fireEvent.change(screen.getByLabelText('Nouveau mot de passe'), {
-    target: { value: 'new secure pass phrase' },
+    target: { value: 'New secure pass phrase1!' },
   });
   submit('Modifier le mot de passe');
   expect(await screen.findByRole('status')).toHaveTextContent(
@@ -438,7 +438,7 @@ it.each([false, true])(
     expect(
       screen.getByText(
         reset
-          ? 'Choisissez un mot de passe de 15 à 128 caractères.'
+          ? 'Choisissez un mot de passe de 8 à 128 caractères, avec une minuscule, une majuscule, un chiffre et un caractère spécial.'
           : 'Recevez un lien pour retrouver l’accès à votre espace.',
       ),
     ).toBeInTheDocument();

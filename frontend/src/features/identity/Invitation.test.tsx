@@ -21,7 +21,7 @@ it('accepts an invitation with password and versioned consent', async () => {
     http.post('/api/auth/accept-invitation', async ({ request }) => {
       expect(await request.json()).toEqual({
         token: 'invite',
-        password: 'a secure pass phrase',
+        password: 'A secure pass phrase1!',
         accepted_terms: true,
         terms_version: '2026-10-draft',
       });
@@ -30,7 +30,7 @@ it('accepts an invitation with password and versioned consent', async () => {
   );
   render(<Identity config={config} path="/accept-invitation" />);
   fireEvent.change(screen.getByLabelText('Mot de passe'), {
-    target: { value: 'a secure pass phrase' },
+    target: { value: 'A secure pass phrase1!' },
   });
   fireEvent.click(screen.getByRole('checkbox'));
   submit('Activer mon compte');
