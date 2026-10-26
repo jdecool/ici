@@ -4,6 +4,7 @@ pub mod config;
 mod health;
 pub mod identity;
 mod organization;
+mod planning;
 mod security;
 pub mod tenancy;
 
@@ -30,6 +31,23 @@ pub fn application(state: tenancy::registry::State) -> Router {
         .route("/api/registrations/resend", post(tenancy::http::resend))
         .route("/api/registrations/verify", post(tenancy::http::verify))
         .route("/api/registrations/status", get(tenancy::http::status))
+        .route(
+            "/api/planning/settings",
+            get(planning::settings).put(planning::save_settings),
+        )
+        .route("/api/planning/week", get(planning::week))
+        .route(
+            "/api/planning/entries",
+            axum::routing::put(planning::save_entries),
+        )
+        .route(
+            "/api/planning/template",
+            get(planning::template).put(planning::save_template),
+        )
+        .route(
+            "/api/planning/template/apply",
+            post(planning::apply_template),
+        )
         .route("/api/auth/login", post(identity::http::login))
         .route("/api/auth/handoff", post(identity::http::handoff))
         .route("/api/auth/session", get(identity::http::session))

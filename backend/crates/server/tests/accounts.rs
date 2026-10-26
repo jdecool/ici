@@ -18,6 +18,7 @@ use tower::ServiceExt;
 use uuid::Uuid;
 
 mod organization;
+mod planning;
 
 type TestResult<T = ()> = Result<T, Box<dyn std::error::Error + Send + Sync>>;
 const ROOT: &str = "ici.localhost:5173";
@@ -1216,6 +1217,7 @@ async fn complete_account_lifecycle_and_database_isolation() -> TestResult {
     child.wait()?;
     std::fs::remove_file(key_file)?;
     assert!(running, "Worker exited without a one-off migration request");
+    planning::lifecycle(&app, &tenant, &second).await?;
     organization::lifecycle(&state, &app, &tenant, &second, &admin, &admin_url).await?;
     // Test-only cleanup touches only the internally generated databases from this test.
     for id in [tenant.id, second.id, recovered.id] {
