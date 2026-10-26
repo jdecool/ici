@@ -1,7 +1,7 @@
 //! Atomic PostgreSQL reservation and encrypted outbox adapter.
 use super::registry::{State, verification_mail};
 use crate::identity::{Error, crypto};
-use tenancy::registration::{ReservationError, Reservations};
+use crate::tenancy::registration::{ReservationError, Reservations};
 use uuid::Uuid;
 
 pub struct Registration<'a> {
@@ -32,7 +32,7 @@ impl Registration<'_> {
             .execute(&mut *transaction)
             .await?;
         let result=sqlx::query("INSERT INTO tenants (id,slug,state,first_name,last_name,email,password_hash,terms_version,verification_hash,receipt_hash,expires_at) VALUES ($1,$2,'pending',$3,$4,$5,$6,$7,$8,$9,now()+make_interval(secs=>$10))")
-            .bind(Uuid::new_v4()).bind(slug).bind(self.first_name.trim()).bind(self.last_name.trim()).bind(self.email).bind(self.password_hash).bind(identity::TERMS_VERSION).bind(crypto::digest(&verification)).bind(crypto::digest(&receipt)).bind(lifetime_seconds as f64).execute(&mut *transaction).await;
+            .bind(Uuid::new_v4()).bind(slug).bind(self.first_name.trim()).bind(self.last_name.trim()).bind(self.email).bind(self.password_hash).bind(crate::identity::rules::TERMS_VERSION).bind(crypto::digest(&verification)).bind(crypto::digest(&receipt)).bind(lifetime_seconds as f64).execute(&mut *transaction).await;
         if let Err(error) = result {
             if error
                 .as_database_error()

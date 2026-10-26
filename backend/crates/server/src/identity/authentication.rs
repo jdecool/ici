@@ -1,5 +1,5 @@
 //! Tenant-scoped authentication use case and its outgoing ports.
-use crate::normalize_email;
+use super::rules::normalize_email;
 use std::future::Future;
 
 pub struct Account {

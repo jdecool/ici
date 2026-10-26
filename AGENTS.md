@@ -54,14 +54,14 @@ Default to surfacing uncertainty, not hiding it.
 
 ## Architecture
 
-Organize work by capability, not by global technical layers. Rust capability crates own their domain and use cases; the server owns HTTP adapters grouped by capability and the composition root. Dependencies point inward. Frontend features own their API clients, types, UI and tests; other features and app composition consume their index.ts entry point. Do not invent ports, repositories, databases or abstractions without a real use case.
+Organize work by capability, not by global technical layers. The Rust server crate groups rules, use cases and adapters by capability. Dependencies point inward toward framework-independent rules and use cases. Frontend features own their API clients, types, UI and tests; other features and app composition consume their index.ts entry point. Do not invent ports, repositories, databases or abstractions without a real use case.
 
 ## Setup and commands
 
 Prerequisites: Docker with Compose v2 and Make. No host Rust or Node installation is required. If dependency locks have not yet been generated, run `make bootstrap`, review Cargo.lock and frontend/package-lock.json, and include them in the first commit. CI never generates missing locks.
 
 - `make dev`: backend reload and frontend HMR; http://ici.localhost:5173.
-- `make check`: formatting, lint, type/static analysis and architecture checks.
+- `make check`: formatting, lint, type/static analysis and frontend architecture checks.
 - `make test`: Rust unit/integration/doc tests and frontend unit/integration tests.
 - `make coverage`: enforce 90% coverage in each language.
 - `make mutation`: full Rust and frontend mutation suites; 100% required.

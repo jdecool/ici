@@ -25,7 +25,8 @@ pub async fn availability(
     query: Result<Query<Availability>, axum::extract::rejection::QueryRejection>,
 ) -> Result<Json<Value>, Error> {
     let Query(query) = query.map_err(|_| Error::field("slug"))?;
-    let slug = tenancy::normalize_slug(&query.slug).ok_or_else(|| Error::field("slug"))?;
+    let slug =
+        crate::tenancy::rules::normalize_slug(&query.slug).ok_or_else(|| Error::field("slug"))?;
     let taken: bool = sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM tenants WHERE slug=$1 AND (state!='pending' OR expires_at>now()))").bind(slug).fetch_one(&state.central).await?;
     Ok(Json(json!({"available": !taken})))
 }
@@ -43,26 +44,28 @@ pub async fn register(
     ExtractState(state): ExtractState<State>,
     JsonBody(input): JsonBody<Registration>,
 ) -> Result<(StatusCode, Json<Value>), Error> {
-    let slug = tenancy::normalize_slug(&input.slug).ok_or_else(|| Error::field("slug"))?;
-    let email = identity::normalize_email(&input.email).ok_or_else(|| Error::field("email"))?;
+    let slug =
+        crate::tenancy::rules::normalize_slug(&input.slug).ok_or_else(|| Error::field("slug"))?;
+    let email = crate::identity::rules::normalize_email(&input.email)
+        .ok_or_else(|| Error::field("email"))?;
     if email.parse::<lettre::Address>().is_err() {
         return Err(Error::field("email"));
     }
-    if !identity::valid_name(&input.first_name) {
+    if !crate::identity::rules::valid_name(&input.first_name) {
         return Err(Error::field("first_name"));
     }
-    if !identity::valid_name(&input.last_name) {
+    if !crate::identity::rules::valid_name(&input.last_name) {
         return Err(Error::field("last_name"));
     }
-    if !identity::valid_password(&input.password) {
+    if !crate::identity::rules::valid_password(&input.password) {
         return Err(Error::field("password"));
     }
-    if !input.accepted_terms || input.terms_version != identity::TERMS_VERSION {
+    if !input.accepted_terms || input.terms_version != crate::identity::rules::TERMS_VERSION {
         return Err(Error::field("accepted_terms"));
     }
     state.limit(&format!("register:{email}"), 5).await?;
     let hash = crypto::hash_password(input.password).await?;
-    let pending = tenancy::registration::register(
+    let pending = crate::tenancy::registration::register(
         &slug,
         &super::postgres::Registration {
             state: &state,
@@ -74,13 +77,13 @@ pub async fn register(
     )
     .await
     .map_err(|error| match error {
-        tenancy::registration::ReservationError::InvalidSlug => Error::field("slug"),
-        tenancy::registration::ReservationError::AlreadyReserved => {
+        crate::tenancy::registration::ReservationError::InvalidSlug => Error::field("slug"),
+        crate::tenancy::registration::ReservationError::AlreadyReserved => {
             let mut error = Error::new(StatusCode::CONFLICT, "slug_unavailable");
             error.fields = json!({"slug":"unavailable"});
             error
         }
-        tenancy::registration::ReservationError::Unavailable => Error::internal(),
+        crate::tenancy::registration::ReservationError::Unavailable => Error::internal(),
     })?;
     Ok((
         StatusCode::ACCEPTED,

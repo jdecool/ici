@@ -1,7 +1,6 @@
-//! HTTP composition root. Business capabilities live in independent crates.
+//! Application composition with capability modules.
 
 pub mod config;
-mod greeting;
 mod health;
 pub mod identity;
 mod security;
@@ -13,7 +12,6 @@ use tower_http::trace::TraceLayer;
 /// Build the HTTP application without opening a socket.
 pub fn router() -> Router {
     Router::new()
-        .route("/api/hello", get(greeting::http::hello))
         .route("/health", get(health::health))
         .layer(TraceLayer::new_for_http())
 }
@@ -22,7 +20,6 @@ pub fn router() -> Router {
 pub fn application(state: tenancy::registry::State) -> Router {
     use axum::{middleware, routing::post};
     let api = Router::new()
-        .route("/api/hello", get(greeting::http::hello))
         .route("/api/config", get(public_config))
         .route(
             "/api/tenants/availability",
@@ -64,6 +61,6 @@ async fn public_config(
     axum::Extension(context): axum::Extension<tenancy::http::Context>,
 ) -> axum::Json<serde_json::Value> {
     axum::Json(
-        serde_json::json!({"root_domain":state.config.root_domain,"public_origin":state.config.public_origin,"tenant":context.slug,"terms_version": ::identity::TERMS_VERSION}),
+        serde_json::json!({"root_domain":state.config.root_domain,"public_origin":state.config.public_origin,"tenant":context.slug,"terms_version": crate::identity::rules::TERMS_VERSION}),
     )
 }

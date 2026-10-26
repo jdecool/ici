@@ -52,7 +52,7 @@ async fn data(response: Response) -> TestResult<Value> {
     )?)
 }
 fn registration(slug: &str) -> Value {
-    json!({"slug":slug,"email":"owner@example.com","password":PASSWORD,"first_name":"Camille","last_name":"Durand","accepted_terms":true,"terms_version":identity::TERMS_VERSION})
+    json!({"slug":slug,"email":"owner@example.com","password":PASSWORD,"first_name":"Camille","last_name":"Durand","accepted_terms":true,"terms_version":ici_server::identity::TERMS_VERSION})
 }
 async fn queued_token(admin: &PgPool, key: &[u8], subject: &str) -> TestResult<String> {
     for row in sqlx::query("SELECT payload FROM outbox ORDER BY retry_at DESC")

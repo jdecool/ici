@@ -556,10 +556,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "greeting"
-version = "0.1.0"
-
-[[package]]
 name = "hashbrown"
 version = "0.15.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -710,17 +706,14 @@ dependencies = [
  "aes-gcm",
  "argon2",
  "axum",
- "greeting",
  "hex",
  "http-body-util",
- "identity",
  "lettre",
  "rand",
  "serde",
  "serde_json",
  "sha2",
  "sqlx",
- "tenancy",
  "tokio",
  "tower",
  "tower-http",
@@ -812,10 +805,6 @@ dependencies = [
  "zerotrie",
  "zerovec",
 ]
-
-[[package]]
-name = "identity"
-version = "0.1.0"
 
 [[package]]
 name = "idna"
@@ -1816,10 +1805,6 @@ dependencies = [
  "quote",
  "syn 3.0.9",
 ]
-
-[[package]]
-name = "tenancy"
-version = "0.1.0"
 
 [[package]]
 name = "thiserror"

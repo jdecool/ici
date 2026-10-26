@@ -10,5 +10,4 @@ export const server = setupServer(
       terms_version: '2026-10-draft',
     }),
   ),
-  http.get('/api/hello', () => HttpResponse.json({ message: 'Hello World' })),
 );

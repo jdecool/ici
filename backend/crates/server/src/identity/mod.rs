@@ -1,3 +1,6 @@
+pub(crate) mod authentication;
+pub(crate) mod rules;
+pub use rules::TERMS_VERSION;
 pub mod crypto;
 pub(crate) mod extract;
 pub mod http;

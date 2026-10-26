@@ -19,7 +19,7 @@ make test-frontend
 make coverage-frontend
 make mutation-frontend
 make audit-frontend
-docker compose -p ici-tools -f compose.tools.yaml run --build --rm node npm test -- src/features/greeting/api.test.ts
+docker compose -p ici-tools -f compose.tools.yaml run --build --rm node npm test -- src/features/identity/Identity.test.tsx
 ```
 
 Vitest/Testing Library test visible behavior; MSW mocks the HTTP boundary and rejects unhandled requests. Test loading, success, server/network errors, invalid payloads and obsolete effects. Use Playwright for production-stack functional tests (`make e2e`). Prefer accessible role queries over CSS selectors and snapshots.

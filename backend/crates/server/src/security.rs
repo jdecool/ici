@@ -62,7 +62,7 @@ async fn validate(state: &State, request: &axum::http::request::Parts) -> Result
     {
         return Err(Error::new(StatusCode::BAD_REQUEST, "invalid_host"));
     }
-    let slug = tenancy::tenant_from_host(authority.host(), &state.config.root_domain)
+    let slug = crate::tenancy::rules::tenant_from_host(authority.host(), &state.config.root_domain)
         .map_err(|_| Error::new(StatusCode::BAD_REQUEST, "invalid_host"))?;
     if let Some(slug) = &slug {
         state.tenant(slug).await?;

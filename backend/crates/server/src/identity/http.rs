@@ -31,9 +31,9 @@ pub async fn login(
     let slug = context
         .slug
         .or(input.slug)
-        .and_then(|slug| tenancy::normalize_slug(&slug))
+        .and_then(|slug| crate::tenancy::rules::normalize_slug(&slug))
         .ok_or_else(|| Error::field("slug"))?;
-    let code = ::identity::authentication::login(
+    let code = crate::identity::authentication::login(
         &super::postgres::TenantAccounts {
             state: &state,
             slug: &slug,
@@ -45,12 +45,12 @@ pub async fn login(
     )
     .await
     .map_err(|error| match error {
-        ::identity::authentication::LoginError::InvalidEmail => Error::field("email"),
-        ::identity::authentication::LoginError::InvalidCredentials => {
+        crate::identity::authentication::LoginError::InvalidEmail => Error::field("email"),
+        crate::identity::authentication::LoginError::InvalidCredentials => {
             Error::new(StatusCode::UNAUTHORIZED, "invalid_credentials")
         }
-        ::identity::authentication::LoginError::Unavailable => Error::internal(),
-        ::identity::authentication::LoginError::RateLimited => {
+        crate::identity::authentication::LoginError::Unavailable => Error::internal(),
+        crate::identity::authentication::LoginError::RateLimited => {
             Error::new(StatusCode::TOO_MANY_REQUESTS, "rate_limited")
         }
     })?;
@@ -81,7 +81,7 @@ pub async fn handoff(
             "invalid_handoff",
         ));
     }
-    let seconds = identity::session_seconds(row.get("remember"));
+    let seconds = crate::identity::rules::session_seconds(row.get("remember"));
     sqlx::query("INSERT INTO sessions (token_hash,user_id,csrf_hash,expires_at) VALUES ($1,$2,$3,now()+make_interval(secs=>$4))")
         .bind(crypto::digest(&token)).bind(row.get::<Uuid,_>("user_id")).bind(crypto::digest(&csrf)).bind(seconds as f64).execute(&mut *transaction).await?;
     transaction.commit().await?;
@@ -170,9 +170,10 @@ pub async fn forgot(
     let slug = context
         .slug
         .or(input.slug)
-        .and_then(|slug| tenancy::normalize_slug(&slug))
+        .and_then(|slug| crate::tenancy::rules::normalize_slug(&slug))
         .ok_or_else(|| Error::field("slug"))?;
-    let email = identity::normalize_email(&input.email).ok_or_else(|| Error::field("email"))?;
+    let email = crate::identity::rules::normalize_email(&input.email)
+        .ok_or_else(|| Error::field("email"))?;
     state.limit(&format!("forgot:{slug}:{email}"), 5).await?;
     let tenant = match state.tenant(&slug).await {
         Ok(tenant) => Some(tenant),
@@ -198,7 +199,7 @@ async fn insert_reset(pool: &PgPool, user: Uuid, token: &str) -> Result<(), Erro
     sqlx::query("INSERT INTO resets (token_hash,user_id,expires_at) VALUES ($1,$2,now()+make_interval(secs=>$3))")
         .bind(crypto::digest(token))
         .bind(user)
-        .bind(identity::RESET_SECONDS as f64)
+        .bind(crate::identity::rules::RESET_SECONDS as f64)
         .execute(pool)
         .await?;
     Ok(())
@@ -213,7 +214,7 @@ pub async fn reset(
     Extension(context): Extension<Context>,
     JsonBody(input): JsonBody<Reset>,
 ) -> Result<Json<Value>, Error> {
-    if !identity::valid_password(&input.password) {
+    if !crate::identity::rules::valid_password(&input.password) {
         return Err(Error::field("password"));
     }
     let tenant = tenant(&state, context).await?;

@@ -74,5 +74,3 @@ mod tests {
         }
     }
 }
-
-pub mod registration;

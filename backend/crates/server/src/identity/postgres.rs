@@ -1,9 +1,9 @@
 //! Tenant account and cryptographic adapters for the identity use case.
 use super::crypto;
-use crate::tenancy::registry::State;
-use ::identity::authentication::{
+use crate::identity::authentication::{
     Account, AccountAccessError, Accounts, PasswordVerification, Unavailable,
 };
+use crate::tenancy::registry::State;
 use sqlx::Row;
 use uuid::Uuid;
 
@@ -53,7 +53,7 @@ impl Accounts for TenantAccounts<'_> {
         let user = Uuid::parse_str(&account.id).map_err(|_| AccountAccessError::Unavailable)?;
         let code = crypto::token();
         sqlx::query("INSERT INTO handoffs (token_hash,tenant_id,user_id,remember,credential_version,expires_at) VALUES ($1,$2,$3,$4,$5,now()+make_interval(secs=>$6))")
-            .bind(crypto::digest(&code)).bind(tenant.id).bind(user).bind(remember).bind(account.credential_version).bind(identity::HANDOFF_SECONDS as f64).execute(&self.state.central).await.map_err(|_|AccountAccessError::Unavailable)?;
+            .bind(crypto::digest(&code)).bind(tenant.id).bind(user).bind(remember).bind(account.credential_version).bind(crate::identity::rules::HANDOFF_SECONDS as f64).execute(&self.state.central).await.map_err(|_|AccountAccessError::Unavailable)?;
         Ok(code)
     }
 }

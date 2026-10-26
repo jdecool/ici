@@ -1,6 +1,6 @@
 # 0001 — Capability-oriented, containerized foundation
 
-Status: accepted.
+Status: accepted; the separate backend capability crates are superseded by [0003](0003-single-backend-crate.md).
 
 Use Rust 2024 with Axum/Tokio, and React with strict TypeScript/Vite. Use a Cargo workspace and a single npm frontend package. Keep a separate crate for each backend capability core; group HTTP adapters by capability inside the server. Use frontend feature slices with public entry points.
 

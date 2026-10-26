@@ -83,5 +83,3 @@ mod tests {
         assert_eq!(session_seconds(true), 2592000);
     }
 }
-
-pub mod authentication;

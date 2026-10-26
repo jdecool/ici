@@ -1,5 +1,5 @@
 //! Workspace reservation use case. The storage port reserves and queues email atomically.
-use crate::normalize_slug;
+use super::rules::normalize_slug;
 use std::future::Future;
 
 pub const RESERVATION_SECONDS: i64 = 24 * 60 * 60;
