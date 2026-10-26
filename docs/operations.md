@@ -36,4 +36,18 @@ Back up REGISTRY_KEY in a separately protected secret store with version history
 
 Restore into an isolated PostgreSQL instance: restore roles first, then central and tenant databases with ownership/privileges intact, mount the matching encryption key, and configure database host settings. Validate that tenant roles cannot connect to other databases before reopening traffic. Stored encrypted URLs retain their original database host; retain that internal DNS name during recovery or re-encrypt URLs with the correct host in an offline privileged operation. Start the worker to resume incomplete provisioning and queued email delivery, then the HTTP server. Check tenant login, reset and consent records. Practice restoration periodically and verify both registry and tenant row counts.
 
-Deletion, invitations, custom domains, scheduling and SSO are outside this delivery. Legal pages are explicitly provisional.
+## Organization access and invitations
+
+After signing in, administrators manage locations, teams and users in the three workspace tabs. Collaborators can consult locations. Create an invited user with optional team and usual location; the worker sends an activation link captured in Mailpit locally. The recipient chooses a password and accepts the current terms. Invitations expire in 48 hours; resending rotates the token. Pending accounts cannot sign in or recover a password.
+
+Administrators can deactivate and reactivate accounts. Deactivation immediately revokes access and outstanding identity tokens; it preserves assignments and the accepted password. Reactivating an account that never accepted its invitation sends a fresh invitation. The last active administrator cannot be demoted or deactivated. Teams and locations remain undeletable while any account is attached.
+
+Email changes for activated accounts require confirmation at the new address within 24 hours, with notification to the previous address. The previous email remains valid until confirmation, which revokes sessions and outstanding password reset/login transfer credentials. Pending addresses are reserved until expiry or replacement. Restore the current address in the edit form to cancel a pending change. Reactivate an inactive account before changing its email.
+
+Ship the new tenant migration and run `make migrate-tenants` before reopening the upgraded HTTP application. Existing administrators remain active with no team/location; no sample data is inserted. The worker now reads each active tenant’s encrypted outbox as well as the registry outbox. Inspect tenant `outbox` attempts/retry_at and structured SMTP failure events when mail is delayed. A restart resumes pending delivery; SMTP acceptance followed by a crash before deletion can deliver the same message twice, while activation remains single-use. Tokens and decrypted payloads must never be logged.
+
+Custom domains, scheduling and SSO are outside this delivery. Legal pages are explicitly provisional.
+
+## Planning migration
+
+Ship tenant migration `0003_planning.sql` and run `make migrate-tenants` before reopening the upgraded HTTP application. It creates default Monday–Friday display settings, half-day presence records and personal templates. Existing accounts, locations and teams are preserved; no presence data is generated. Hiding a weekday does not delete data. Locations referenced by historical presence or templates cannot be deleted. Occupancy counts only active users with an explicit office entry for the selected location and half-day.

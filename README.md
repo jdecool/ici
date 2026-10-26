@@ -1,6 +1,6 @@
 # ici
 
-A Rust/Axum backend and React/TypeScript/Vite frontend, organized by capability. The French landing page follows `.design/`. Registration reserves a workspace, verifies email and provisions an isolated PostgreSQL database. Each tenant owns its administrator accounts, consent records, sessions and password recovery.
+A Rust/Axum backend and React/TypeScript/Vite frontend, organized by capability. The French landing page follows `.design/`. Registration reserves a workspace, verifies email and provisions an isolated PostgreSQL database. Each tenant owns its accounts, consent records, sessions and password recovery. Its authenticated workspace manages presence locations, teams and users, including email invitations and verified email changes. Weekly presence planning, personal templates, configurable displayed weekdays and location occupancy are persisted per tenant.
 
 ## Start
 
@@ -28,16 +28,17 @@ Development and production use a same-origin proxy for `/api`, avoiding browser 
 
 ```text
 backend/crates/
-  greeting/             Independent greeting capability
-  tenancy/              Workspace naming and host isolation rules
-  identity/             Account validation and session policy
-  server/src/tenancy/    Registry, HTTP, SQLx and privileged worker adapters
-  server/src/identity/   Authentication HTTP and cryptographic adapters
+  server/src/tenancy/    Workspace rules, registration, registry and worker
+  server/src/identity/   Account rules, authentication and adapters
+  server/src/organization/ Location and team rules and HTTP handlers
+  server/src/planning/   Presence rules, calendar and HTTP handlers
   server/tests/         HTTP integration contracts
 frontend/src/
   app/                  Application composition
   features/tenancy/     Registration, availability and activation status
-  features/identity/    Login, email verification, recovery and tenant home
+  features/identity/    Login, email verification, recovery and invitations
+  features/organization/ Locations, teams and user administration
+  features/planning/    Weekly presence, templates and occupancy
   shared/               Transport validation and form fields
   test/                 Shared test infrastructure
 frontend/e2e/            Production-stack browser and HTTP tests
@@ -50,7 +51,7 @@ scripts/                 Shared local/CI commands
 
 | Command | Purpose |
 | --- | --- |
-| `make check` | Format, lint, static analysis and architectural boundaries |
+| `make check` | Format, lint, static analysis and frontend architectural boundaries |
 | `make test` | Unit, HTTP integration, React integration and Rust doc tests |
 | `make coverage` | 90% minimum backend and frontend coverage |
 | `make mutation` | Full mutation runs with 100% required score |
