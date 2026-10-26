@@ -8,7 +8,50 @@ NODE = $(TOOLS) run --build --rm node
 
 .PHONY: migrate-tenants bootstrap require-locks check-infra help dev check check-rust check-frontend test test-rust test-frontend coverage coverage-rust coverage-frontend mutation mutation-rust mutation-frontend audit audit-rust audit-frontend e2e e2e-https build up down quality format
 help:
-	@echo 'bootstrap dev check test coverage mutation audit e2e e2e-https build up down migrate-tenants quality format'
+	@printf '%s\n' \
+		'   ___       _       .---.' \
+		'  |_ _| ___ (_)     /  o  \' \
+		'   | | / __|| |     \     /' \
+		'   | || (__ | |      \   /' \
+		'  |___|\___||_|       \_/' \
+		'' \
+		'  Usage: make <target>' \
+		'' \
+		'  Development' \
+		'    bootstrap          Generate missing dependency lockfiles' \
+		'    dev                Start development servers with live reload' \
+		'    format             Apply Rust and frontend formatting' \
+		'    down               Stop development, production and tool services' \
+		'' \
+		'  Quality' \
+		'    check              Run formatting, lint and static analysis checks' \
+		'    test               Run unit, integration and Rust doc tests' \
+		'    coverage           Enforce 90% coverage in each language' \
+		'    mutation           Run mutation suites (100% required)' \
+		'    audit              Check dependency vulnerabilities and policies' \
+		'    e2e                Test production containers in an isolated stack' \
+		'    e2e-https          Verify HTTPS routing and HTTP redirects' \
+		'    quality            Run all required quality gates' \
+		'' \
+		'  Focused checks' \
+		'    check-infra        Validate Compose files and shell script syntax' \
+		'    check-rust         Run Rust formatting, lint and static analysis' \
+		'    check-frontend     Run frontend formatting, lint and type checks' \
+		'    test-rust          Run Rust unit, integration and doc tests' \
+		'    test-frontend      Run frontend unit and integration tests' \
+		'    coverage-rust      Enforce Rust coverage' \
+		'    coverage-frontend  Enforce frontend coverage' \
+		'    mutation-rust      Run Rust mutation tests' \
+		'    mutation-frontend  Run frontend mutation tests' \
+		'    audit-rust         Check Rust dependencies, licenses and sources' \
+		'    audit-frontend     Check frontend dependencies' \
+		'' \
+		'  Production' \
+		'    build              Build production images' \
+		'    up                 Start production services in the background' \
+		'    migrate-tenants    Apply migrations to all active tenant databases' \
+		'' \
+		'  Run make help (or make) to display this help.'
 migrate-tenants: require-locks
 	$(PROD) run --rm worker --migrate-tenants
 bootstrap:
