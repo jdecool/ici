@@ -105,6 +105,13 @@ async fn work(
         }
     }
     send_outbox(state, admin).await?;
+    let slugs: Vec<String> = sqlx::query_scalar("SELECT slug FROM tenants WHERE state='active'")
+        .fetch_all(admin)
+        .await?;
+    for slug in slugs {
+        let tenant = state.tenant(&slug).await?;
+        send_outbox(state, &tenant.pool).await?;
+    }
     sqlx::raw_sql("DELETE FROM handoffs WHERE expires_at<now(); DELETE FROM rate_limits WHERE expires_at<now(); DELETE FROM tenants WHERE state='pending' AND expires_at<now();").execute(admin).await?;
     Ok(())
 }

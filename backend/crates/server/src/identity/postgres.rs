@@ -29,7 +29,7 @@ impl Accounts for TenantAccounts<'_> {
             Err(_) => return Err(AccountAccessError::Unavailable),
         };
         let row =
-            sqlx::query("SELECT id,password_hash,credential_version FROM users WHERE email=$1")
+            sqlx::query("SELECT id,password_hash,credential_version FROM users WHERE email=$1 AND status='active'")
                 .bind(email)
                 .fetch_optional(&tenant.pool)
                 .await

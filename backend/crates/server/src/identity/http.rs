@@ -12,7 +12,7 @@ use axum::{
 };
 use serde::Deserialize;
 use serde_json::{Value, json};
-use sqlx::{PgPool, Row};
+use sqlx::{PgConnection, Row};
 use uuid::Uuid;
 
 #[derive(Deserialize)]
@@ -70,11 +70,13 @@ pub async fn handoff(
     let token = crypto::token();
     let csrf = csrf_token(&state, &crypto::digest(&token));
     let mut transaction = tenant.pool.begin().await?;
-    let version: i32 =
-        sqlx::query_scalar("SELECT credential_version FROM users WHERE id=$1 FOR UPDATE")
-            .bind(row.get::<Uuid, _>("user_id"))
-            .fetch_one(&mut *transaction)
-            .await?;
+    let version: i32 = sqlx::query_scalar(
+        "SELECT credential_version FROM users WHERE id=$1 AND status='active' FOR UPDATE",
+    )
+    .bind(row.get::<Uuid, _>("user_id"))
+    .fetch_optional(&mut *transaction)
+    .await?
+    .ok_or_else(|| Error::new(StatusCode::UNPROCESSABLE_ENTITY, "invalid_handoff"))?;
     if version != row.get::<i32, _>("credential_version") {
         return Err(Error::new(
             StatusCode::UNPROCESSABLE_ENTITY,
@@ -95,12 +97,12 @@ pub async fn handoff(
     );
     Ok(response)
 }
-async fn tenant(state: &State, context: Context) -> Result<Tenant, Error> {
+pub(crate) async fn tenant(state: &State, context: Context) -> Result<Tenant, Error> {
     state
         .tenant(&context.slug.ok_or_else(Error::unauthorized)?)
         .await
 }
-fn session_token(headers: &HeaderMap) -> Result<String, Error> {
+pub(crate) fn session_token(headers: &HeaderMap) -> Result<String, Error> {
     headers
         .get("cookie")
         .and_then(|value| value.to_str().ok())
@@ -121,10 +123,10 @@ pub async fn session(
     let tenant = tenant(&state, context).await?;
     let token = session_token(&headers)?;
     let csrf = csrf_token(&state, &token);
-    let row = sqlx::query("SELECT users.email,users.first_name,users.last_name,users.role,company.name FROM sessions JOIN users ON users.id=sessions.user_id CROSS JOIN company WHERE sessions.token_hash=$1 AND sessions.expires_at>now()")
+    let row = sqlx::query("SELECT users.id,users.email,users.first_name,users.last_name,users.role,company.name FROM sessions JOIN users ON users.id=sessions.user_id CROSS JOIN company WHERE sessions.token_hash=$1 AND sessions.expires_at>now() AND users.status='active'")
         .bind(token).fetch_optional(&tenant.pool).await?.ok_or_else(Error::unauthorized)?;
     Ok(Json(
-        json!({"company": row.get::<String,_>("name"), "email": row.get::<String,_>("email"), "first_name": row.get::<String,_>("first_name"), "last_name": row.get::<String,_>("last_name"), "role": row.get::<String,_>("role"), "csrf": csrf}),
+        json!({"id": row.get::<Uuid,_>("id").to_string(), "company": row.get::<String,_>("name"), "email": row.get::<String,_>("email"), "first_name": row.get::<String,_>("first_name"), "last_name": row.get::<String,_>("last_name"), "role": row.get::<String,_>("role"), "csrf": csrf}),
     ))
 }
 pub async fn logout(
@@ -181,13 +183,17 @@ pub async fn forgot(
         Err(error) => return Err(error),
     };
     if let Some(tenant) = tenant {
-        let user: Option<Uuid> = sqlx::query_scalar("SELECT id FROM users WHERE email=$1")
-            .bind(&email)
-            .fetch_optional(&tenant.pool)
-            .await?;
+        let mut account_transaction = tenant.pool.begin().await?;
+        super::access::lock(&mut account_transaction).await?;
+        let user: Option<Uuid> =
+            sqlx::query_scalar("SELECT id FROM users WHERE email=$1 AND status='active'")
+                .bind(&email)
+                .fetch_optional(&mut *account_transaction)
+                .await?;
         if let Some(user) = user {
             let token = crypto::token();
-            insert_reset(&tenant.pool, user, &token).await?;
+            insert_reset(&mut account_transaction, user, &token).await?;
+            account_transaction.commit().await?;
             let mut transaction = state.central.begin().await?;
             enqueue(&mut transaction, &state, &email, "Réinitialisez votre mot de passe — Ici", &format!("Choisissez votre nouveau mot de passe :\n{}/reset-password#token={token}\nCe lien expire dans 30 minutes.", state.config.tenant_origin(&slug))).await?;
             transaction.commit().await?;
@@ -195,12 +201,12 @@ pub async fn forgot(
     }
     Ok(Json(json!({"sent": true})))
 }
-async fn insert_reset(pool: &PgPool, user: Uuid, token: &str) -> Result<(), Error> {
+async fn insert_reset(connection: &mut PgConnection, user: Uuid, token: &str) -> Result<(), Error> {
     sqlx::query("INSERT INTO resets (token_hash,user_id,expires_at) VALUES ($1,$2,now()+make_interval(secs=>$3))")
         .bind(crypto::digest(token))
         .bind(user)
         .bind(crate::identity::rules::RESET_SECONDS as f64)
-        .execute(pool)
+        .execute(connection)
         .await?;
     Ok(())
 }
@@ -220,8 +226,9 @@ pub async fn reset(
     let tenant = tenant(&state, context).await?;
     let hash = crypto::hash_password(input.password).await?;
     let mut transaction = tenant.pool.begin().await?;
+    super::access::lock(&mut transaction).await?;
     let user: Option<Uuid> = sqlx::query_scalar(
-        "SELECT user_id FROM resets WHERE token_hash=$1 AND expires_at>now() FOR UPDATE",
+        "SELECT resets.user_id FROM resets JOIN users ON users.id=resets.user_id WHERE token_hash=$1 AND resets.expires_at>now() AND users.status='active' FOR UPDATE",
     )
     .bind(crypto::digest(&input.token))
     .fetch_optional(&mut *transaction)

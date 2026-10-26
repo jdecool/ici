@@ -1,9 +1,11 @@
 pub(crate) mod authentication;
 pub(crate) mod rules;
 pub use rules::TERMS_VERSION;
+pub(crate) mod access;
 pub mod crypto;
 pub(crate) mod extract;
 pub mod http;
+pub(crate) mod members;
 mod postgres;
 
 use axum::{

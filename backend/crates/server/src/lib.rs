@@ -3,6 +3,7 @@
 pub mod config;
 mod health;
 pub mod identity;
+mod organization;
 mod security;
 pub mod tenancy;
 
@@ -35,6 +36,43 @@ pub fn application(state: tenancy::registry::State) -> Router {
         .route("/api/auth/logout", post(identity::http::logout))
         .route("/api/auth/forgot-password", post(identity::http::forgot))
         .route("/api/auth/reset-password", post(identity::http::reset))
+        .route(
+            "/api/locations",
+            get(organization::locations).post(organization::create_location),
+        )
+        .route(
+            "/api/locations/{id}",
+            axum::routing::patch(organization::update_location)
+                .delete(organization::delete_location),
+        )
+        .route(
+            "/api/teams",
+            get(organization::teams).post(organization::create_team),
+        )
+        .route(
+            "/api/teams/{id}",
+            axum::routing::patch(organization::update_team).delete(organization::delete_team),
+        )
+        .route(
+            "/api/users",
+            get(identity::members::list).post(identity::members::create),
+        )
+        .route(
+            "/api/users/{id}",
+            axum::routing::patch(identity::members::update),
+        )
+        .route(
+            "/api/users/{id}/invitation",
+            post(identity::members::resend),
+        )
+        .route(
+            "/api/auth/accept-invitation",
+            post(identity::members::accept),
+        )
+        .route(
+            "/api/auth/confirm-email",
+            post(identity::members::confirm_email),
+        )
         .layer(middleware::from_fn_with_state(
             state.clone(),
             security::guard,

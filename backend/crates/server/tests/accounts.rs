@@ -17,6 +17,8 @@ use sqlx::{PgPool, Row, postgres::PgPoolOptions};
 use tower::ServiceExt;
 use uuid::Uuid;
 
+mod organization;
+
 type TestResult<T = ()> = Result<T, Box<dyn std::error::Error + Send + Sync>>;
 const ROOT: &str = "ici.localhost:5173";
 const PASSWORD: &str = "a secure pass phrase";
@@ -1214,6 +1216,7 @@ async fn complete_account_lifecycle_and_database_isolation() -> TestResult {
     child.wait()?;
     std::fs::remove_file(key_file)?;
     assert!(running, "Worker exited without a one-off migration request");
+    organization::lifecycle(&state, &app, &tenant, &second, &admin, &admin_url).await?;
     // Test-only cleanup touches only the internally generated databases from this test.
     for id in [tenant.id, second.id, recovered.id] {
         let name = format!("ici_t_{}", id.simple());
