@@ -32,9 +32,12 @@ New passwords require 8–128 characters including a lowercase letter, an upperc
 
 ```sh
 make fixtures        # Create or reset ACME only; preserve other workspaces
+make reset-fixtures  # Delete ALL development data, reload ACME and start the app
 ```
 
-Open http://acme.ici.localhost:5173 after `make dev`:
+`make reset-fixtures` stops the `ici-dev` stack and deletes its PostgreSQL volume, including every workspace and tenant database. It preserves build/dependency caches, local files and other Compose projects. There is no interactive confirmation. Failures stop the command; rerun after resolving the error.
+
+Open http://acme.ici.localhost:5173 after `make dev` or `make reset-fixtures`:
 
 | Role | Email | Password |
 | --- | --- | --- |

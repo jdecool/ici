@@ -51,3 +51,7 @@ Custom domains, scheduling and SSO are outside this delivery. Legal pages are ex
 ## Planning migration
 
 Ship tenant migration `0003_planning.sql` and run `make migrate-tenants` before reopening the upgraded HTTP application. It creates default Monday–Friday display settings, half-day presence records and personal templates. Existing accounts, locations and teams are preserved; no presence data is generated. Hiding a weekday does not delete data. Locations referenced by historical presence or templates cannot be deleted. Occupancy counts only active users with an explicit office entry for the selected location and half-day.
+
+## Development reset
+
+`make fixtures` replaces ACME only. `make reset-fixtures` stops `ici-dev`, deletes its PostgreSQL volume (all companies and tenant databases), recreates ACME and starts the development application in the background. It preserves dependency/build caches and other environments. Both commands stop on failure and can be rerun. These commands use `compose.dev.yaml`; never point development database settings at a real installation. No fixture emails are sent.

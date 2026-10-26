@@ -6,7 +6,7 @@ PROD = docker compose -p ici -f compose.yaml
 RUST = $(TOOLS) run --build --rm rust
 NODE = $(TOOLS) run --build --rm node
 
-.PHONY: fixtures migrate-tenants bootstrap require-locks check-infra help dev check check-rust check-frontend test test-rust test-frontend coverage coverage-rust coverage-frontend mutation mutation-rust mutation-frontend audit audit-rust audit-frontend e2e e2e-https build up down quality format
+.PHONY: fixtures reset-fixtures migrate-tenants bootstrap require-locks check-infra help dev check check-rust check-frontend test test-rust test-frontend coverage coverage-rust coverage-frontend mutation mutation-rust mutation-frontend audit audit-rust audit-frontend e2e e2e-https build up down quality format
 help:
 	@printf '%s\n' \
 		'   ___       _       .---.' \
@@ -21,6 +21,7 @@ help:
 		'    bootstrap          Generate missing dependency lockfiles' \
 		'    dev                Start development servers with live reload' \
 		'    fixtures           Reload ACME demonstration data in development' \
+		'    reset-fixtures     Delete all development data and load ACME fixtures' \
 		'    format             Apply Rust and frontend formatting' \
 		'    down               Stop development, production and tool services' \
 		'' \
@@ -69,6 +70,7 @@ check-infra:
 	docker compose -f compose.bootstrap.yaml config --quiet
 	PUBLIC_ORIGIN=https://ici.localhost docker compose -f compose.yaml -f compose.https.yaml config --quiet
 	set -e; for script in scripts/*.sh; do bash -n "$$script"; done
+	sh scripts/test-fixtures.sh
 check-rust: require-locks
 	$(RUST) sh scripts/check-rust.sh
 check-frontend: require-locks
@@ -113,3 +115,5 @@ format:
 
 fixtures: require-locks
 	sh scripts/fixtures.sh
+reset-fixtures: require-locks
+	sh scripts/fixtures.sh reset

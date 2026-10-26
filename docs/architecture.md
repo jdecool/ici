@@ -83,4 +83,4 @@ Location references from entries or templates prevent deletion with `resource_in
 
 ## Explicit demonstration fixtures
 
-The privileged worker supports `--fixtures`, reusing provisioning and its advisory lock. It replaces only ACME tenant data transactionally and invalidates central login transfers. Ordinary provisioning never inserts sample data. `make fixtures` targets development. See README for demo credentials and the fixture-only password exception.
+The privileged worker supports `--fixtures`, reusing provisioning and its advisory lock. It replaces only ACME tenant data transactionally and invalidates central login transfers. Ordinary provisioning never inserts sample data. `make fixtures` targets development; `make reset-fixtures` deletes the development PostgreSQL volume before loading fixtures and restarting the application. See README for demo credentials and the fixture-only password exception.
