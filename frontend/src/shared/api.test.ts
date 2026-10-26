@@ -107,3 +107,22 @@ it('identifies malformed external object data using a stable error', async () =>
     code: 'invalid_response',
   });
 });
+
+it.each([
+  ['unauthenticated', 'Votre session a expiré. Reconnectez-vous.'],
+  ['forbidden', 'Vous n’avez pas les droits nécessaires.'],
+  ['csrf_failed', 'Votre session a changé. Rechargez la page.'],
+  [
+    'last_administrator',
+    'L’entreprise doit conserver au moins un administrateur actif.',
+  ],
+  ['email_unavailable', 'Cette adresse email est déjà utilisée ou réservée.'],
+  ['already_exists', 'Une équipe porte déjà ce nom.'],
+  [
+    'resource_in_use',
+    'Suppression impossible : cet élément est utilisé par des utilisateurs, des présences ou une semaine type.',
+  ],
+  ['not_found', 'Cet élément n’existe plus. Actualisez la liste.'],
+])('explains organization error %s', (code, message) => {
+  expect(errorMessage(new ApiError(code))).toBe(message);
+});

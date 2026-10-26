@@ -1,0 +1,175 @@
+.planning {
+  position: relative;
+}
+.week-navigation,
+.presence-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+}
+.presence-legend {
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+}
+.presence-legend li {
+  padding: 6px 10px;
+  border-radius: 5px;
+}
+.desktop-planning {
+  overflow-x: auto;
+  margin: 20px 0;
+}
+.desktop-planning table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 750px;
+}
+.desktop-planning th,
+.desktop-planning td {
+  padding: 8px;
+  border-bottom: 1px solid #e3e5ea;
+  text-align: left;
+}
+.desktop-planning th small {
+  display: block;
+  font-weight: normal;
+  color: #5e6470;
+}
+.desktop-planning caption {
+  text-align: left;
+  padding: 8px;
+}
+.presence-halves {
+  display: flex;
+  gap: 3px;
+}
+.presence {
+  flex: 1;
+  min-width: 52px;
+  min-height: 44px;
+  padding: 5px;
+  font-size: 12px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  touch-action: pan-y;
+}
+.presence-office {
+  background: #eaf0fd;
+  color: #2b4acb;
+}
+.presence-remote {
+  background: #e6f4ec;
+  color: #1d6b43;
+}
+.presence-travel {
+  background: #fbefdb;
+  color: #86500a;
+}
+.presence-off {
+  background: #eff0f2;
+  color: #565a63;
+}
+.presence-none {
+  background: white;
+  color: #686e79;
+  border: 1px dashed #cdd1d8;
+}
+.presence-selected {
+  outline: 2px solid #2b4acb;
+  outline-offset: 1px;
+}
+.planning-team {
+  background: #f5f6f9;
+}
+.mobile-planning {
+  display: none;
+}
+.selection-bar {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 16px;
+  background: white;
+  border: 1px solid #b9c8f4;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px #1b214033;
+  z-index: 10;
+}
+.my-week-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 24px;
+  align-items: start;
+}
+.my-week-layout fieldset {
+  margin: 12px 0;
+  border: 1px solid #e3e5ea;
+  border-radius: 8px;
+}
+.day-option {
+  display: inline-flex;
+  align-items: center;
+  margin: 8px;
+  gap: 6px;
+}
+.day-option input {
+  width: auto;
+}
+.occupancy-chart {
+  display: flex;
+  justify-content: space-around;
+  gap: 6px;
+  margin: 20px 0;
+}
+.occupancy-chart > div {
+  text-align: center;
+  flex: 1;
+}
+.occupancy-bars {
+  display: flex;
+  gap: 3px;
+  align-items: end;
+  justify-content: center;
+  height: 80px;
+}
+.occupancy-bars span {
+  display: block;
+  background: #b9c8f4;
+  width: 16px;
+  border-radius: 3px 3px 0 0;
+}
+.occupancy-bars span + span {
+  background: #d6dff8;
+}
+.selected-day .occupancy-bars span {
+  background: #2b4acb;
+}
+.selected-day .occupancy-bars span + span {
+  background: #6f89de;
+}
+@media (max-width: 999px) {
+  .desktop-planning {
+    display: none;
+  }
+  .mobile-planning {
+    display: block;
+  }
+  .my-week-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .selection-bar {
+    bottom: 12px;
+  }
+  .week-navigation {
+    gap: 8px;
+  }
+}

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import type { FormEvent } from 'react';
+import type { FormEvent, ReactNode } from 'react';
 import { ApiError, errorMessage, request, string } from '../../shared/api';
 import type { Configuration } from '../../shared/api';
 import { Field, formText } from '../../shared/Field';
+import { Invitation } from './Invitation';
 import { Signup, RegistrationStatus } from '../tenancy';
 
 function transfer(code: string, target: string) {
@@ -269,39 +270,63 @@ function Verification() {
     </section>
   );
 }
-function Home({ config }: { config: Configuration }) {
+export interface Session {
+  id: string;
+  company: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  role: string;
+  csrf: string;
+}
+export type RenderHome = (
+  session: Session,
+  logout: () => void,
+  busy: boolean,
+  refresh: () => void,
+) => ReactNode;
+function Home({
+  config,
+  renderHome,
+}: {
+  config: Configuration;
+  renderHome: RenderHome | undefined;
+}) {
+  const [revision, setRevision] = useState({});
   const [session, setSession] = useState<
     | { kind: 'loading' }
     | { kind: 'guest' }
-    | { kind: 'authenticated'; user: Record<string, string> }
+    | { kind: 'authenticated'; user: Session }
   >({ kind: 'loading' });
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-  useEffect(
-    () => {
-      let current = true;
-      void request('/auth/session')
-        .then((data) => {
-          const parsed = Object.fromEntries(
-            ['company', 'email', 'first_name', 'last_name', 'role', 'csrf'].map(
-              (key) => [key, string(data[key])],
-            ),
-          );
-          if (current) setSession({ kind: 'authenticated', user: parsed });
-        })
-        .catch((error: unknown) => {
-          if (!current) return;
-          if (error instanceof ApiError && error.code === 'unauthenticated')
-            setSession({ kind: 'guest' });
-          else setError(errorMessage(error));
-        });
-      return () => {
-        current = false;
-      };
-    },
-    // Stryker disable next-line ArrayDeclaration: A constant sentinel and an empty dependency list both stay stable across renders.
-    [],
-  );
+  useEffect(() => {
+    let current = true;
+    void request('/auth/session')
+      .then((data) => {
+        const parsed: Session = {
+          id: string(data['id']),
+          company: string(data['company']),
+          email: string(data['email']),
+          first_name: string(data['first_name']),
+          last_name: string(data['last_name']),
+          role: string(data['role']),
+          csrf: string(data['csrf']),
+        };
+        if (parsed.role !== 'admin' && parsed.role !== 'collaborator')
+          throw new Error();
+        if (current) setSession({ kind: 'authenticated', user: parsed });
+      })
+      .catch((error: unknown) => {
+        if (!current) return;
+        if (error instanceof ApiError && error.code === 'unauthenticated')
+          setSession({ kind: 'guest' });
+        else setError(errorMessage(error));
+      });
+    return () => {
+      current = false;
+    };
+  }, [revision]);
   async function logout(csrf: string) {
     setBusy(true);
     setError('');
@@ -328,6 +353,26 @@ function Home({ config }: { config: Configuration }) {
       break;
     case 'authenticated': {
       const { user } = session;
+      if (renderHome)
+        return (
+          <>
+            {renderHome(
+              user,
+              () => {
+                void logout(user.csrf);
+              },
+              busy,
+              () => {
+                setRevision({});
+              },
+            )}
+            {error && (
+              <p role="alert" className="error">
+                {error}
+              </p>
+            )}
+          </>
+        );
       content = (
         <>
           <h2>Bienvenue chez {user['company']}</h2>
@@ -335,7 +380,10 @@ function Home({ config }: { config: Configuration }) {
             Bonjour {user['first_name']} {user['last_name']}.
           </p>
           <p>{user['email']}</p>
-          <p>Administrateur de l’entreprise {user['company']}.</p>
+          <p>
+            {user.role === 'admin' ? 'Administrateur' : 'Collaborateur'} de
+            l’entreprise {user.company}.
+          </p>
           <button
             className="primary"
             disabled={busy}
@@ -365,11 +413,23 @@ function Home({ config }: { config: Configuration }) {
 export function Identity({
   config,
   path,
+  renderHome,
 }: {
   config: Configuration;
   path: string;
+  renderHome?: RenderHome;
 }) {
   switch (path) {
+    case '/accept-invitation':
+    case '/confirm-email':
+      return config.tenant ? (
+        <Invitation
+          termsVersion={config.termsVersion}
+          emailChange={path === '/confirm-email'}
+        />
+      ) : (
+        <Login config={config} />
+      );
     case '/signup':
       return config.tenant ? (
         <Login config={config} />
@@ -386,7 +446,7 @@ export function Identity({
       return <Login config={config} />;
     case '/':
       return config.tenant ? (
-        <Home config={config} />
+        <Home config={config} renderHome={renderHome} />
       ) : (
         <Login config={config} />
       );

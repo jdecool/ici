@@ -20,9 +20,10 @@ export async function request(
   path: string,
   body?: unknown,
   headers: Record<string, string> = {},
+  method = body === undefined ? 'GET' : 'POST',
 ): Promise<Record<string, unknown>> {
   const response = await fetch(`/api${path}`, {
-    method: body === undefined ? 'GET' : 'POST',
+    method,
     headers: { 'Content-Type': 'application/json', ...headers },
     body: JSON.stringify(body),
   });
@@ -56,6 +57,22 @@ export async function configuration(): Promise<Configuration> {
 export function errorMessage(error: unknown): string {
   if (error instanceof ApiError) {
     switch (error.code) {
+      case 'unauthenticated':
+        return 'Votre session a expiré. Reconnectez-vous.';
+      case 'forbidden':
+        return 'Vous n’avez pas les droits nécessaires.';
+      case 'csrf_failed':
+        return 'Votre session a changé. Rechargez la page.';
+      case 'last_administrator':
+        return 'L’entreprise doit conserver au moins un administrateur actif.';
+      case 'email_unavailable':
+        return 'Cette adresse email est déjà utilisée ou réservée.';
+      case 'already_exists':
+        return 'Une équipe porte déjà ce nom.';
+      case 'resource_in_use':
+        return 'Suppression impossible : cet élément est utilisé par des utilisateurs, des présences ou une semaine type.';
+      case 'not_found':
+        return 'Cet élément n’existe plus. Actualisez la liste.';
       case 'invalid_credentials':
         return 'Email ou mot de passe incorrect.';
       case 'slug_unavailable':

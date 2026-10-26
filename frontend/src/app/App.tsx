@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Workspace } from '../features/organization';
 import { Identity } from '../features/identity';
 import { configuration, errorMessage } from '../shared/api';
 import type { Configuration } from '../shared/api';
@@ -143,6 +144,7 @@ export function App() {
     // Stryker disable next-line ArrayDeclaration: A constant sentinel and an empty dependency list both stay stable across renders.
     [],
   );
+  const workspace = Boolean(config?.tenant && path === '/');
   const legal = path === '/terms' || path === '/privacy';
   return (
     <div className="shell">
@@ -167,28 +169,45 @@ export function App() {
           </a>
         </div>
       </header>
-      <main className={legal ? 'legal-main' : 'landing'}>
+      <main
+        className={
+          legal ? 'legal-main' : workspace ? 'workspace-main' : 'landing'
+        }
+      >
         {legal ? (
           <Legal privacy={path === '/privacy'} />
         ) : (
           <>
-            <section className="pitch">
-              <div className="eyebrow">Planning de présence d’équipe</div>
-              <h1>Sachez qui est au bureau avant de vous déplacer.</h1>
-              <p>
-                Chacun indique sa semaine en quelques clics : présentiel,
-                distanciel ou absence. Toute l’équipe voit en un coup d’œil
-                quand se retrouver.
-              </p>
-              <Preview />
-            </section>
-            <div className="form-column">
+            {!workspace && (
+              <section className="pitch">
+                <div className="eyebrow">Planning de présence d’équipe</div>
+                <h1>Sachez qui est au bureau avant de vous déplacer.</h1>
+                <p>
+                  Chacun indique sa semaine en quelques clics : présentiel,
+                  distanciel ou absence. Toute l’équipe voit en un coup d’œil
+                  quand se retrouver.
+                </p>
+                <Preview />
+              </section>
+            )}
+            <div className={workspace ? 'workspace-container' : 'form-column'}>
               {error ? (
                 <p className="error" role="alert">
                   {error}
                 </p>
               ) : config ? (
-                <Identity config={config} path={path} />
+                <Identity
+                  config={config}
+                  path={path}
+                  renderHome={(session, logout, busy, refresh) => (
+                    <Workspace
+                      session={session}
+                      logout={logout}
+                      logoutBusy={busy}
+                      refreshSession={refresh}
+                    />
+                  )}
+                />
               ) : (
                 <p role="status">Chargement…</p>
               )}

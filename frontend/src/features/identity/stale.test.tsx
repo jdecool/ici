@@ -11,6 +11,7 @@ const config = {
   termsVersion: '2026-10-draft',
 };
 const current = {
+  id: 'owner-id',
   company: 'acme',
   email: 'owner@example.com',
   first_name: 'Camille',

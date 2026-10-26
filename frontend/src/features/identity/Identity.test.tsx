@@ -12,6 +12,7 @@ const config: Configuration = {
   termsVersion: '2026-10-draft',
 };
 const user = {
+  id: 'owner-id',
   company: 'acme',
   email: 'owner@example.com',
   first_name: 'Camille',
@@ -528,4 +529,28 @@ it('keeps the current recovery URL when sending email', async () => {
   submit('Envoyer le lien');
   await screen.findByRole('status');
   expect(location.hash).toBe('#help');
+});
+
+it('accepts collaborator sessions and rejects unknown roles', async () => {
+  server.use(
+    http.get('/api/auth/session', () =>
+      HttpResponse.json({ ...user, role: 'collaborator' }),
+    ),
+  );
+  const view = render(
+    <Identity config={{ ...config, tenant: 'acme' }} path="/" />,
+  );
+  expect(
+    await screen.findByText('Collaborateur de l’entreprise acme.'),
+  ).toBeVisible();
+  view.unmount();
+  server.use(
+    http.get('/api/auth/session', () =>
+      HttpResponse.json({ ...user, role: 'owner' }),
+    ),
+  );
+  render(<Identity config={{ ...config, tenant: 'acme' }} path="/" />);
+  expect(await screen.findByRole('alert')).toHaveTextContent(
+    'Le service est indisponible. Veuillez réessayer.',
+  );
 });
