@@ -28,6 +28,21 @@ Development and production use a same-origin proxy for `/api`, avoiding browser 
 
 New passwords require 8–128 characters including a lowercase letter, an uppercase letter, an ASCII digit and a symbol or punctuation character. Existing passwords remain usable for login.
 
+## Development fixtures
+
+```sh
+make fixtures        # Create or reset ACME only; preserve other workspaces
+```
+
+Open http://acme.ici.localhost:5173 after `make dev`:
+
+| Role | Email | Password |
+| --- | --- | --- |
+| Administrator | admin@example.com | password |
+| Collaborator | user@example.com | password |
+
+ACME contains ten active accounts, three locations (Paris - Siège, Lyon - Confluence, Lyon - Part Dieu), and random weekday half-day presence across five weeks centered on the current Europe/Paris week. All demo accounts use `password`; this is an explicit fixture-only exception. Reloading fixtures replaces ACME data and invalidates its sessions; it sends no emails.
+
 ## Repository map
 
 ```text

@@ -1,3 +1,4 @@
+pub mod fixtures;
 pub mod http;
 mod postgres;
 pub(crate) mod registration;

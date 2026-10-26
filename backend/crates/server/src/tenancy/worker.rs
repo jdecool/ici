@@ -115,7 +115,7 @@ async fn work(
     sqlx::raw_sql("DELETE FROM handoffs WHERE expires_at<now(); DELETE FROM rate_limits WHERE expires_at<now(); DELETE FROM tenants WHERE state='pending' AND expires_at<now();").execute(admin).await?;
     Ok(())
 }
-async fn provision(
+pub(super) async fn provision(
     state: &State,
     admin: &PgPool,
     admin_url: &str,

@@ -1,6 +1,6 @@
 use ici_server::{
     config::{Config, setting},
-    tenancy::{registry::State, worker},
+    tenancy::{fixtures, registry::State, worker},
 };
 
 #[tokio::main]
@@ -10,6 +10,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let admin_url = setting("PROVISIONER_DATABASE_URL")?;
     let admin = worker::initialize(&config, &admin_url).await?;
     let state = State::connect(config).await?;
+    if std::env::args().any(|argument| argument == "--fixtures") {
+        fixtures::load(&state, &admin, &admin_url).await?;
+        return Ok(());
+    }
     let migrate_all = std::env::args().any(|argument| argument == "--migrate-tenants");
     loop {
         if let Err(error) = worker::tick(&state, &admin, &admin_url, migrate_all).await {

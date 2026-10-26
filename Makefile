@@ -6,7 +6,7 @@ PROD = docker compose -p ici -f compose.yaml
 RUST = $(TOOLS) run --build --rm rust
 NODE = $(TOOLS) run --build --rm node
 
-.PHONY: migrate-tenants bootstrap require-locks check-infra help dev check check-rust check-frontend test test-rust test-frontend coverage coverage-rust coverage-frontend mutation mutation-rust mutation-frontend audit audit-rust audit-frontend e2e e2e-https build up down quality format
+.PHONY: fixtures migrate-tenants bootstrap require-locks check-infra help dev check check-rust check-frontend test test-rust test-frontend coverage coverage-rust coverage-frontend mutation mutation-rust mutation-frontend audit audit-rust audit-frontend e2e e2e-https build up down quality format
 help:
 	@printf '%s\n' \
 		'   ___       _       .---.' \
@@ -20,6 +20,7 @@ help:
 		'  Development' \
 		'    bootstrap          Generate missing dependency lockfiles' \
 		'    dev                Start development servers with live reload' \
+		'    fixtures           Reload ACME demonstration data in development' \
 		'    format             Apply Rust and frontend formatting' \
 		'    down               Stop development, production and tool services' \
 		'' \
@@ -109,3 +110,6 @@ quality: check test coverage mutation audit build e2e e2e-https
 format:
 	$(RUST) cargo fmt --all
 	$(NODE) npm run format
+
+fixtures: require-locks
+	sh scripts/fixtures.sh

@@ -60,6 +60,7 @@ Organize work by capability, not by global technical layers. The Rust server cra
 
 Prerequisites: Docker with Compose v2 and Make. No host Rust or Node installation is required. If dependency locks have not yet been generated, run `make bootstrap`, review Cargo.lock and frontend/package-lock.json, and include them in the first commit. CI never generates missing locks.
 
+- `make fixtures`: create or reset ACME demonstration data in development only.
 - `make dev`: backend reload and frontend HMR; http://ici.localhost:5173.
 - `make check`: formatting, lint, type/static analysis and frontend architecture checks.
 - `make test`: Rust unit/integration/doc tests and frontend unit/integration tests.
