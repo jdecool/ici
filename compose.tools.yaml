@@ -43,6 +43,7 @@ services:
     entrypoint: [sh, -c, 'npm ci && exec "$@"', --]
     volumes:
       - ./frontend:/workspace/frontend
+      - ./scripts:/workspace/scripts:ro
       - node-modules:/workspace/frontend/node_modules
 volumes:
   cargo-registry:

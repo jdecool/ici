@@ -45,6 +45,12 @@ scripts/                 Shared local/CI commands
 
 Use serial Make invocations; tool services share cache volumes. `make e2e` uses an isolated project name and a dynamically allocated host port, so it can run alongside the regular production stack.
 
+`make quality` prepares the tools once, then overlaps two independent lanes: Rust and frontend. Commands within each lane remain sequential; do not launch another Make invocation against those volumes during a quality run. Logs are written to `reports/quality/rust.log` and `reports/quality/frontend.log`, including elapsed seconds and exit status for every language gate. After both lanes succeed, production images are built once and reused by HTTP and HTTPS E2E checks. Use `make quality-rust`, `make quality-frontend` or `make quality-production` to run a complete lane independently. Each frontend lane performs one locked `npm ci` installation.
+
+Production Compose projects share explicitly named `ici-backend`, `ici-worker` and `ici-web` images, tagged `local` by default. Set the same `ICI_IMAGE_TAG` for the build and E2E commands to isolate another set of images. `quality-production` builds them before enabling reuse; standalone E2E commands build them automatically.
+
+For performance comparisons, use the same commit, Docker CPU/memory allocation and machine load. Compare three warm-cache runs separately from cold-cache runs; record setup/build time as well as gate timings. Frontend debounce and polling tests use virtual time, and obsolete-response tests release held requests explicitly rather than depending on network delays.
+
 Reports appear under `reports/`, `frontend/coverage/`, `frontend/reports/`, `frontend/playwright-report/`, and `frontend/test-results/`. CI uploads them even when checks fail. See [quality policy](quality.md) for thresholds and exclusions, [architecture](architecture.md) for dependency boundaries, and [contribution guide](../CONTRIBUTING.md) for workflow.
 
 ## Bootstrap and reproducibility

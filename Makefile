@@ -6,7 +6,7 @@ PROD = docker compose -p ici -f compose.yaml
 RUST = $(TOOLS) run --build --rm rust
 NODE = $(TOOLS) run --build --rm node
 
-.PHONY: fixtures reset-fixtures migrate-tenants bootstrap require-locks check-infra help dev check check-rust check-frontend test test-rust test-frontend coverage coverage-rust coverage-frontend mutation mutation-rust mutation-frontend audit audit-rust audit-frontend e2e e2e-https build up down quality format
+.PHONY: fixtures reset-fixtures migrate-tenants bootstrap require-locks check-infra help dev check check-rust check-frontend test test-rust test-frontend coverage coverage-rust coverage-frontend mutation mutation-rust mutation-frontend audit audit-rust audit-frontend e2e e2e-https build up down quality quality-rust quality-frontend quality-production format
 help:
 	@printf '%s\n' \
 		'   ___       _       .---.' \
@@ -71,6 +71,9 @@ check-infra:
 	PUBLIC_ORIGIN=https://ici.localhost docker compose -f compose.yaml -f compose.https.yaml config --quiet
 	set -e; for script in scripts/*.sh; do bash -n "$$script"; done
 	sh scripts/test-fixtures.sh
+	sh scripts/test-quality.sh
+	@test "$$(docker compose -p ici -f compose.yaml config --images backend worker web | sort)" = "$$(docker compose -p ici-e2e -f compose.yaml config --images backend worker web | sort)"
+	@test "$$(docker compose -p ici -f compose.yaml config --images backend worker web | sort)" = "$$(PUBLIC_ORIGIN=https://ici.localhost docker compose -p ici-e2e-https -f compose.yaml -f compose.https.yaml config --images backend worker web | sort)"
 check-rust: require-locks
 	$(RUST) sh scripts/check-rust.sh
 check-frontend: require-locks
@@ -108,7 +111,15 @@ down:
 	$(DEV) down --remove-orphans
 	$(PROD) down --remove-orphans
 	$(TOOLS) down --remove-orphans
-quality: check test coverage mutation audit build e2e e2e-https
+quality: require-locks
+	sh scripts/quality.sh
+quality-rust: require-locks
+	$(RUST) sh scripts/quality-language.sh rust
+quality-frontend: require-locks
+	$(NODE) sh ../scripts/quality-language.sh frontend
+quality-production: build
+	ICI_E2E_PREBUILT=1 sh scripts/e2e.sh
+	ICI_E2E_PREBUILT=1 sh scripts/e2e-https.sh
 format:
 	$(RUST) cargo fmt --all
 	$(NODE) npm run format

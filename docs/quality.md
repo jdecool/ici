@@ -4,6 +4,8 @@
 
 All gates run on every PR and main. Format, lint, type/static analysis, tests, coverage, mutations, dependency audits and production builds must succeed. GitHub's aggregate `quality` check fails when any matrix job fails or is cancelled. Configure it as a required branch-protection check after creating the remote repository.
 
+The CI matrix groups checks by language and production stack. Each language installs dependencies once and runs its unit/integration suite with coverage, rather than repeating the same suite without instrumentation. Rust doctests remain a separate mandatory command. Standalone test, coverage and audit targets remain available. Production images are built once before the HTTP and HTTPS stacks run in separate Compose projects; standalone E2E commands still build their own images.
+
 Rust uses standard rustfmt, Clippy with warnings denied, Cargo tests, cargo-llvm-cov, cargo-mutants and cargo-deny. Frontend uses Prettier, typed ESLint (React, hooks, accessibility and architecture rules), tsc, Vitest, Testing Library, MSW, V8 coverage, Stryker and Playwright/Chromium. MSW rejects unexpected HTTP requests.
 
 ## Coverage
