@@ -3,11 +3,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends procps && rm -r
 RUN npm install --global npm@11.20.0
 WORKDIR /workspace/frontend
 FROM base AS tools
+
+FROM base AS dependencies
 COPY frontend/package*.json ./
 RUN npm ci
-COPY frontend/ ./
 
-FROM tools AS builder
+FROM dependencies AS builder
+COPY frontend/ ./
 RUN npm run build
 
 FROM nginxinc/nginx-unprivileged:1.28.0-alpine AS production

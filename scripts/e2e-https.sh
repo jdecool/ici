@@ -20,9 +20,11 @@ cleanup() {
 trap cleanup EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
-stack build backend worker web
+if [ "${ICI_E2E_PREBUILT:-0}" != 1 ]; then
+    stack build backend worker web
+fi
 stack run --rm --no-deps --user 0:0 --entrypoint sh -v "$TLS_CERT_DIRECTORY:/tls" backend -c 'openssl req -x509 -nodes -newkey rsa:2048 -keyout /tls/privkey.pem -out /tls/fullchain.pem -days 1 -subj /CN=ici.localhost -addext "subjectAltName=DNS:ici.localhost,DNS:*.ici.localhost" && chmod 644 /tls/privkey.pem'
-stack up -d --wait --wait-timeout 180 backend worker web mailpit
+stack up --no-build -d --wait --wait-timeout 180 backend worker web mailpit
 config="$(stack exec -T backend curl --fail --silent --cacert /dev/stdin --connect-to ici.localhost:8443:web:8443 https://ici.localhost:8443/api/config < "$TLS_CERT_DIRECTORY/fullchain.pem")"
 case "$config" in
     *'"public_origin":"https://ici.localhost:8443"'*) ;;

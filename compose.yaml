@@ -4,6 +4,7 @@ services:
   mailpit:
     profiles: [test]
   backend:
+    image: ici-backend:${ICI_IMAGE_TAG:-local}
     build:
       context: .
       dockerfile: backend/Dockerfile
@@ -20,6 +21,7 @@ services:
         condition: service_healthy
     init: true
   web:
+    image: ici-web:${ICI_IMAGE_TAG:-local}
     build:
       context: .
       dockerfile: frontend/Dockerfile
@@ -55,6 +57,7 @@ services:
       - ./frontend/test-results:/workspace/frontend/test-results
 
   worker:
+    image: ici-worker:${ICI_IMAGE_TAG:-local}
     build:
       context: .
       dockerfile: backend/Dockerfile

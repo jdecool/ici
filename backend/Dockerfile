@@ -8,7 +8,6 @@ RUN cargo install --locked cargo-llvm-cov --version 0.9.1 \
     && cargo install --locked cargo-mutants --version 27.1.0 \
     && cargo install --locked cargo-deny --version 0.18.9 \
     && cargo install --locked cargo-watch --version 8.5.3
-COPY . .
 
 FROM base AS builder
 COPY . .
