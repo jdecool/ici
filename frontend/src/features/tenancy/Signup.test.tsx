@@ -8,6 +8,7 @@ import {
 import { delay, http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { server } from '../../test/server';
+import { responseGate } from '../../test/responseGate';
 import { Availability, RegistrationStatus, Signup } from './Signup';
 const config = {
   rootDomain: 'ici.localhost',
@@ -51,10 +52,11 @@ it('debounces availability checks by 300ms', async () => {
   await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent(''));
 });
 it('ignores obsolete availability responses', async () => {
+  const response = responseGate();
   server.use(
     http.get('/api/tenants/availability', async ({ request }) => {
       const slug = new URL(request.url).searchParams.get('slug');
-      await delay(slug === 'slow' ? 450 : 1);
+      if (slug === 'slow') await response.pending;
       return HttpResponse.json({ available: slug !== 'slow' });
     }),
   );
@@ -68,7 +70,7 @@ it('ignores obsolete availability responses', async () => {
       'Cet espace est disponible.',
     ),
   );
-  await delay(500);
+  await response.release();
   expect(screen.getByRole('status')).toHaveTextContent(
     'Cet espace est disponible.',
   );
@@ -256,6 +258,7 @@ it.each(['active', 'expired', 'failed', 'provisioning'])(
   },
 );
 it('polls until provisioning is complete', async () => {
+  vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
   let count = 0;
   server.use(
     http.get('/api/registrations/status', () =>
@@ -266,13 +269,14 @@ it('polls until provisioning is complete', async () => {
     ),
   );
   render(<RegistrationStatus receipt="receipt" />);
-  expect(
-    await screen.findByRole(
-      'heading',
-      { name: 'Votre espace est prêt' },
-      { timeout: 3000 },
-    ),
-  ).toBeInTheDocument();
+  await act(() => vi.waitFor(() => expect(count).toBe(1)));
+  await act(() => vi.advanceTimersByTimeAsync(2000));
+  await vi.waitFor(async () => {
+    await act(async () => {});
+    expect(screen.getByRole('heading')).toHaveTextContent(
+      'Votre espace est prêt',
+    );
+  });
   expect(count).toBe(2);
 });
 it('announces failed polling requests', async () => {
@@ -283,9 +287,12 @@ it('announces failed polling requests', async () => {
   );
 });
 it('ignores status responses after unmount', async () => {
+  const response = responseGate();
+  const started = vi.fn();
   server.use(
     http.get('/api/registrations/status', async () => {
-      await delay(30);
+      started();
+      await response.pending;
       return HttpResponse.json({
         state: 'active',
         origin: 'http://acme.ici.localhost:5173',
@@ -293,8 +300,9 @@ it('ignores status responses after unmount', async () => {
     }),
   );
   const view = render(<RegistrationStatus receipt="receipt" />);
+  await waitFor(() => expect(started).toHaveBeenCalled());
   view.unmount();
-  await delay(50);
+  await response.release();
   expect(
     screen.queryByRole('link', { name: 'Accéder à mon espace' }),
   ).not.toBeInTheDocument();
@@ -396,13 +404,14 @@ it('cancels a debounce before it issues an obsolete request', async () => {
   expect(calls).toEqual(['new']);
 });
 it('ignores an obsolete availability error', async () => {
+  const response = responseGate();
   const started = vi.fn();
   server.use(
     http.get('/api/tenants/availability', async ({ request }) => {
       const slug = new URL(request.url).searchParams.get('slug');
       started(slug);
       if (slug === 'old') {
-        await delay(600);
+        await response.pending;
         return HttpResponse.error();
       }
       return HttpResponse.json({ available: true });
@@ -416,7 +425,7 @@ it('ignores an obsolete availability error', async () => {
       'Cet espace est disponible.',
     ),
   );
-  await act(() => delay(650));
+  await response.release();
   expect(screen.getByRole('status')).toHaveTextContent(
     'Cet espace est disponible.',
   );
@@ -455,6 +464,7 @@ it.each([
   },
 );
 it.each(['active', 'expired'])('stops polling after %s', async (state) => {
+  vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
   let count = 0;
   server.use(
     http.get('/api/registrations/status', () => {
@@ -466,11 +476,12 @@ it.each(['active', 'expired'])('stops polling after %s', async (state) => {
     }),
   );
   render(<RegistrationStatus receipt="receipt" />);
-  await waitFor(() => expect(count).toBe(1));
-  await act(() => delay(2200));
+  await act(() => vi.waitFor(() => expect(count).toBe(1)));
+  await act(() => vi.advanceTimersByTimeAsync(2200));
   expect(count).toBe(1);
 });
 it('retries a transient status error and clears its alert', async () => {
+  vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
   let count = 0;
   server.use(
     http.get('/api/registrations/status', () =>
@@ -483,24 +494,28 @@ it('retries a transient status error and clears its alert', async () => {
     ),
   );
   render(<RegistrationStatus receipt="receipt" />);
-  await screen.findByRole('alert');
-  expect(
-    await screen.findByRole(
-      'heading',
-      { name: 'Votre espace est prêt' },
-      { timeout: 3000 },
-    ),
-  ).toBeInTheDocument();
+  await vi.waitFor(async () => {
+    await act(async () => {});
+    expect(screen.getByRole('alert')).toBeVisible();
+  });
+  await act(() => vi.advanceTimersByTimeAsync(2000));
+  await vi.waitFor(async () => {
+    await act(async () => {});
+    expect(screen.getByRole('heading')).toHaveTextContent(
+      'Votre espace est prêt',
+    );
+  });
   expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 });
 it('ignores outdated receipt results and errors after a receipt changes', async () => {
+  const response = responseGate();
   const seen = vi.fn();
   server.use(
     http.get('/api/registrations/status', async ({ request }) => {
       const auth = request.headers.get('authorization');
       seen(auth);
       if (auth === 'Bearer old') {
-        await delay(200);
+        await response.pending;
         return HttpResponse.error();
       }
       return HttpResponse.json({
@@ -513,7 +528,7 @@ it('ignores outdated receipt results and errors after a receipt changes', async 
   await waitFor(() => expect(seen).toHaveBeenCalledWith('Bearer old'));
   view.rerender(<RegistrationStatus receipt="new" />);
   await screen.findByRole('heading', { name: 'Votre espace est prêt' });
-  await act(() => delay(250));
+  await response.release();
   expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   expect(
     screen.getByRole('link', { name: 'Accéder à mon espace' }),
@@ -574,12 +589,13 @@ it('shows no stale status error while the first status request is pending', asyn
   await screen.findByRole('heading', { name: 'Votre espace est prêt' });
 });
 it('ignores obsolete successful status responses after receipt rotation', async () => {
+  const response = responseGate();
   const seen = vi.fn();
   server.use(
     http.get('/api/registrations/status', async ({ request }) => {
       const old = request.headers.get('authorization') === 'Bearer old';
       seen(old);
-      if (old) await delay(150);
+      if (old) await response.pending;
       return HttpResponse.json({
         state: old ? 'pending' : 'active',
         origin: 'http://acme.ici.localhost:5173',
@@ -590,7 +606,7 @@ it('ignores obsolete successful status responses after receipt rotation', async 
   await waitFor(() => expect(seen).toHaveBeenCalledWith(true));
   view.rerender(<RegistrationStatus receipt="new" />);
   await screen.findByRole('heading', { name: 'Votre espace est prêt' });
-  await act(() => delay(200));
+  await response.release();
   expect(screen.getByRole('heading')).toHaveTextContent(
     'Votre espace est prêt',
   );

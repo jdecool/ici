@@ -9,6 +9,7 @@ import {
 import { http, HttpResponse, delay } from 'msw';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { server } from '../../test/server';
+import { responseGate } from '../../test/responseGate';
 import { Workspace } from './Workspace';
 import type { Location, Member, Team } from './api';
 const session = {
@@ -446,11 +447,12 @@ it('handles empty lists, failed loads, malformed payloads and retry', async () =
 });
 it('ignores obsolete loads under StrictMode', async () => {
   let calls = 0;
+  const response = responseGate();
   server.use(
     http.get('/api/locations', async () => {
       calls += 1;
       if (calls === 1) {
-        await delay(80);
+        await response.pending;
         return HttpResponse.json({
           locations: [{ ...locations[0], name: 'Obsolete' }],
         });
@@ -470,7 +472,7 @@ it('ignores obsolete loads under StrictMode', async () => {
   );
   fireEvent.click(screen.getByRole('button', { name: 'Lieux' }));
   await screen.findByRole('heading', { name: 'Paris' });
-  await new Promise((resolve) => setTimeout(resolve, 100));
+  await response.release();
   expect(
     screen.queryByRole('heading', { name: 'Obsolete' }),
   ).not.toBeInTheDocument();
@@ -705,12 +707,13 @@ it('explains an empty collaborator view', async () => {
 });
 it('ignores obsolete loading errors and supports a company with users but no teams', async () => {
   let calls = 0;
+  const response = responseGate();
   teams = [];
   server.use(
     http.get('/api/locations', async () => {
       calls += 1;
       if (calls === 1) {
-        await delay(50);
+        await response.pending;
         return HttpResponse.error();
       }
       return HttpResponse.json({ locations });
@@ -728,7 +731,7 @@ it('ignores obsolete loading errors and supports a company with users but no tea
   );
   fireEvent.click(screen.getByRole('button', { name: 'Lieux' }));
   await screen.findByRole('heading', { name: 'Paris' });
-  await new Promise((resolve) => setTimeout(resolve, 80));
+  await response.release();
   expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Entreprise' }));
   expect(

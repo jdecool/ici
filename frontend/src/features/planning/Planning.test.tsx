@@ -9,6 +9,7 @@ import {
 import { http, HttpResponse, delay } from 'msw';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { server } from '../../test/server';
+import { responseGate } from '../../test/responseGate';
 import { Planning } from './Planning';
 import type { PlanningView } from './Planning';
 import type { Entry, TemplateEntry, Week } from './model';
@@ -949,9 +950,10 @@ it('blocks edits during bulk writes, reports errors and clears them on retry', a
 });
 it('shows a loading state during a refresh and replaces obsolete displayed data', async () => {
   let refreshing = false;
+  const response = responseGate();
   server.use(
     http.get('/api/planning/week', async ({ request }) => {
-      if (refreshing) await delay(70);
+      if (refreshing) await response.pending;
       return HttpResponse.json({
         ...week,
         start: new URL(request.url).searchParams.get('start'),
@@ -979,6 +981,7 @@ it('shows a loading state during a refresh and replaces obsolete displayed data'
   expect(
     screen.queryByRole('rowheader', { name: 'Alice Martin' }),
   ).not.toBeInTheDocument();
+  await response.release();
   await screen.findByRole('rowheader', { name: 'Alice Updated' });
   expect(screen.getByRole('status')).toHaveTextContent(
     'Modification enregistrée.',
@@ -986,11 +989,12 @@ it('shows a loading state during a refresh and replaces obsolete displayed data'
 });
 it('ignores obsolete StrictMode data and errors and cleans up window listeners', async () => {
   let calls = 0;
+  let response = responseGate();
   server.use(
     http.get('/api/planning/week', async () => {
       calls += 1;
       if (calls === 1) {
-        await delay(60);
+        await response.pending;
         return HttpResponse.json({ ...week, users: [] });
       }
       return HttpResponse.json(week);
@@ -1001,7 +1005,7 @@ it('ignores obsolete StrictMode data and errors and cleans up window listeners',
   const view = mount();
   expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   await screen.findByRole('rowheader', { name: /Camille Durand/ });
-  await delay(100);
+  await response.release();
   expect(
     screen.getByRole('rowheader', { name: /Camille Durand/ }),
   ).toBeVisible();
@@ -1012,11 +1016,12 @@ it('ignores obsolete StrictMode data and errors and cleans up window listeners',
   added.mockRestore();
   removed.mockRestore();
   calls = 0;
+  response = responseGate();
   server.use(
     http.get('/api/planning/week', async () => {
       calls += 1;
       if (calls === 1) {
-        await delay(60);
+        await response.pending;
         return HttpResponse.error();
       }
       return HttpResponse.json(week);
@@ -1024,7 +1029,7 @@ it('ignores obsolete StrictMode data and errors and cleans up window listeners',
   );
   mount();
   await screen.findByRole('rowheader', { name: /Camille Durand/ });
-  await delay(100);
+  await response.release();
   expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 });
 it('keeps an unavailable office label readable when a response references a missing location', async () => {
