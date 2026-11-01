@@ -50,6 +50,8 @@ The organization dialog's mounted ref is non-null when its effect runs and the c
 
 Rust account contracts require TEST_DATABASE_URL and ICI_TEST_DATABASE=1, supplied only by the ici-tools Compose project. Before each contract run they clear the registry and drop generated ici_t_<UUID> databases/roles in that dedicated PostgreSQL instance. This also recovers from mutants killed before teardown. Never point the test environment at development or production data. Cache volumes remain persistent; regular dev/production databases are in separate Compose projects.
 
+Planning and organization contracts provision only their own two tenants, independently of the account lifecycle. A shared asynchronous lock serializes these contracts because they reset the same registry and PostgreSQL roles. Interrupted outbox-renaming tests are recovered before initialization. Rust mutations remain sequential against this shared instance.
+
 The tools stack's Mailpit requires explicit test SMTP authentication. Development and production-stack E2E capture also exercise unauthenticated local delivery. This detects regressions that accidentally omit configured SMTP credentials without requiring access to a real mail provider.
 
 The occupancy chart narrowly excludes OptionalChaining on its defensive weekday-label lookup. The authenticated planning API rejects all weekday indexes outside 0–6, for which the seven labels are present. Removing only the optional access has identical runtime behavior on accepted data; histogram values, selection, labels and normalization remain mutation-tested.
@@ -61,3 +63,16 @@ The planning toolbar also excludes only OptionalChaining on the selected-user na
 Planning behavior tests record browser error events and assert that none occurred after every test. This converts deliberately broken pointer mutants into explicit failed assertions instead of triggering a Vitest/Stryker error-formatting crash. Default error reporting is prevented only inside that test suite while the error message is retained for the mandatory assertion; errors are never ignored or accepted.
 
 The initial `moved` pointer flag narrowly excludes BooleanLiteral: every pointer-down resets it before permission, button or touch guards, and keyboard activation ignores it. Its initial value therefore cannot affect a real interaction. Touch activation after mouse dragging is explicitly tested; no event-handler reset or permission guard is excluded.
+
+## Local mutation runtime
+
+Keep asynchronous race tests deterministic: hold obsolete HTTP responses with
+`src/test/responseGate.ts`, observe the current response, then release the obsolete
+response before asserting that the current UI is preserved. Do not replace this
+ordering with fixed sleeps or shorten global timeouts to improve mutation scores.
+
+Member input and planning date/half-day validation have direct unit tests so invalid
+mutations fail before the PostgreSQL lifecycle contracts. Those contracts remain
+mandatory. Planning and organization share a lazily computed password hash within
+one test process; identity tests still exercise real password hashing and login.
+No production cryptographic parameters or mutation scopes are changed.

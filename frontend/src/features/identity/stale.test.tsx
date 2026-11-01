@@ -1,7 +1,8 @@
 import { StrictMode } from 'react';
-import { act, render, screen } from '@testing-library/react';
-import { delay, http, HttpResponse } from 'msw';
+import { render, screen } from '@testing-library/react';
+import { http, HttpResponse } from 'msw';
 import { expect, it } from 'vitest';
+import { responseGate } from '../../test/responseGate';
 import { server } from '../../test/server';
 import { Identity } from './Identity';
 const config = {
@@ -23,10 +24,11 @@ it.each([false, true])(
   'ignores obsolete sessions under StrictMode: error=%s',
   async (fail) => {
     let count = 0;
+    const response = responseGate();
     server.use(
       http.get('/api/auth/session', async () => {
         if (++count === 1) {
-          await delay(150);
+          await response.pending;
           return fail
             ? HttpResponse.error()
             : HttpResponse.json({ ...current, company: 'obsolete' });
@@ -40,7 +42,7 @@ it.each([false, true])(
       </StrictMode>,
     );
     await screen.findByRole('heading', { name: 'Bienvenue chez acme' });
-    await act(() => delay(200));
+    await response.release();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     expect(screen.getByRole('heading')).toHaveTextContent(
       'Bienvenue chez acme',

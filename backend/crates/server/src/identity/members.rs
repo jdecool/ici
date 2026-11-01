@@ -353,3 +353,55 @@ pub async fn confirm_email(
     tx.commit().await?;
     Ok(Json(json!({"confirmed":true})))
 }
+
+#[cfg(test)]
+mod validation_tests {
+    use super::*;
+
+    fn member() -> Member {
+        Member {
+            first_name: " Camille ".into(),
+            last_name: " Durand ".into(),
+            email: " OWNER@example.com ".into(),
+            role: "collaborator".into(),
+            team_id: None,
+            location_id: None,
+            status: None,
+        }
+    }
+
+    #[test]
+    fn normalizes_names_and_email_and_accepts_supported_roles_and_statuses() -> Result<(), Error> {
+        for role in ["admin", "collaborator"] {
+            for status in [None, Some("active"), Some("inactive"), Some("pending")] {
+                let mut value = member();
+                value.role = role.into();
+                value.status = status.map(String::from);
+                value.validate()?;
+                assert_eq!(value.first_name, "Camille");
+                assert_eq!(value.last_name, "Durand");
+                assert_eq!(value.email, "owner@example.com");
+            }
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn rejects_invalid_member_fields() {
+        for field in ["first_name", "last_name", "email", "role", "status"] {
+            let mut value = member();
+            match field {
+                "first_name" => value.first_name = " ".into(),
+                "last_name" => value.last_name = " ".into(),
+                "email" => value.email = "invalid".into(),
+                "role" => value.role = "owner".into(),
+                _ => value.status = Some("unknown".into()),
+            }
+            let Err(error) = value.validate() else {
+                panic!("Invalid {field} must be rejected");
+            };
+            assert_eq!(error.code, "invalid_input");
+            assert_eq!(error.fields, json!({field: "invalid"}));
+        }
+    }
+}

@@ -71,6 +71,7 @@ fn half(value: &str) -> Result<(), Error> {
     }
     Ok(())
 }
+
 async fn validate(connection: &mut PgConnection, value: &Presence) -> Result<(), Error> {
     if !crate::planning::rules::valid_presence(
         &value.status,
@@ -338,4 +339,40 @@ pub async fn apply_template(
     }
     tx.commit().await?;
     Ok(Json(json!({"updated":true})))
+}
+
+#[cfg(test)]
+mod validation_tests {
+    use super::*;
+
+    #[test]
+    fn dates_and_week_starts_preserve_field_errors() -> Result<(), Error> {
+        assert_eq!(date("2026-10-26")?.iso(), "2026-10-26");
+        assert_eq!(monday("2026-10-26")?.iso(), "2026-10-26");
+        for (result, field) in [
+            (date("2026-02-30"), "date"),
+            (monday("invalid"), "date"),
+            (monday("2026-10-27"), "start"),
+        ] {
+            let Err(error) = result else {
+                panic!("Invalid dates must be rejected");
+            };
+            assert_eq!(error.code, "invalid_input");
+            assert_eq!(error.fields, json!({field: "invalid"}));
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn half_days_accept_only_the_two_wire_values() -> Result<(), Error> {
+        half("am")?;
+        half("pm")?;
+        for value in ["", "AM", "morning"] {
+            let Err(error) = half(value) else {
+                panic!("Invalid half must be rejected");
+            };
+            assert_eq!(error.fields, json!({"half": "invalid"}));
+        }
+        Ok(())
+    }
 }

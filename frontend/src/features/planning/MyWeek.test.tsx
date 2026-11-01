@@ -6,9 +6,10 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
-import { delay, http, HttpResponse } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { server } from '../../test/server';
+import { responseGate } from '../../test/responseGate';
 import { MyWeek } from './MyWeek';
 import { currentWeek } from './model';
 import type { Week } from './model';
@@ -200,11 +201,12 @@ it('disables all writes during a presence mutation', async () => {
 });
 it('ignores an obsolete StrictMode template response', async () => {
   let calls = 0;
+  const response = responseGate();
   server.use(
     http.get('/api/planning/template', async () => {
       calls += 1;
       const status = calls === 1 ? 'remote' : 'off';
-      if (calls === 1) await delay(70);
+      if (calls === 1) await response.pending;
       return HttpResponse.json({
         entries: [
           { weekday: 0, half: 'am', status, location_id: null, note: '' },
@@ -231,7 +233,7 @@ it('ignores an obsolete StrictMode template response', async () => {
   await waitFor(() => {
     expect(within(group).getByLabelText('Matin')).toHaveValue('off');
   });
-  await delay(100);
+  await response.release();
   expect(within(group).getByLabelText('Matin')).toHaveValue('off');
 });
 it('preserves all other weekday and half slots while persisting a replacement', async () => {
@@ -272,10 +274,11 @@ it('preserves all other weekday and half slots while persisting a replacement', 
     http.get('/api/planning/template', () => HttpResponse.json({ entries })),
   );
   let submitted: unknown;
+  const response = responseGate();
   server.use(
     http.put('/api/planning/template', async ({ request }) => {
       submitted = await request.json();
-      await delay(60);
+      await response.pending;
       return HttpResponse.json({ updated: true });
     }),
   );
@@ -306,9 +309,8 @@ it('preserves all other weekday and half slots while persisting a replacement', 
       ],
     });
   });
-  await waitFor(() => {
-    expect(within(monday).getByLabelText('Matin')).toBeEnabled();
-  });
+  await response.release();
+  expect(within(monday).getByLabelText('Matin')).toBeEnabled();
   expect(within(monday).getByLabelText('Matin')).toHaveValue('none');
   expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   fireEvent.click(
@@ -319,11 +321,12 @@ it('preserves all other weekday and half slots while persisting a replacement', 
 });
 it('clears the template load error after a retry and ignores obsolete errors', async () => {
   let calls = 0;
+  const response = responseGate();
   server.use(
     http.get('/api/planning/template', async () => {
       calls += 1;
       if (calls === 1) {
-        await delay(70);
+        await response.pending;
         return HttpResponse.error();
       }
       return HttpResponse.json({ entries: [] });
@@ -345,6 +348,6 @@ it('clears the template load error after a retry and ignores obsolete errors', a
     </StrictMode>,
   );
   await screen.findAllByRole('combobox');
-  await delay(100);
+  await response.release();
   expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 });

@@ -1,7 +1,8 @@
 import { StrictMode } from 'react';
-import { act, render, screen } from '@testing-library/react';
-import { delay, http, HttpResponse } from 'msw';
+import { render, screen } from '@testing-library/react';
+import { http, HttpResponse } from 'msw';
 import { expect, it } from 'vitest';
+import { responseGate } from '../test/responseGate';
 import { server } from '../test/server';
 import { App } from './App';
 const current = {
@@ -14,10 +15,11 @@ it.each([false, true])(
   'ignores obsolete configuration responses under StrictMode: error=%s',
   async (fail) => {
     let count = 0;
+    const response = responseGate();
     server.use(
       http.get('/api/config', async () => {
         if (++count === 1) {
-          await delay(150);
+          await response.pending;
           return fail
             ? HttpResponse.error()
             : HttpResponse.json({
@@ -34,7 +36,7 @@ it.each([false, true])(
       </StrictMode>,
     );
     await screen.findByRole('heading', { name: 'Connexion' });
-    await act(() => delay(200));
+    await response.release();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     expect(screen.getByText('.ici.localhost')).toBeInTheDocument();
     expect(screen.queryByText('.obsolete.example')).not.toBeInTheDocument();

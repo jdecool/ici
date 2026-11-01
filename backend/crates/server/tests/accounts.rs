@@ -113,12 +113,10 @@ async fn handoff(app: &Router, slug: &str, code: &str) -> TestResult<Response> {
         .await?)
 }
 
-#[tokio::test]
-async fn complete_account_lifecycle_and_database_isolation() -> TestResult {
-    tracing_subscriber::fmt()
-        .with_env_filter("ici_server=debug,sqlx=warn")
-        .with_test_writer()
-        .try_init()?;
+// Contract cases share one privileged PostgreSQL instance and reset it sequentially.
+static DATABASE_CONTRACT: tokio::sync::Mutex<()> = tokio::sync::Mutex::const_new(());
+
+async fn initialize_contract() -> TestResult<(Config, String, PgPool)> {
     let admin_url = std::env::var("TEST_DATABASE_URL")?;
     let config = Config {
         root_domain: "ici.localhost".into(),
@@ -131,6 +129,11 @@ async fn complete_account_lifecycle_and_database_isolation() -> TestResult {
         ),
         encryption_key: vec![7; 32],
     };
+    assert_eq!(std::env::var("ICI_TEST_DATABASE")?, "1");
+    let recovery = PgPool::connect(&admin_url).await?;
+    sqlx::raw_sql("DO $$ BEGIN IF to_regclass('outbox') IS NULL AND to_regclass('unavailable_outbox') IS NOT NULL THEN ALTER TABLE unavailable_outbox RENAME TO outbox; END IF; END $$;")
+        .execute(&recovery).await?;
+    recovery.close().await;
     let admin = worker::initialize(&config, &admin_url).await?;
     // A killed mutant can interrupt cleanup. Reset only the explicitly designated test instance.
     assert_eq!(std::env::var("ICI_TEST_DATABASE")?, "1");
@@ -158,6 +161,74 @@ async fn complete_account_lifecycle_and_database_isolation() -> TestResult {
             .execute(&admin)
             .await?;
     }
+    Ok((config, admin_url, admin))
+}
+
+async fn capability_contract(planning: bool) -> TestResult {
+    let _guard = DATABASE_CONTRACT.lock().await;
+    let (config, admin_url, admin) = initialize_contract().await?;
+    let state = State::connect(config).await?;
+    let app = application(state.clone());
+    static PASSWORD_HASH: tokio::sync::OnceCell<String> = tokio::sync::OnceCell::const_new();
+    let hash = PASSWORD_HASH
+        .get_or_try_init(|| crypto::hash_password(PASSWORD.into()))
+        .await?;
+    let mut slugs = Vec::new();
+    for _ in 0..2 {
+        let id = Uuid::new_v4();
+        let slug = format!("test-{}", id.simple());
+        sqlx::query("INSERT INTO tenants(id,slug,state,first_name,last_name,email,password_hash,terms_version,receipt_hash) VALUES ($1,$2,'queued','Camille','Durand','owner@example.com',$3,$4,$2)")
+            .bind(id).bind(&slug).bind(hash).bind(ici_server::identity::TERMS_VERSION)
+            .execute(&admin).await?;
+        slugs.push(slug);
+    }
+    worker::tick(&state, &admin, &admin_url, false).await?;
+    let tenant = state.tenant(&slugs[0]).await?;
+    let other = state.tenant(&slugs[1]).await?;
+    if planning {
+        planning::lifecycle(&app, &tenant, &other).await?;
+    } else {
+        organization::lifecycle(&state, &app, &tenant, &other, &admin, &admin_url).await?;
+    }
+    for tenant in [&tenant, &other] {
+        tenant.pool.close().await;
+        let name = format!("ici_t_{}", tenant.id.simple());
+        sqlx::query(&format!("DROP DATABASE {name} WITH (FORCE)"))
+            .execute(&admin)
+            .await?;
+        sqlx::query(&format!("DROP ROLE {name}"))
+            .execute(&admin)
+            .await?;
+        sqlx::query("DELETE FROM handoffs WHERE tenant_id=$1")
+            .bind(tenant.id)
+            .execute(&admin)
+            .await?;
+        sqlx::query("DELETE FROM tenants WHERE id=$1")
+            .bind(tenant.id)
+            .execute(&admin)
+            .await?;
+    }
+    Ok(())
+}
+
+#[tokio::test]
+async fn planning_contract() -> TestResult {
+    capability_contract(true).await
+}
+
+#[tokio::test]
+async fn organization_contract() -> TestResult {
+    capability_contract(false).await
+}
+
+#[tokio::test]
+async fn complete_account_lifecycle_and_database_isolation() -> TestResult {
+    tracing_subscriber::fmt()
+        .with_env_filter("ici_server=debug,sqlx=warn")
+        .with_test_writer()
+        .try_init()?;
+    let _guard = DATABASE_CONTRACT.lock().await;
+    let (config, admin_url, admin) = initialize_contract().await?;
     let state = State::connect(config.clone()).await?;
     let app = application(state.clone());
     let slug = format!("test-{}", Uuid::new_v4().simple());
@@ -1217,8 +1288,6 @@ async fn complete_account_lifecycle_and_database_isolation() -> TestResult {
     child.wait()?;
     std::fs::remove_file(key_file)?;
     assert!(running, "Worker exited without a one-off migration request");
-    planning::lifecycle(&app, &tenant, &second).await?;
-    organization::lifecycle(&state, &app, &tenant, &second, &admin, &admin_url).await?;
     // Test-only cleanup touches only the internally generated databases from this test.
     for id in [tenant.id, second.id, recovered.id] {
         let name = format!("ici_t_{}", id.simple());

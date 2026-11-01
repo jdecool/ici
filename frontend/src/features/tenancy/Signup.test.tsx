@@ -307,6 +307,27 @@ it('ignores status responses after unmount', async () => {
     screen.queryByRole('link', { name: 'Accéder à mon espace' }),
   ).not.toBeInTheDocument();
 });
+it('stops scheduled status polling after unmount', async () => {
+  vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+  let count = 0;
+  server.use(
+    http.get('/api/registrations/status', () => {
+      count += 1;
+      return HttpResponse.json({
+        state: 'queued',
+        origin: 'http://acme.ici.localhost:5173',
+      });
+    }),
+  );
+  const view = render(<RegistrationStatus receipt="receipt" />);
+  await act(async () => {
+    await vi.waitFor(() => expect(count).toBe(1));
+    await Promise.resolve();
+  });
+  view.unmount();
+  await act(() => vi.advanceTimersByTimeAsync(2000));
+  expect(count).toBe(1);
+});
 
 it('starts with empty inputs, no error, and a legal consent description', () => {
   render(<Signup config={config} />);
