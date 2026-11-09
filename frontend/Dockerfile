@@ -12,7 +12,7 @@ FROM dependencies AS builder
 COPY frontend/ ./
 RUN npm run build
 
-FROM nginxinc/nginx-unprivileged:1.28.0-alpine AS production
+FROM nginxinc/nginx-unprivileged:1.31.7-alpine AS production
 COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /workspace/frontend/dist /usr/share/nginx/html
 EXPOSE 8080
