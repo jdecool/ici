@@ -15,7 +15,7 @@ tracing-subscriber.workspace = true
 
 serde_json.workspace = true
 sqlx = { version = "0.8.6", default-features = false, features = ["runtime-tokio-rustls", "postgres", "migrate", "macros", "uuid"] }
-argon2 = "0.5.3"
+argon2 = "0.6.0"
 rand = "0.8.5"
 sha2 = "0.10.9"
 hex = "0.4.3"
