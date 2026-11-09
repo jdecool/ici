@@ -18,7 +18,7 @@ COPY --from=builder /workspace/frontend/dist /usr/share/nginx/html
 EXPOSE 8080
 HEALTHCHECK --interval=5s --timeout=2s --start-period=10s --retries=10 CMD wget -q -O /dev/null http://127.0.0.1:8080/health || exit 1
 
-FROM mcr.microsoft.com/playwright:v1.64.1-noble AS e2e
+FROM mcr.microsoft.com/playwright:v1.65.0-noble AS e2e
 RUN npm install --global npm@11.20.0
 WORKDIR /workspace/frontend
 COPY frontend/package*.json ./
