@@ -37,6 +37,9 @@ jobs:
       - run: make ${{ matrix.target }}
         env:
           MUTATION_SHARD: ${{ matrix.shard }}
+      # Tool containers write reports as root, some without world-read access.
+      - run: sudo chmod -R a+rX .
+        if: always()
       - uses: actions/upload-artifact@v4
         if: always()
         with:

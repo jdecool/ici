@@ -9,7 +9,11 @@ RUN curl --fail --location --silent --show-error --proto '=https' --tlsv1.2 \
         "https://github.com/cargo-bins/cargo-binstall/releases/download/v1.26.2/cargo-binstall-$(uname -m)-unknown-linux-musl.tgz" \
         | tar --extract --gzip --directory /usr/local/cargo/bin \
     && cargo binstall --no-confirm --locked --strategies crate-meta-data,compile \
-        cargo-llvm-cov@0.9.1 cargo-mutants@27.1.0 cargo-deny@0.18.9 cargo-watch@8.5.3
+        cargo-llvm-cov@0.9.1 cargo-deny@0.18.9 cargo-watch@8.5.3 \
+    # The cargo-mutants x86_64 release binary needs a newer glibc than bookworm provides.
+    && cargo install --locked cargo-mutants --version 27.1.0 \
+    # A release binary that cannot run on this base must fail the build, not the gate.
+    && cargo llvm-cov --version && cargo mutants --version && cargo deny --version && cargo watch --version
 
 FROM base AS builder
 COPY . .
