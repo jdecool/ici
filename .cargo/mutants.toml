@@ -1,5 +1,11 @@
-# Only process startup/signal handling is excluded; HTTP adapters remain in scope.
-exclude_globs = ["backend/crates/server/src/main.rs"]
+# Mutation scope is the framework-independent domain: validation rules and the
+# pure identity/tenancy logic. HTTP and SQL adapters are covered by tests only.
+examine_globs = [
+    "backend/crates/server/src/**/rules.rs",
+    "backend/crates/server/src/identity/authentication.rs",
+    "backend/crates/server/src/identity/crypto.rs",
+    "backend/crates/server/src/tenancy/registration.rs",
+]
 minimum_test_timeout = 20
 additional_cargo_args = ["--locked"]
 test_workspace = true

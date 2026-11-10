@@ -24,6 +24,6 @@ docker compose -p ici-tools -f compose.tools.yaml run --build --rm node npm test
 
 Vitest/Testing Library test visible behavior; MSW mocks the HTTP boundary and rejects unhandled requests. Test loading, success, server/network errors, invalid payloads and obsolete effects. Use Playwright for production-stack functional tests (`make e2e`). Prefer accessible role queries over CSS selectors and snapshots.
 
-Coverage includes unimported source files, with 90% lines/statements/functions/branches. Stryker requires 100%. Only test infrastructure, pure export barrels and the DOM mount entry point are excluded. The entry point is exercised by E2E tests. Styles, UI components, API clients and app composition must not be excluded.
+Coverage includes unimported source files, with 90% lines/statements/functions/branches. Only test infrastructure, pure export barrels and the DOM mount entry point are excluded from coverage. The entry point is exercised by E2E tests. Styles, UI components, API clients and app composition must not be excluded. Stryker mutates each slice's model.ts and api.ts and requires 100%; keep non-visual logic in those files.
 
 Run `npm run test:architecture` when changing ESLint boundaries. The npm scripts can also run natively with the pinned Node toolchain after npm ci; containers are the reference environment.

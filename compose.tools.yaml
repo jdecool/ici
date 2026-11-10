@@ -41,8 +41,6 @@ services:
       dockerfile: frontend/Dockerfile
       target: tools
     working_dir: /workspace/frontend
-    environment:
-      MUTATION_SHARD: ${MUTATION_SHARD:-}
     entrypoint: [sh, -c, 'npm ci && exec "$@"', --]
     volumes:
       - ./frontend:/workspace/frontend

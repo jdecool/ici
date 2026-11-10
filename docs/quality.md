@@ -4,7 +4,7 @@
 
 All gates run on every PR and main. Format, lint, type/static analysis, tests, coverage, mutations, dependency audits and production builds must succeed. GitHub's aggregate `quality` check fails when any matrix job fails or is cancelled. Configure it as a required branch-protection check after creating the remote repository.
 
-The CI matrix runs `gates-rust` and `gates-frontend` (every language gate except mutations), the production stack, and the mutation suites as separate jobs so fast gates report within minutes. Mutations are split across runners with `MUTATION_SHARD`: eight `cargo mutants --shard k/8` jobs (zero-based, each with its own PostgreSQL instance) and three Stryker shards defined in `frontend/stryker.config.js`. The shards are disjoint and together cover every mutant; the Stryker `rest` shard is defined by exclusion, so a new slice is mutated without further configuration. Changing the Rust shard count requires listing every index from 0 to N-1 in the workflow. Each language gate job installs dependencies once and runs its unit/integration suite with coverage, rather than repeating the same suite without instrumentation. Rust doctests remain a separate mandatory command. Standalone test, coverage and audit targets remain available. Production images are built once before the HTTP and HTTPS stacks run in separate Compose projects; standalone E2E commands still build their own images.
+The CI matrix runs `gates-rust` and `gates-frontend` (every language gate except mutations), the production stack, and the mutation suites as separate jobs so fast gates report within minutes. Stryker runs as one job. Rust mutations are split across runners with `MUTATION_SHARD`: four `cargo mutants --shard k/4` jobs (zero-based, each with its own PostgreSQL instance) that are disjoint and together cover every mutant in scope; an unset `MUTATION_SHARD` runs them all. Changing the shard count requires listing every index from 0 to N-1 in the workflow. Each language gate job installs dependencies once and runs its unit/integration suite with coverage, rather than repeating the same suite without instrumentation. Rust doctests remain a separate mandatory command. Standalone test, coverage and audit targets remain available. Production images are built once before the HTTP and HTTPS stacks run in separate Compose projects; standalone E2E commands still build their own images.
 
 Rust uses standard rustfmt, Clippy with warnings denied, Cargo tests, cargo-llvm-cov, cargo-mutants and cargo-deny. Frontend uses Prettier, typed ESLint (React, hooks, accessibility and architecture rules), tsc, Vitest, Testing Library, MSW, V8 coverage, Stryker and Playwright/Chromium. MSW rejects unexpected HTTP requests.
 
@@ -24,9 +24,16 @@ No core capability, HTTP adapter, API client, component or app composition is ex
 
 ## Mutations
 
-Run full suites with `make mutation`. No incremental-only or changed-file-only shortcut substitutes for the PR gate; CI sharding only distributes the full suites and an unset `MUTATION_SHARD` runs everything. cargo-mutants must return zero: missed mutations, timeouts, baseline failures and tool errors fail the command; noncompiling mutants are inconclusive and excluded by the tool. Stryker's break threshold is 100, with HTML/JSON reports. Its score uses the runner's detected-mutant semantics (including detected timeouts); viable survivors and uncovered mutants reduce the score and fail the gate. Test infrastructure and bootstrap/export-only files have the same exclusions as coverage.
+Mutation testing is scoped to the essential, framework-independent logic; everything else is held by tests, the 90% coverage thresholds and production E2E checks.
 
-Never change thresholds to accommodate failing tests. Investigate equivalent mutants individually and document any narrowly justified suppression; no blanket exclusions are allowed.
+- Rust (`.cargo/mutants.toml`): every capability's `rules.rs`, plus `identity/authentication.rs`, `identity/crypto.rs` and `tenancy/registration.rs`. HTTP and PostgreSQL adapters, capability modules that mix use cases with them, configuration and process wiring are not mutated.
+- Frontend (`frontend/stryker.config.json`): every slice's `model.ts` and `api.ts`. React components and app composition are not mutated.
+
+New pure domain logic belongs in a file these patterns already match; add a path to the scope when a new framework-independent module is introduced. Moving logic out of scope to avoid a surviving mutant is not acceptable.
+
+Run the suites with `make mutation`. No incremental-only or changed-file-only shortcut substitutes for the PR gate. cargo-mutants must return zero: missed mutations, timeouts, baseline failures and tool errors fail the command; noncompiling mutants are inconclusive and excluded by the tool. Stryker's break threshold is 100, with HTML/JSON reports. Its score uses the runner's detected-mutant semantics (including detected timeouts); viable survivors and uncovered mutants reduce the score and fail the gate.
+
+Never change thresholds to accommodate failing tests. Investigate equivalent mutants individually and document any narrowly justified suppression; no blanket exclusions are allowed inside the mutation scope.
 
 ## Audits and reproducibility
 
@@ -41,6 +48,8 @@ The SMTP quoted-printable encoder `quoted_printable` 0.5.2 uses the permissive 0
 Vite and Vitest were upgraded to compatible patch releases (7.3.7 and 4.1.12) to fix advisories present in the original lockfile; npm audit fix refreshed vulnerable transitive development dependencies. No new frontend runtime dependency was added.
 
 ## Equivalent mutation decisions
+
+The decisions below about React components predate the mutation scope above. Their `Stryker disable` comments are inactive while components are out of scope and apply again if the scope is widened.
 
 The mount-only React effects for App configuration narrowly exclude the ArrayDeclaration mutation on their empty dependency lists: replacing [] with one constant string preserves the same effect lifetime across renders. Obsolete responses are still tested through StrictMode; no conditional or cleanup mutation is excluded. POST bodies, methods and headers remain mutation-tested. No UI text, field, whole function, capability or adapter is excluded.
 

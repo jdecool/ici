@@ -66,7 +66,7 @@ Prerequisites: Docker with Compose v2 and Make. No host Rust or Node installatio
 - `make check`: formatting, lint, type/static analysis and frontend architecture checks.
 - `make test`: Rust unit/integration/doc tests and frontend unit/integration tests.
 - `make coverage`: enforce 90% coverage in each language.
-- `make mutation`: full Rust and frontend mutation suites; 100% required.
+- `make mutation`: Rust and frontend mutation suites over the scope in docs/quality.md; 100% required.
 - `make audit`: dependency vulnerability/license/source policy checks.
 - `make e2e`: build and test production containers in an isolated Compose project.
 - `make e2e-https`: verify mounted root/wildcard certificates, HTTPS routing and HTTP redirects in a disposable stack.

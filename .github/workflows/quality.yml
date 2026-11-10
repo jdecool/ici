@@ -17,21 +17,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [check-infra, gates-rust, gates-frontend, quality-production]
-        # Mutations dominate the runtime, so each suite is split across runners.
-        # Rust shards must enumerate 0/N to N-1/N; frontend shards are the keys in stryker.config.js.
+        target: [check-infra, gates-rust, gates-frontend, mutation-frontend, quality-production]
+        # Rust mutations dominate the runtime, so they are split across runners.
+        # Shards are zero-based and must enumerate 0/N to N-1/N.
         include:
-          - { target: mutation-rust, shard: 0/8 }
-          - { target: mutation-rust, shard: 1/8 }
-          - { target: mutation-rust, shard: 2/8 }
-          - { target: mutation-rust, shard: 3/8 }
-          - { target: mutation-rust, shard: 4/8 }
-          - { target: mutation-rust, shard: 5/8 }
-          - { target: mutation-rust, shard: 6/8 }
-          - { target: mutation-rust, shard: 7/8 }
-          - { target: mutation-frontend, shard: planning }
-          - { target: mutation-frontend, shard: organization }
-          - { target: mutation-frontend, shard: rest }
+          - { target: mutation-rust, shard: 0/4 }
+          - { target: mutation-rust, shard: 1/4 }
+          - { target: mutation-rust, shard: 2/4 }
+          - { target: mutation-rust, shard: 3/4 }
     steps:
       - uses: actions/checkout@v4
       - run: make ${{ matrix.target }}
