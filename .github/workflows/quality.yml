@@ -40,7 +40,7 @@ jobs:
       # Tool containers write reports as root, some without world-read access.
       - run: sudo chmod -R a+rX .
         if: always()
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: reports-${{ matrix.target }}-${{ strategy.job-index }}
