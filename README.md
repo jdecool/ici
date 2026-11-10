@@ -34,3 +34,19 @@ Reloading fixtures replaces ACME data and invalidates its sessions while preserv
 
 - [Documentation index](docs/README.md) — getting started, development, operations and architecture decisions.
 - [Contributing](CONTRIBUTING.md) — contribution workflow and required quality checks.
+
+## Screenshots
+
+Screenshots from the ACME demonstration workspace.
+
+**Team planning**
+
+![Weekly team planning grid with morning and afternoon presence for each collaborator](docs/screenshots/team-planning.png)
+
+**My week**
+
+![Personal presence for each weekday alongside the reusable weekly template](docs/screenshots/my-week.png)
+
+**Location occupancy**
+
+![Morning and afternoon headcounts and weekly occupancy charts for three offices](docs/screenshots/location-occupancy.png)
