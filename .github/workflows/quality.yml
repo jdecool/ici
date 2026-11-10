@@ -26,7 +26,7 @@ jobs:
           - { target: mutation-rust, shard: 2/4 }
           - { target: mutation-rust, shard: 3/4 }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: make ${{ matrix.target }}
         env:
           MUTATION_SHARD: ${{ matrix.shard }}
