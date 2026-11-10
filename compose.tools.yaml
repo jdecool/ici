@@ -16,6 +16,7 @@ services:
     working_dir: /workspace
     environment:
       ICI_TEST_DATABASE: "1"
+      MUTATION_SHARD: ${MUTATION_SHARD:-}
       TEST_DATABASE_URL: postgres://postgres:local-provisioner-only@postgres/ici
       TENANT_DATABASE_BASE_URL: postgres://postgres@postgres/ici
       SMTP_USERNAME: ici-tests
@@ -40,6 +41,8 @@ services:
       dockerfile: frontend/Dockerfile
       target: tools
     working_dir: /workspace/frontend
+    environment:
+      MUTATION_SHARD: ${MUTATION_SHARD:-}
     entrypoint: [sh, -c, 'npm ci && exec "$@"', --]
     volumes:
       - ./frontend:/workspace/frontend

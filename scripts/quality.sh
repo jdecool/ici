@@ -17,10 +17,10 @@ cleanup() {
 }
 trap 'cleanup; exit 130' INT
 trap 'cleanup; exit 143' TERM
-tools run --name "$run_prefix-rust" --rm --no-deps rust sh scripts/quality-language.sh rust > "$report_directory/rust.log" 2>&1 &
+tools run --name "$run_prefix-rust" --rm --no-deps rust sh scripts/quality-language.sh rust mutation > "$report_directory/rust.log" 2>&1 &
 rust_pid=$!
 pids="$rust_pid"
-tools run --name "$run_prefix-frontend" --rm --no-deps node sh ../scripts/quality-language.sh frontend > "$report_directory/frontend.log" 2>&1 &
+tools run --name "$run_prefix-frontend" --rm --no-deps node sh ../scripts/quality-language.sh frontend mutation > "$report_directory/frontend.log" 2>&1 &
 frontend_pid=$!
 pids="$pids $frontend_pid"
 result=0

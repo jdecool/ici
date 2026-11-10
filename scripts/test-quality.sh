@@ -32,34 +32,45 @@ for command in docker make cargo npm sh; do
     ln -s command "$scratch/bin/$command"
 done
 export PATH="$scratch/bin:$PATH" QUALITY_TEST_LOG="$scratch/calls" QUALITY_REPORT_DIRECTORY="$scratch/reports" QUALITY_TEST_PIDS="$scratch/pids"
-/bin/sh scripts/quality-language.sh frontend
+/bin/sh scripts/quality-language.sh frontend mutation
 cat > "$scratch/expected" <<'EXPECTED'
 npm run check
 npm run coverage
-npm run mutation
 npm run audit:dependencies
+npm run mutation
 EXPECTED
 diff -u "$scratch/expected" "$QUALITY_TEST_LOG"
 : > "$QUALITY_TEST_LOG"
-/bin/sh scripts/quality-language.sh rust
+/bin/sh scripts/quality-language.sh rust mutation
 cat > "$scratch/expected" <<'EXPECTED'
 sh scripts/check-rust.sh
 sh scripts/coverage-rust.sh
 cargo test --workspace --doc --locked
-sh scripts/mutation-rust.sh
 cargo deny --locked check
+sh scripts/mutation-rust.sh
 EXPECTED
 diff -u "$scratch/expected" "$QUALITY_TEST_LOG"
 : > "$QUALITY_TEST_LOG"
-if QUALITY_TEST_FAIL=42 /bin/sh scripts/quality-language.sh frontend; then
+/bin/sh scripts/quality-language.sh frontend
+/bin/sh scripts/quality-language.sh rust
+if grep mutation "$QUALITY_TEST_LOG"; then
+    echo 'Mutations must only run when requested' >&2; exit 1
+fi
+test "$(wc -l < "$QUALITY_TEST_LOG" | tr -d ' ')" -eq 7
+: > "$QUALITY_TEST_LOG"
+if /bin/sh scripts/quality-language.sh rust mutations 2> /dev/null; then
+    echo 'An unknown lane option must be rejected' >&2; exit 1
+fi
+test ! -s "$QUALITY_TEST_LOG"
+if QUALITY_TEST_FAIL=42 /bin/sh scripts/quality-language.sh frontend mutation; then
     echo 'A failed mutation gate must fail the lane' >&2; exit 1
 else
     test "$?" -eq 42
 fi
-test "$(wc -l < "$QUALITY_TEST_LOG" | tr -d ' ')" -eq 3
+test "$(wc -l < "$QUALITY_TEST_LOG" | tr -d ' ')" -eq 4
 : > "$QUALITY_TEST_LOG"
 /bin/sh scripts/quality.sh
-test "$(grep -c 'run --name ici-quality-' "$QUALITY_TEST_LOG")" -eq 2
+test "$(grep -c 'run --name ici-quality-.*quality-language.sh [a-z]* mutation$' "$QUALITY_TEST_LOG")" -eq 2
 test "$(grep -c '^make quality-production$' "$QUALITY_TEST_LOG")" -eq 1
 : > "$QUALITY_TEST_LOG"
 if QUALITY_TEST_FAIL=42 /bin/sh scripts/quality.sh; then

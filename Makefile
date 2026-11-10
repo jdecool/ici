@@ -6,7 +6,7 @@ PROD = docker compose -p ici -f compose.yaml
 RUST = $(TOOLS) run --build --rm rust
 NODE = $(TOOLS) run --build --rm node
 
-.PHONY: fixtures reset-fixtures migrate-tenants bootstrap require-locks check-infra help dev check check-rust check-frontend test test-rust test-frontend coverage coverage-rust coverage-frontend mutation mutation-rust mutation-frontend audit audit-rust audit-frontend e2e e2e-https build up down quality quality-rust quality-frontend quality-production format
+.PHONY: fixtures reset-fixtures migrate-tenants bootstrap require-locks check-infra help dev check check-rust check-frontend test test-rust test-frontend coverage coverage-rust coverage-frontend mutation mutation-rust mutation-frontend audit audit-rust audit-frontend e2e e2e-https build up down quality quality-rust quality-frontend gates-rust gates-frontend quality-production format
 help:
 	@printf '%s\n' \
 		'   ___       _       .---.' \
@@ -47,6 +47,8 @@ help:
 		'    mutation-frontend  Run frontend mutation tests' \
 		'    audit-rust         Check Rust dependencies, licenses and sources' \
 		'    audit-frontend     Check frontend dependencies' \
+		'    gates-rust         Run every Rust gate except mutations' \
+		'    gates-frontend     Run every frontend gate except mutations' \
 		'' \
 		'  Production' \
 		'    build              Build production images' \
@@ -114,8 +116,12 @@ down:
 quality: require-locks
 	sh scripts/quality.sh
 quality-rust: require-locks
-	$(RUST) sh scripts/quality-language.sh rust
+	$(RUST) sh scripts/quality-language.sh rust mutation
 quality-frontend: require-locks
+	$(NODE) sh ../scripts/quality-language.sh frontend mutation
+gates-rust: require-locks
+	$(RUST) sh scripts/quality-language.sh rust
+gates-frontend: require-locks
 	$(NODE) sh ../scripts/quality-language.sh frontend
 quality-production: build
 	ICI_E2E_PREBUILT=1 sh scripts/e2e.sh

@@ -4,10 +4,12 @@ WORKDIR /workspace
 
 FROM base AS tools
 RUN rustup component add rustfmt clippy llvm-tools-preview
-RUN cargo install --locked cargo-llvm-cov --version 0.9.1 \
-    && cargo install --locked cargo-mutants --version 27.1.0 \
-    && cargo install --locked cargo-deny --version 0.18.9 \
-    && cargo install --locked cargo-watch --version 8.5.3
+# Upstream release binaries avoid minutes of compilation per CI job; tools without one are compiled.
+RUN curl --fail --location --silent --show-error --proto '=https' --tlsv1.2 \
+        "https://github.com/cargo-bins/cargo-binstall/releases/download/v1.26.2/cargo-binstall-$(uname -m)-unknown-linux-musl.tgz" \
+        | tar --extract --gzip --directory /usr/local/cargo/bin \
+    && cargo binstall --no-confirm --locked --strategies crate-meta-data,compile \
+        cargo-llvm-cov@0.9.1 cargo-mutants@27.1.0 cargo-deny@0.18.9 cargo-watch@8.5.3
 
 FROM base AS builder
 COPY . .

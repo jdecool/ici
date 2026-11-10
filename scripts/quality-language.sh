@@ -10,19 +10,23 @@ measure() {
     printf '[quality] %s: %ss (exit %s)\n' "$label" "$(($(date +%s) - started))" "$result"
     return "$result"
 }
+usage() { echo 'Usage: quality-language.sh rust|frontend [mutation]' >&2; exit 2; }
+# CI runs mutations as separate sharded jobs; local lanes append them here.
+mutation=${2:-}
+case "$mutation" in ''|mutation) ;; *) usage ;; esac
 case "${1:-}" in
     rust)
         measure check-rust sh scripts/check-rust.sh
         measure coverage-rust sh scripts/coverage-rust.sh
         measure doctests cargo test --workspace --doc --locked
-        measure mutation-rust sh scripts/mutation-rust.sh
         measure audit-rust cargo deny --locked check
+        if [ "$mutation" = mutation ]; then measure mutation-rust sh scripts/mutation-rust.sh; fi
         ;;
     frontend)
         measure check-frontend npm run check
         measure coverage-frontend npm run coverage
-        measure mutation-frontend npm run mutation
         measure audit-frontend npm run audit:dependencies
+        if [ "$mutation" = mutation ]; then measure mutation-frontend npm run mutation; fi
         ;;
-    *) echo 'Usage: quality-language.sh rust|frontend' >&2; exit 2 ;;
+    *) usage ;;
 esac

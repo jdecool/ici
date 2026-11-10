@@ -11,20 +11,36 @@ concurrency:
   cancel-in-progress: true
 jobs:
   checks:
-    name: ${{ matrix.target }}
+    name: ${{ matrix.target }}${{ matrix.shard && format(' ({0})', matrix.shard) || '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
-        target: [check-infra, quality-rust, quality-frontend, quality-production]
+        target: [check-infra, gates-rust, gates-frontend, quality-production]
+        # Mutations dominate the runtime, so each suite is split across runners.
+        # Rust shards must enumerate 0/N to N-1/N; frontend shards are the keys in stryker.config.js.
+        include:
+          - { target: mutation-rust, shard: 0/8 }
+          - { target: mutation-rust, shard: 1/8 }
+          - { target: mutation-rust, shard: 2/8 }
+          - { target: mutation-rust, shard: 3/8 }
+          - { target: mutation-rust, shard: 4/8 }
+          - { target: mutation-rust, shard: 5/8 }
+          - { target: mutation-rust, shard: 6/8 }
+          - { target: mutation-rust, shard: 7/8 }
+          - { target: mutation-frontend, shard: planning }
+          - { target: mutation-frontend, shard: organization }
+          - { target: mutation-frontend, shard: rest }
     steps:
       - uses: actions/checkout@v4
       - run: make ${{ matrix.target }}
+        env:
+          MUTATION_SHARD: ${{ matrix.shard }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: reports-${{ matrix.target }}
+          name: reports-${{ matrix.target }}-${{ strategy.job-index }}
           if-no-files-found: ignore
           retention-days: 14
           path: |
