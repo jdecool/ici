@@ -26,14 +26,14 @@ jobs:
           - { target: mutation-rust, shard: 2/4 }
           - { target: mutation-rust, shard: 3/4 }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: make ${{ matrix.target }}
         env:
           MUTATION_SHARD: ${{ matrix.shard }}
       # Tool containers write reports as root, some without world-read access.
       - run: sudo chmod -R a+rX .
         if: always()
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: reports-${{ matrix.target }}-${{ strategy.job-index }}

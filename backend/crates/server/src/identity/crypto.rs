@@ -1,15 +1,15 @@
 use super::Error;
 use aes_gcm::{
-    Aes256Gcm, KeyInit,
-    aead::{Aead, AeadCore, OsRng as AeadRng},
+    Aes256Gcm, KeyInit, Nonce,
+    aead::{Aead, Generate},
 };
-use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier, password_hash::SaltString};
-use rand::{RngCore, rngs::OsRng};
+use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier};
+use rand::Rng;
 use sha2::{Digest, Sha256};
 
 pub fn token() -> String {
     let mut bytes = [0u8; 32];
-    OsRng.fill_bytes(&mut bytes);
+    rand::rng().fill_bytes(&mut bytes);
     hex::encode(bytes)
 }
 pub fn digest(value: &str) -> String {
@@ -18,7 +18,7 @@ pub fn digest(value: &str) -> String {
 pub async fn hash_password(password: String) -> Result<String, Error> {
     tokio::task::spawn_blocking(move || {
         Argon2::default()
-            .hash_password(password.as_bytes(), &SaltString::generate(&mut OsRng))
+            .hash_password(password.as_bytes())
             .map(|hash| hash.to_string())
             .map_err(Error::internal_from)
     })
@@ -38,7 +38,7 @@ pub async fn verify_password(password: String, hash: String) -> Result<bool, Err
 }
 pub fn encrypt(key: &[u8], value: &str) -> Result<String, Error> {
     let cipher = Aes256Gcm::new_from_slice(key).map_err(Error::internal_from)?;
-    let nonce = Aes256Gcm::generate_nonce(&mut AeadRng);
+    let nonce = Nonce::try_generate().map_err(Error::internal_from)?;
     let ciphertext = cipher
         .encrypt(&nonce, value.as_bytes())
         .map_err(Error::internal_from)?;
@@ -53,7 +53,10 @@ pub fn decrypt(key: &[u8], value: &str) -> Result<String, Error> {
     }
     let cipher = Aes256Gcm::new_from_slice(key).map_err(Error::internal_from)?;
     let plaintext = cipher
-        .decrypt(bytes[..12].into(), &bytes[12..])
+        .decrypt(
+            <&Nonce<_>>::try_from(&bytes[..12]).map_err(Error::internal_from)?,
+            &bytes[12..],
+        )
         .map_err(Error::internal_from)?;
     String::from_utf8(plaintext).map_err(Error::internal_from)
 }
