@@ -1,4 +1,4 @@
-FROM rust:1.99.1-slim-bookworm AS base
+FROM rust:1.100.0-slim-bookworm AS base
 RUN apt-get update && apt-get install -y --no-install-recommends bash ca-certificates curl git jq pkg-config libssl-dev make && rm -rf /var/lib/apt/lists/*
 WORKDIR /workspace
 
